@@ -145,9 +145,16 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
 .tag-categories{display:flex;flex-direction:column;gap:14px}
 .tag-category{background:var(--card);border-radius:var(--r2);border:1px solid var(--border);padding:12px}
 .tag-category-label{font-size:11px;font-weight:500;color:var(--text3);margin-bottom:8px;display:flex;align-items:center;justify-content:space-between}
+.tag-selected-row{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px;min-height:24px}
+.tag-selected-empty{font-size:12px;color:var(--text3);padding:4px 0}
+.tag-picker{display:none;margin-top:8px;border:1px solid var(--border);border-radius:var(--r2);padding:10px;background:var(--bg2);box-shadow:var(--shadow)}
+.tag-picker.show{display:block}
+.tag-picker-hint{font-size:10px;color:var(--text3);margin-bottom:8px}
 .tag-chips-wrap{display:flex;flex-wrap:wrap;gap:6px}
 .tag-chip-sel{font-size:12px;padding:5px 12px;border-radius:20px;border:1.5px solid transparent;cursor:pointer;transition:all 0.15s;font-family:'Noto Sans SC',sans-serif;background:var(--bg);color:var(--text2);border-color:var(--border2)}
 .tag-chip-sel.selected{border-color:currentColor}
+.tag-chip-sel::before{content:''}
+.tag-chip-sel.selected::before{content:'✓ ';font-weight:700}
 .tag-chip-sel.cat-0{color:#c4607e}.tag-chip-sel.cat-0.selected{background:#fce8f0}
 .tag-chip-sel.cat-1{color:#c4607e}.tag-chip-sel.cat-1.selected{background:#fce8f0}
 .tag-chip-sel.cat-2{color:#4a9966}.tag-chip-sel.cat-2.selected{background:#e8f4ee}
@@ -224,8 +231,17 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
 .filter-pill.active{background:var(--pink2);color:#fff;border-color:var(--pink2)}
 
 /* ── LOG EDIT MINI SHEET ── */
-.mini-sheet{position:fixed;bottom:0;left:0;right:0;background:var(--bg2);border-radius:24px 24px 0 0;z-index:202;transform:translateY(100%);transition:transform 0.3s cubic-bezier(0.32,0.72,0,1);padding:20px;padding-bottom:calc(20px + env(safe-area-inset-bottom))}
+.mini-sheet{position:fixed;inset:0;background:var(--bg2);border-radius:0;z-index:202;transform:translateY(100%);transition:transform 0.3s cubic-bezier(0.32,0.72,0,1);padding:20px;padding-bottom:calc(20px + env(safe-area-inset-bottom));overflow-y:auto}
 .mini-sheet.show{transform:translateY(0)}
+.log-textarea{min-height:120px}
+.stats-control-row{display:flex;gap:8px;padding:0 16px 12px;overflow-x:auto}
+.stats-control-row .form-select{width:auto;min-width:120px;padding-top:7px;padding-bottom:7px;font-size:12px}
+.book-list.compact{padding:0;gap:8px}
+.book-list.compact .book-card{box-shadow:none}
+.stat-card.clickable{cursor:pointer;transition:box-shadow 0.2s}
+.stat-card.clickable:active{box-shadow:var(--shadow2)}
+.bar-row.clickable{cursor:pointer}
+.bar-meta{font-size:9px;color:#fff;font-weight:600;margin-left:4px;white-space:nowrap}
 
 .fade-in{animation:fadeIn 0.3s ease}
 @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
@@ -269,6 +285,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
         <button class="filter-pill" onclick="setFilter('done',this)">已读</button>
         <button class="filter-pill" onclick="setFilter('want',this)">想读</button>
         <button class="filter-pill" onclick="setFilter('dropped',this)">弃坑</button>
+        <button class="filter-pill" onclick="setFilter('unfiled',this)">未整理</button>
       </div>
       <div class="book-list" id="book-list"></div>
     </div>
@@ -283,6 +300,23 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
         <select id="stats-year" class="form-select" style="width:90px;padding:6px 28px 6px 10px;font-size:13px" onchange="renderStats()"></select>
       </div>
       <div class="stats-grid" id="stats-grid"></div>
+      <div class="stats-control-row">
+        <select id="stats-kind" class="form-select" onchange="renderStats()">
+          <option value="all">全部书籍</option>
+          <option value="author">按作者统计</option>
+          <option value="tag">按标签统计</option>
+        </select>
+        <select id="stats-sort" class="form-select" onchange="renderStatsDrill()">
+          <option value="date-desc">最近阅读</option>
+          <option value="rating-desc">评分高到低</option>
+          <option value="rating-asc">评分低到高</option>
+          <option value="title-asc">书名 A-Z</option>
+        </select>
+      </div>
+      <div class="chart-section" id="stats-drill-section" style="display:none">
+        <div class="chart-title" id="stats-drill-title">阅读书目</div>
+        <div class="book-list compact" id="stats-drill-list"></div>
+      </div>
       <div class="chart-section">
         <div class="chart-title">📌 标签分布</div>
         <div class="bar-chart" id="tag-chart"></div>
@@ -344,7 +378,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
             <div class="settings-item-icon" style="background:#fef3e2">📤</div>
             <div>
               <div class="settings-item-title">导出书单备份</div>
-              <div class="settings-item-sub">导出 JSON 文件，不包含 API Key</div>
+              <div class="settings-item-sub" id="backup-display">尚未备份</div>
             </div>
           </div>
           <span class="settings-arrow">›</span>
@@ -355,6 +389,16 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
             <div>
               <div class="settings-item-title">导入书单备份</div>
               <div class="settings-item-sub">从 JSON 文件恢复数据</div>
+            </div>
+          </div>
+          <span class="settings-arrow">›</span>
+        </div>
+        <div class="settings-item" onclick="openBatchImport()">
+          <div class="settings-item-left">
+            <div class="settings-item-icon" style="background:#eef4ff">📚</div>
+            <div>
+              <div class="settings-item-title">批量导入未整理书籍</div>
+              <div class="settings-item-sub">粘贴书名/作者，一次导入很多本</div>
             </div>
           </div>
           <span class="settings-arrow">›</span>
@@ -373,7 +417,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
           <div class="settings-item-left">
             <div class="settings-item-icon" style="background:#e8f0fe">ℹ️</div>
             <div>
-              <div class="settings-item-title">幻 maboroshi v2.0</div>
+              <div class="settings-item-title">幻 maboroshi v2.1</div>
               <div class="settings-item-sub">数据和密码均存储于本地</div>
             </div>
           </div>
@@ -402,6 +446,32 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
 <!-- ── OVERLAY ── -->
 <div class="overlay" id="overlay" onclick="closeAllSheets()"></div>
 <div class="toast" id="toast"></div>
+
+<!-- ═══ BATCH IMPORT SHEET ═══ -->
+<div class="sheet" id="sheet-batch">
+  <div class="sheet-handle"></div>
+  <div class="sheet-header">
+    <span class="sheet-title">批量导入未整理书籍</span>
+    <button class="sheet-close" onclick="closeSheet('sheet-batch')">×</button>
+  </div>
+  <div class="sheet-body">
+    <div class="form-group">
+      <label class="form-label">粘贴书单</label>
+      <textarea class="form-textarea" id="batch-text" style="min-height:260px" placeholder="每行一本。支持：
+书名
+书名 作者
+书名｜作者
+书名, 作者"></textarea>
+    </div>
+    <div style="font-size:12px;color:var(--text3);line-height:1.7;background:var(--card);border:1px solid var(--border);border-radius:var(--r2);padding:12px">
+      导入后会进入「未整理」分类，只保存书名和作者。已经存在的同名书会自动跳过。
+    </div>
+  </div>
+  <div class="sheet-footer">
+    <button class="btn btn-ghost" style="flex:1" onclick="closeSheet('sheet-batch')">取消</button>
+    <button class="btn btn-primary" style="flex:2" onclick="importBatchBooks()">导入到未整理</button>
+  </div>
+</div>
 
 <!-- ═══ ADD/EDIT BOOK SHEET ═══ -->
 <div class="sheet" id="sheet-book">
@@ -442,11 +512,12 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
           <option value="reading">在读</option>
           <option value="want">想读</option>
           <option value="dropped">弃坑</option>
+          <option value="unfiled">未整理</option>
         </select>
       </div>
       <div class="form-group">
         <label class="form-label">阅读进度 %</label>
-        <input class="form-input" id="f-progress" type="number" min="0" max="100" placeholder="100">
+        <select class="form-select" id="f-progress"></select>
       </div>
     </div>
     <div class="form-group">
@@ -490,8 +561,20 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
     <div class="nearby-books" id="log-nearby-books">滑动评分，将显示同分段的书籍</div>
   </div>
   <div class="form-group">
-    <label class="form-label">这次的感受</label>
-    <textarea class="form-textarea" id="log-review" placeholder="写下这次阅读的感受…"></textarea>
+    <label class="form-label">整体感受</label>
+    <textarea class="form-textarea log-textarea" id="log-overall" placeholder="这次读完最大的感受、喜不喜欢、想不想二刷…"></textarea>
+  </div>
+  <div class="form-group">
+    <label class="form-label">人物塑造</label>
+    <textarea class="form-textarea log-textarea" id="log-character" placeholder="攻受/配角的人设、关系张力、成长弧…"></textarea>
+  </div>
+  <div class="form-group">
+    <label class="form-label">情节安排</label>
+    <textarea class="form-textarea log-textarea" id="log-plot" placeholder="剧情节奏、冲突、转折、结尾…"></textarea>
+  </div>
+  <div class="form-group">
+    <label class="form-label">作者评价</label>
+    <textarea class="form-textarea log-textarea" id="log-author" placeholder="文笔、稳定性、作者偏好、下次是否继续看…"></textarea>
   </div>
   <div style="display:flex;gap:10px">
     <button class="btn btn-ghost" style="flex:1" onclick="closeMiniLog()">取消</button>
@@ -503,7 +586,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
 // ═══════════════════════════════════════
 //  DATA LAYER
 // ═══════════════════════════════════════
-const APP_VERSION = '2.0.0';
+const APP_VERSION = '2.1.0';
 const STORE_KEY = 'shuji_v1';
 const LOCK_KEY = 'maboroshi_lock_v2';
 const TAG_CATS = [
@@ -515,24 +598,59 @@ const TAG_CATS = [
   {key:'warn', label:'排雷',   color:5},
 ];
 const STATUS_MAP = {done:'已读',reading:'在读',want:'想读',dropped:'弃坑'};
+STATUS_MAP.unfiled='未整理';
+const DEFAULT_TAG_HISTORY = {shou:[],gong:[],era:[],plot:[],vibe:[],warn:[]};
 const COVER_COLORS = ['#f2a8c4','#f5c4a1','#a8d5b5','#a8c4d5','#c4a8d5','#d5c4a8','#d5a8a8'];
 const PLATFORMS = ['晋江','长佩','长佩旧站','废文','其他'];
 
-let db = {books:[], tagHistory:{shou:[],gong:[],era:[],plot:[],vibe:[],warn:[]}, apiKey:''};
+let db = {books:[], tagHistory:{...DEFAULT_TAG_HISTORY}, apiKey:'', lastBackupAt:''};
 let currentFilter = 'all';
 let editingBookId = null;
 let editingLogIdx = null;
 let currentLogDraft = {};
+let statsSort = 'date-desc';
+let statsDrillBooks = [];
+let statsDrillTitle = '阅读书目';
+let tagHoldTimer = null;
 
 function load(){
   try{const s=localStorage.getItem(STORE_KEY);if(s)db=JSON.parse(s);}catch(e){}
   if(!db.tagHistory){db.tagHistory={shou:[],gong:[],era:[],plot:[],vibe:[],warn:[]};}
+  if(!db.lastBackupAt) db.lastBackupAt='';
   TAG_CATS.forEach(c=>{if(!db.tagHistory[c.key])db.tagHistory[c.key]=[];});
 }
 function save(){localStorage.setItem(STORE_KEY,JSON.stringify(db));}
 function genId(){return Date.now().toString(36)+Math.random().toString(36).slice(2);}
 function coverColor(title){return COVER_COLORS[(title.charCodeAt(0)||0)%COVER_COLORS.length];}
 function coverText(title){return title.slice(0,4);}
+function escapeHtml(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));}
+function escapeAttr(v){return escapeHtml(v);}
+function getLatestRating(book){
+  const logs=book.readLogs||[];
+  const latest=logs[logs.length-1];
+  return latest&&typeof latest.rating==='number'?latest.rating:null;
+}
+function getLatestDate(book){
+  const logs=book.readLogs||[];
+  return logs.length?(logs[logs.length-1].date||''):'';
+}
+function getBookLogText(log){
+  if(!log) return '';
+  const parts=log.parts||{};
+  const sections=[
+    ['整体感受',parts.overall],
+    ['人物塑造',parts.character],
+    ['情节安排',parts.plot],
+    ['作者评价',parts.author]
+  ].filter(([,v])=>v&&String(v).trim());
+  if(sections.length) return sections.map(([k,v])=>`${k}：${v}`).join('\n');
+  return log.review||'';
+}
+function progressOptions(selected=100){
+  const opts=[];
+  for(let i=100;i>=0;i-=10) opts.push(`<option value="${i}" ${Number(selected)===i?'selected':''}>${i}%</option>`);
+  return opts.join('');
+}
 
 // ═══════════════════════════════════════
 //  NAVIGATION
@@ -616,8 +734,12 @@ function openDetail(id){
   const b=db.books.find(x=>x.id===id);
   if(!b) return;
   const logs=b.readLogs||[];
-  const allTags=Object.entries(b.tags||{}).flatMap(([k,arr])=>arr.map(t=>({t,ci:TAG_CATS.findIndex(c=>c.key===k),label:TAG_CATS.find(c=>c.key===k)?.label})));
-  const tagsHtml=allTags.map(({t,ci})=>`<span class="tag-chip tag-${ci}" style="font-size:12px;padding:4px 12px">${t}</span>`).join('');
+  const tagGroups=TAG_CATS.map((c,ci)=>({c,ci,tags:b.tags?.[c.key]||[]})).filter(g=>g.tags.length);
+  const tagsHtml=tagGroups.map(({c,ci,tags})=>`
+    <div style="margin-bottom:10px">
+      <div style="font-size:11px;color:var(--text3);margin-bottom:6px">${c.label}</div>
+      <div style="display:flex;flex-wrap:wrap;gap:6px">${tags.map(t=>`<span class="tag-chip tag-${ci}" style="font-size:12px;padding:4px 12px">${escapeHtml(t)}</span>`).join('')}</div>
+    </div>`).join('');
   const logsHtml=logs.length?logs.map((l,i)=>`
     <div class="read-log-item">
       <div class="read-log-header">
@@ -625,7 +747,7 @@ function openDetail(id){
         <span class="read-log-date">${l.date||''}</span>
         <span class="read-log-rating">★ ${(l.rating||0).toFixed(1)}</span>
       </div>
-      <div class="read-log-review">${l.review||'无感想记录'}</div>
+      <div class="read-log-review" style="white-space:pre-line">${escapeHtml(getBookLogText(l)||'无感想记录')}</div>
       <button class="read-log-edit" onclick="event.stopPropagation();editLog('${id}',${i})">✏️</button>
     </div>`).join(''):`<div style="color:var(--text3);font-size:13px;text-align:center;padding:16px">暂无阅读记录</div>`;
   const progress=b.progress||0;
@@ -643,7 +765,7 @@ function openDetail(id){
     </div>
     <div class="detail-body">
       ${progress>0&&progress<100?`<div class="detail-section"><div class="detail-section-title">阅读进度</div><div class="status-row"><div class="status-bar-big"><div class="status-fill-big" style="width:${progress}%"></div></div><div class="status-pct">${progress}%</div></div></div>`:''}
-      ${allTags.length?`<div class="detail-section"><div class="detail-section-title">标签</div><div style="display:flex;flex-wrap:wrap;gap:6px">${tagsHtml}</div></div>`:''}
+      ${tagGroups.length?`<div class="detail-section"><div class="detail-section-title">标签</div>${tagsHtml}</div>`:''}
       ${b.summary?`<div class="detail-section"><div class="detail-section-title">简介</div><div style="font-size:13px;color:var(--text2);line-height:1.7">${b.summary}</div></div>`:''}
       <div class="detail-section">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
@@ -678,11 +800,56 @@ function openAddSheet(){
   document.getElementById('f-author').value='';
   document.getElementById('f-platform').value='晋江';
   document.getElementById('f-status').value='done';
-  document.getElementById('f-progress').value='100';
+  document.getElementById('f-progress').innerHTML=progressOptions(100);
   document.getElementById('f-summary').value='';
   renderTagCategories({});
   renderReadLogs([]);
   openSheet('sheet-book');
+}
+
+function openBatchImport(){
+  document.getElementById('batch-text').value='';
+  openSheet('sheet-batch');
+}
+
+function parseBatchLine(line){
+  const clean=line.trim().replace(/^[-*•\d.\s]+/,'').trim();
+  if(!clean) return null;
+  let parts=clean.split(/\s*[|｜,，\t]\s*/).filter(Boolean);
+  if(parts.length>=2) return {title:parts[0].trim(), author:parts.slice(1).join(' ').trim()};
+  const m=clean.match(/^《?(.+?)》?\s+(.{1,30})$/);
+  if(m) return {title:m[1].trim(), author:m[2].trim()};
+  return {title:clean.replace(/[《》]/g,'').trim(), author:''};
+}
+
+function importBatchBooks(){
+  const text=document.getElementById('batch-text').value;
+  const rows=text.split(/\r?\n/).map(parseBatchLine).filter(x=>x&&x.title);
+  if(!rows.length){toast('没有识别到书名');return;}
+  const existing=new Set(db.books.map(b=>b.title.trim().toLowerCase()));
+  let added=0, skipped=0;
+  rows.forEach(row=>{
+    const key=row.title.trim().toLowerCase();
+    if(existing.has(key)){skipped++;return;}
+    existing.add(key);
+    db.books.unshift({
+      id:genId(),
+      title:row.title,
+      author:row.author,
+      platform:'其他',
+      status:'unfiled',
+      progress:0,
+      summary:'',
+      tags:{shou:[],gong:[],era:[],plot:[],vibe:[],warn:[]},
+      readLogs:[],
+      updatedAt:Date.now()
+    });
+    added++;
+  });
+  save();
+  closeSheet('sheet-batch');
+  renderShelf();
+  toast(`已导入 ${added} 本，跳过 ${skipped} 本重复`);
 }
 
 function openEditSheet(id){
@@ -694,7 +861,7 @@ function openEditSheet(id){
   document.getElementById('f-author').value=b.author||'';
   document.getElementById('f-platform').value=b.platform||'晋江';
   document.getElementById('f-status').value=b.status||'done';
-  document.getElementById('f-progress').value=b.progress||100;
+  document.getElementById('f-progress').innerHTML=progressOptions(b.progress??100);
   document.getElementById('f-summary').value=b.summary||'';
   renderTagCategories(b.tags||{});
   renderReadLogs(b.readLogs||[]);
@@ -712,26 +879,52 @@ function renderTagCategories(existing){
   wrap.innerHTML=TAG_CATS.map((c,ci)=>{
     const hist=db.tagHistory[c.key]||[];
     const sel=formTags[c.key]||[];
-    const chipsHtml=hist.map(t=>`<button type="button" class="tag-chip-sel cat-${ci} ${sel.includes(t)?'selected':''}" onclick="toggleTag('${c.key}','${t}',this)">${t}</button>`).join('');
+    const selectedHtml=sel.length?sel.map(t=>`<span class="tag-chip tag-${ci}">${escapeHtml(t)}</span>`).join(''):`<span class="tag-selected-empty">点击输入框选择或新增</span>`;
+    const chipsHtml=hist.map(t=>tagPickerChip(c.key,t,ci)).join('');
     return `<div class="tag-category">
-      <div class="tag-category-label"><span>${c.label}</span><span style="color:var(--text3);font-size:10px">${sel.length?sel.join('、'):''}</span></div>
-      <div class="tag-chips-wrap" id="chips-${c.key}">${chipsHtml}</div>
+      <div class="tag-category-label"><span>${c.label}</span><span style="color:var(--text3);font-size:10px">${sel.length} 个已选</span></div>
+      <div class="tag-selected-row" id="selected-${c.key}">${selectedHtml}</div>
       <div class="tag-add-row">
-        <input class="tag-add-input" id="taginput-${c.key}" placeholder="输入新标签…" onkeydown="if(event.key==='Enter'){addNewTag('${c.key}');event.preventDefault()}">
+        <input class="tag-add-input" id="taginput-${c.key}" placeholder="点这里选择历史标签 / 输入新标签" onfocus="showTagPicker('${c.key}')" onkeydown="if(event.key==='Enter'){addNewTag('${c.key}');event.preventDefault()}">
         <button type="button" class="tag-add-btn" onclick="addNewTag('${c.key}')">添加</button>
+      </div>
+      <div class="tag-picker" id="picker-${c.key}">
+        <div class="tag-picker-hint">点选标签；长按标签可修改或删除</div>
+        <div class="tag-chips-wrap" id="chips-${c.key}">${chipsHtml||'<span class="tag-selected-empty">还没有历史标签</span>'}</div>
       </div>
     </div>`;
   }).join('');
 }
 
-function toggleTag(catKey,tag,el){
+function tagPickerChip(catKey,tag,ci){
+  const selected=(formTags[catKey]||[]).includes(tag);
+  return `<button type="button" class="tag-chip-sel cat-${ci} ${selected?'selected':''}" onclick="toggleTag('${catKey}','${escapeAttr(tag)}')" oncontextmenu="manageTag('${catKey}','${escapeAttr(tag)}');return false" onpointerdown="startTagHold('${catKey}','${escapeAttr(tag)}')" onpointerup="endTagHold()" onpointerleave="endTagHold()">${escapeHtml(tag)}</button>`;
+}
+
+function showTagPicker(catKey){
+  document.querySelectorAll('.tag-picker').forEach(el=>el.classList.remove('show'));
+  document.getElementById('picker-'+catKey)?.classList.add('show');
+}
+
+function rerenderTagCategory(catKey){
+  const ci=TAG_CATS.findIndex(c=>c.key===catKey);
+  const hist=db.tagHistory[catKey]||[];
+  const sel=formTags[catKey]||[];
+  const chips=document.getElementById('chips-'+catKey);
+  const selected=document.getElementById('selected-'+catKey);
+  if(chips) chips.innerHTML=hist.map(t=>tagPickerChip(catKey,t,ci)).join('')||'<span class="tag-selected-empty">还没有历史标签</span>';
+  if(selected) selected.innerHTML=sel.length?sel.map(t=>`<span class="tag-chip tag-${ci}">${escapeHtml(t)}</span>`).join(''):'<span class="tag-selected-empty">点击输入框选择或新增</span>';
+  const label=document.querySelector(`#selected-${catKey}`)?.closest('.tag-category')?.querySelector('.tag-category-label span:last-child');
+  if(label) label.textContent=`${sel.length} 个已选`;
+}
+
+function toggleTag(catKey,tag){
   const arr=formTags[catKey];
   const idx=arr.indexOf(tag);
-  if(idx>-1){arr.splice(idx,1);el.classList.remove('selected');}
-  else{arr.push(tag);el.classList.add('selected');}
-  const cat=TAG_CATS.find(c=>c.key===catKey);
-  const labelEl=el.closest('.tag-category').querySelector('.tag-category-label span:last-child');
-  if(labelEl) labelEl.textContent=arr.length?arr.join('、'):'';
+  if(idx>-1) arr.splice(idx,1);
+  else arr.push(tag);
+  rerenderTagCategory(catKey);
+  showTagPicker(catKey);
 }
 
 function addNewTag(catKey){
@@ -744,12 +937,43 @@ function addNewTag(catKey){
     save();
   }
   if(!formTags[catKey].includes(val)) formTags[catKey].push(val);
-  const ci=TAG_CATS.findIndex(c=>c.key===catKey);
-  const chips=document.getElementById('chips-'+catKey);
-  // re-render chips
-  const hist=db.tagHistory[catKey]||[];
-  const sel=formTags[catKey]||[];
-  chips.innerHTML=hist.map(t=>`<button type="button" class="tag-chip-sel cat-${ci} ${sel.includes(t)?'selected':''}" onclick="toggleTag('${catKey}','${t}',this)">${t}</button>`).join('');
+  rerenderTagCategory(catKey);
+  showTagPicker(catKey);
+}
+
+function startTagHold(catKey,tag){
+  endTagHold();
+  tagHoldTimer=setTimeout(()=>manageTag(catKey,tag),650);
+}
+function endTagHold(){
+  if(tagHoldTimer){clearTimeout(tagHoldTimer);tagHoldTimer=null;}
+}
+function manageTag(catKey,tag){
+  endTagHold();
+  const action=prompt(`管理标签「${tag}」\n输入新名字可重命名；输入 DELETE 删除；取消则不变。`,tag);
+  if(action===null) return;
+  const val=action.trim();
+  if(!val) return;
+  if(val.toUpperCase()==='DELETE'){
+    if(!confirm(`确定删除历史标签「${tag}」？已选中的书籍也会移除这个标签。`)) return;
+    db.tagHistory[catKey]=(db.tagHistory[catKey]||[]).filter(t=>t!==tag);
+    db.books.forEach(b=>{if(b.tags?.[catKey]) b.tags[catKey]=b.tags[catKey].filter(t=>t!==tag);});
+    formTags[catKey]=(formTags[catKey]||[]).filter(t=>t!==tag);
+  } else if(val!==tag){
+    db.tagHistory[catKey]=(db.tagHistory[catKey]||[]).map(t=>t===tag?val:t);
+    if(!db.tagHistory[catKey].includes(val)) db.tagHistory[catKey].push(val);
+    db.books.forEach(b=>{
+      if(!b.tags?.[catKey]) return;
+      b.tags[catKey]=b.tags[catKey].map(t=>t===tag?val:t);
+      b.tags[catKey]=[...new Set(b.tags[catKey])];
+    });
+    formTags[catKey]=(formTags[catKey]||[]).map(t=>t===tag?val:t);
+    formTags[catKey]=[...new Set(formTags[catKey])];
+  }
+  save();
+  rerenderTagCategory(catKey);
+  showTagPicker(catKey);
+  toast('标签已更新');
 }
 
 function renderReadLogs(logs){
@@ -763,17 +987,17 @@ function refreshLogsUI(){
     <div class="read-log-item">
       <div class="read-log-header">
         <span class="read-log-num">第 ${i+1} 刷</span>
-        <span class="read-log-date">${l.date||'未填日期'}</span>
+      <span class="read-log-date">${l.date||'未填日期'}</span>
         <span class="read-log-rating">★ ${(l.rating||0).toFixed(1)}</span>
       </div>
-      <div class="read-log-review" style="font-size:12px">${l.review||'无感想'}</div>
+      <div class="read-log-review" style="font-size:12px;white-space:pre-line">${escapeHtml(getBookLogText(l)||'无感想')}</div>
       <button class="read-log-edit" onclick="editFormLog(${i})">✏️</button>
     </div>`).join('');
 }
 
 function addReadLog(){
   editingLogIdx=null;
-  currentLogDraft={date:new Date().toISOString().slice(0,10),rating:3,review:''};
+  currentLogDraft={date:new Date().toISOString().slice(0,10),rating:3,review:'',parts:{overall:'',character:'',plot:'',author:''}};
   openMiniLog();
 }
 
@@ -798,7 +1022,7 @@ function quickAddLog(bookId){
   editingLogIdx=null;
   const b=db.books.find(x=>x.id===bookId);
   formLogs=[...(b.readLogs||[])];
-  currentLogDraft={date:new Date().toISOString().slice(0,10),rating:3,review:''};
+  currentLogDraft={date:new Date().toISOString().slice(0,10),rating:3,review:'',parts:{overall:'',character:'',plot:'',author:''}};
   openMiniLog(true);
 }
 
@@ -809,7 +1033,11 @@ function openMiniLog(saveToBook=false){
   const sliderVal=Math.round((currentLogDraft.rating||3)*10);
   document.getElementById('log-rating').value=sliderVal;
   document.getElementById('log-rating-num').textContent=(sliderVal/10).toFixed(1);
-  document.getElementById('log-review').value=currentLogDraft.review||'';
+  const parts=currentLogDraft.parts||{};
+  document.getElementById('log-overall').value=parts.overall??currentLogDraft.review??'';
+  document.getElementById('log-character').value=parts.character||'';
+  document.getElementById('log-plot').value=parts.plot||'';
+  document.getElementById('log-author').value=parts.author||'';
   document.getElementById('mini-log-title').textContent=editingLogIdx!==null?'编辑阅读记录':'添加阅读记录';
   updateLogRating();
   document.getElementById('mini-log').classList.add('show');
@@ -840,10 +1068,17 @@ function updateLogRating(){
 
 function saveMiniLog(){
   const r=parseInt(document.getElementById('log-rating').value)/10;
+  const parts={
+    overall:document.getElementById('log-overall').value.trim(),
+    character:document.getElementById('log-character').value.trim(),
+    plot:document.getElementById('log-plot').value.trim(),
+    author:document.getElementById('log-author').value.trim()
+  };
   const log={
     date:document.getElementById('log-date').value,
     rating:r,
-    review:document.getElementById('log-review').value
+    review:parts.overall,
+    parts
   };
   if(editingLogIdx!==null){
     formLogs[editingLogIdx]=log;
@@ -874,7 +1109,7 @@ function saveBook(){
     author:document.getElementById('f-author').value.trim(),
     platform:document.getElementById('f-platform').value,
     status:document.getElementById('f-status').value,
-    progress:parseInt(document.getElementById('f-progress').value)||100,
+    progress:parseInt(document.getElementById('f-progress').value),
     summary:document.getElementById('f-summary').value.trim(),
     tags:{...formTags},
     readLogs:[...formLogs],
@@ -944,58 +1179,146 @@ async function callGemini(prompt){
 // ═══════════════════════════════════════
 function renderStats(){
   const yearSel=document.getElementById('stats-year');
+  const prevYear=yearSel.value||'全部';
   const years=[...new Set(db.books.flatMap(b=>(b.readLogs||[]).map(l=>l.date?.slice(0,4))).filter(Boolean))].sort().reverse();
   if(years.length===0) years.push(new Date().getFullYear().toString());
   yearSel.innerHTML=['全部',...years].map(y=>`<option value="${y}">${y}</option>`).join('');
+  yearSel.value=[...yearSel.options].some(o=>o.value===prevYear)?prevYear:'全部';
   const selYear=yearSel.value||'全部';
 
   let books=db.books;
   let logs=books.flatMap(b=>(b.readLogs||[]).map(l=>({...l,bookId:b.id,title:b.title,author:b.author,tags:b.tags})));
   if(selYear!=='全部') logs=logs.filter(l=>l.date?.startsWith(selYear));
+  const bookIdsInPeriod=new Set(logs.map(l=>l.bookId));
+  const booksInPeriod=selYear==='全部'?books:books.filter(b=>bookIdsInPeriod.has(b.id));
 
   const totalBooks=new Set(logs.map(l=>l.bookId)).size;
   const totalLogs=logs.length;
   const ratings=logs.filter(l=>l.rating).map(l=>l.rating);
   const avgRating=ratings.length?(ratings.reduce((a,b)=>a+b,0)/ratings.length):0;
-  const rereadBooks=db.books.filter(b=>(b.readLogs||[]).length>1).length;
+  const rereadBooks=booksInPeriod.filter(b=>(b.readLogs||[]).length>1).length;
 
   document.getElementById('stats-grid').innerHTML=`
-    <div class="stat-card"><div class="stat-num">${totalBooks}</div><div class="stat-label">阅读书目</div></div>
-    <div class="stat-card"><div class="stat-num">${totalLogs}</div><div class="stat-label">阅读次数</div></div>
+    <div class="stat-card clickable" onclick="showStatsBooks('阅读书目', getStatsBooksForCurrentPeriod())"><div class="stat-num">${totalBooks}</div><div class="stat-label">阅读书目</div></div>
+    <div class="stat-card clickable" onclick="showStatsBooks('阅读次数对应书目', getStatsBooksForCurrentPeriod())"><div class="stat-num">${totalLogs}</div><div class="stat-label">阅读次数</div></div>
     <div class="stat-card"><div class="stat-num">${avgRating?avgRating.toFixed(1):'—'}</div><div class="stat-label">平均评分</div></div>
-    <div class="stat-card"><div class="stat-num">${rereadBooks}</div><div class="stat-label">二刷以上</div></div>`;
+    <div class="stat-card clickable" onclick="showStatsBooks('二刷以上', getStatsBooksForCurrentPeriod().filter(b=>(b.readLogs||[]).length>1))"><div class="stat-num">${rereadBooks}</div><div class="stat-label">二刷以上</div></div>`;
 
   // Tag chart
   const tagFreq={};
   logs.forEach(l=>{
     Object.values(l.tags||{}).flat().forEach(t=>{tagFreq[t]=(tagFreq[t]||0)+1;});
   });
-  renderBarChart('tag-chart',tagFreq,6);
+  renderBarChart('tag-chart',tagFreq,8,false,'tag');
 
   // Author chart
-  const authorFreq={};
-  logs.forEach(l=>{if(l.author)authorFreq[l.author]=(authorFreq[l.author]||0)+1;});
-  renderBarChart('author-chart',authorFreq,5);
+  const authorStats={};
+  logs.forEach(l=>{
+    if(!l.author) return;
+    if(!authorStats[l.author]) authorStats[l.author]={count:0,ratings:[]};
+    authorStats[l.author].count++;
+    if(l.rating) authorStats[l.author].ratings.push(l.rating);
+  });
+  renderBarChart('author-chart',authorStats,8,false,'author');
 
   // Month chart
   const monthFreq={};
   logs.forEach(l=>{if(l.date){const m=l.date.slice(0,7);monthFreq[m]=(monthFreq[m]||0)+1;}});
-  renderBarChart('month-chart',monthFreq,12,true);
+  renderBarChart('month-chart',monthFreq,12,true,'month');
+
+  const kind=document.getElementById('stats-kind')?.value||'all';
+  if(kind==='all') showStatsBooks('阅读书目', booksInPeriod, false);
+  if(kind==='author') showStatsBooks('选择作者查看书目', [], false);
+  if(kind==='tag') showStatsBooks('选择标签查看书目', [], false);
 }
 
-function renderBarChart(id,freq,maxItems,sortByKey=false){
+function renderBarChart(id,freq,maxItems,sortByKey=false,type='plain'){
   const el=document.getElementById(id);
   let entries=Object.entries(freq);
+  entries=entries.map(([k,v])=>{
+    if(typeof v==='number') return [k,{count:v,avg:null}];
+    const avg=v.ratings&&v.ratings.length?(v.ratings.reduce((a,b)=>a+b,0)/v.ratings.length):null;
+    return [k,{count:v.count||0,avg}];
+  });
   if(sortByKey) entries.sort((a,b)=>a[0].localeCompare(b[0]));
-  else entries.sort((a,b)=>b[1]-a[1]);
+  else entries.sort((a,b)=>b[1].count-a[1].count);
   entries=entries.slice(0,maxItems);
   if(!entries.length){el.innerHTML='<div style="color:var(--text3);font-size:12px;text-align:center;padding:8px">暂无数据</div>';return;}
-  const max=Math.max(...entries.map(e=>e[1]));
+  const max=Math.max(...entries.map(e=>e[1].count));
   el.innerHTML=entries.map(([k,v])=>`
-    <div class="bar-row">
+    <div class="bar-row ${type==='author'||type==='tag'||type==='month'?'clickable':''}" ${type==='author'?`onclick="showBooksByAuthor(decodeURIComponent('${encodeURIComponent(k)}'))"`:''} ${type==='tag'?`onclick="showBooksByTag(decodeURIComponent('${encodeURIComponent(k)}'))"`:''} ${type==='month'?`onclick="showBooksByMonth(decodeURIComponent('${encodeURIComponent(k)}'))"`:''}>
       <div class="bar-name" title="${k}">${k}</div>
-      <div class="bar-track"><div class="bar-fill" style="width:${Math.round(v/max*100)}%"><span class="bar-val">${v}</span></div></div>
+      <div class="bar-track"><div class="bar-fill" style="width:${Math.round(v.count/max*100)}%"><span class="bar-val">${v.count}${v.avg?`<span class="bar-meta">均 ${v.avg.toFixed(1)}</span>`:''}</span></div></div>
     </div>`).join('');
+}
+
+function getStatsBooksForCurrentPeriod(){
+  const y=document.getElementById('stats-year')?.value||'全部';
+  if(y==='全部') return [...db.books];
+  const ids=new Set(db.books.flatMap(b=>(b.readLogs||[]).filter(l=>l.date?.startsWith(y)).map(()=>b.id)));
+  return db.books.filter(b=>ids.has(b.id));
+}
+
+function sortBooksForStats(books){
+  const sort=document.getElementById('stats-sort')?.value||'date-desc';
+  const arr=[...books];
+  if(sort==='rating-desc') arr.sort((a,b)=>(getLatestRating(b)??-1)-(getLatestRating(a)??-1));
+  else if(sort==='rating-asc') arr.sort((a,b)=>(getLatestRating(a)??99)-(getLatestRating(b)??99));
+  else if(sort==='title-asc') arr.sort((a,b)=>a.title.localeCompare(b.title,'zh-CN'));
+  else arr.sort((a,b)=>(getLatestDate(b)||'').localeCompare(getLatestDate(a)||''));
+  return arr;
+}
+
+function renderStatsBookCard(b){
+  const rating=getLatestRating(b);
+  const allTags=Object.entries(b.tags||{}).flatMap(([k,arr])=>arr.map(t=>({t,ci:TAG_CATS.findIndex(c=>c.key===k)})));
+  const tagsHtml=allTags.slice(0,3).map(({t,ci})=>`<span class="tag-chip tag-${ci}">${escapeHtml(t)}</span>`).join('');
+  return `<div class="book-card fade-in" onclick="openDetail('${b.id}')">
+    <div class="book-cover" style="background:${coverColor(b.title)}">${escapeHtml(coverText(b.title))}</div>
+    <div class="book-info">
+      <div class="book-title-row">
+        <div class="book-title">${escapeHtml(b.title)}</div>
+        ${rating!==null?`<span class="book-rating-badge">★ ${rating.toFixed(1)}</span>`:''}
+      </div>
+      <div class="book-author">${escapeHtml(b.author||'未知作者')} · ${escapeHtml(b.platform||'')}</div>
+      <div class="book-tags-row">${tagsHtml}</div>
+      <div class="book-meta">
+        <span class="badge badge-pink">${STATUS_MAP[b.status]||b.status}</span>
+        ${(b.readLogs||[]).length>1?`<span class="read-count-badge">${(b.readLogs||[]).length}刷</span>`:''}
+        <span>${getLatestDate(b)||''}</span>
+      </div>
+    </div>
+  </div>`;
+}
+
+function showStatsBooks(title,books,scroll=true){
+  statsDrillTitle=title;
+  statsDrillBooks=books||[];
+  renderStatsDrill();
+  if(scroll) document.getElementById('stats-drill-section')?.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function renderStatsDrill(){
+  const section=document.getElementById('stats-drill-section');
+  const list=document.getElementById('stats-drill-list');
+  const title=document.getElementById('stats-drill-title');
+  if(!section||!list||!title) return;
+  section.style.display='block';
+  title.textContent=`${statsDrillTitle}（${statsDrillBooks.length} 本）`;
+  const books=sortBooksForStats(statsDrillBooks);
+  list.innerHTML=books.length?books.map(renderStatsBookCard).join(''):'<div style="color:var(--text3);font-size:12px;text-align:center;padding:8px">点击作者、标签或统计卡片查看书目</div>';
+}
+
+function showBooksByAuthor(author){
+  showStatsBooks(`作者：${author}`, getStatsBooksForCurrentPeriod().filter(b=>b.author===author));
+}
+
+function showBooksByTag(tag){
+  showStatsBooks(`标签：${tag}`, getStatsBooksForCurrentPeriod().filter(b=>Object.values(b.tags||{}).some(arr=>arr.includes(tag))));
+}
+
+function showBooksByMonth(month){
+  showStatsBooks(`月份：${month}`, db.books.filter(b=>(b.readLogs||[]).some(l=>l.date?.startsWith(month))));
 }
 
 // ═══════════════════════════════════════
@@ -1004,6 +1327,8 @@ function renderBarChart(id,freq,maxItems,sortByKey=false){
 function renderSettings(){
   const keyEl=document.getElementById('api-key-display');
   keyEl.textContent=db.apiKey?db.apiKey.slice(0,8)+'…（已设置）':'未设置';
+  const backupEl=document.getElementById('backup-display');
+  if(backupEl) backupEl.textContent=db.lastBackupAt?`上次备份：${db.lastBackupAt.slice(0,10)}`:'尚未备份';
 }
 
 function editApiKey(){
@@ -1015,7 +1340,7 @@ function editApiKey(){
   toast('API Key 已保存');
 }
 
-function exportData(){
+async function exportData(){
   const backup={
     app:'maboroshi',
     version:APP_VERSION,
@@ -1026,14 +1351,32 @@ function exportData(){
     }
   };
   const data=JSON.stringify(backup,null,2);
+  const fileName=`maboroshi_backup_${new Date().toISOString().slice(0,10)}.json`;
   const blob=new Blob([data],{type:'application/json'});
-  const url=URL.createObjectURL(blob);
-  const a=document.createElement('a');
-  a.href=url;
-  a.download=`maboroshi_backup_${new Date().toISOString().slice(0,10)}.json`;
-  a.click();
-  URL.revokeObjectURL(url);
-  toast('导出成功（不含 API Key）');
+  try{
+    if(window.showSaveFilePicker){
+      const handle=await showSaveFilePicker({
+        suggestedName:fileName,
+        types:[{description:'Maboroshi JSON Backup',accept:{'application/json':['.json']}}]
+      });
+      const writable=await handle.createWritable();
+      await writable.write(blob);
+      await writable.close();
+    } else {
+      const url=URL.createObjectURL(blob);
+      const a=document.createElement('a');
+      a.href=url;
+      a.download=fileName;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+    db.lastBackupAt=new Date().toISOString();
+    save();
+    renderSettings();
+    toast('导出成功（不含 API Key）');
+  }catch(e){
+    if(e?.name!=='AbortError') toast('导出失败，请重试');
+  }
 }
 
 function importData(){document.getElementById('import-file').click();}
@@ -1050,7 +1393,8 @@ function handleImport(e){
       db={
         books:data.books||[],
         tagHistory:data.tagHistory||{shou:[],gong:[],era:[],plot:[],vibe:[],warn:[]},
-        apiKey:db.apiKey||''
+        apiKey:db.apiKey||'',
+        lastBackupAt:db.lastBackupAt||''
       };
       TAG_CATS.forEach(c=>{if(!db.tagHistory[c.key])db.tagHistory[c.key]=[];});
       save();
@@ -1064,7 +1408,7 @@ function handleImport(e){
 
 function clearData(){
   if(!confirm('确定清空所有数据？此操作不可撤销！')) return;
-  db={books:[],tagHistory:{shou:[],gong:[],era:[],plot:[],vibe:[],warn:[]},apiKey:db.apiKey};
+  db={books:[],tagHistory:{shou:[],gong:[],era:[],plot:[],vibe:[],warn:[]},apiKey:db.apiKey,lastBackupAt:db.lastBackupAt||''};
   save();
   renderShelf();
   toast('已清空');
