@@ -88,11 +88,18 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
 .filter-section{background:var(--card);border:1px solid var(--border);border-radius:var(--r2);padding:12px;margin-bottom:12px}
 .filter-section-title{font-size:12px;color:var(--text2);font-weight:600;margin-bottom:8px}
 .filter-mode-title{font-size:11px;color:var(--text3);margin:8px 0 6px}
+.filter-sort-row{padding:0 16px 8px;display:none}
+.filter-sort-row.show{display:block}
 
 /* ── BOOK CARDS ── */
 .book-list{padding:0 16px;display:flex;flex-direction:column;gap:12px}
 .book-card{background:var(--card);border-radius:var(--r);border:1px solid var(--border);padding:16px;box-shadow:var(--shadow);display:flex;gap:14px;cursor:pointer;transition:box-shadow 0.2s}
 .book-card:active{box-shadow:var(--shadow2)}
+.book-list.view-diary .book-card{position:relative;border-style:dashed;background:linear-gradient(135deg,#fff 0%,#fff8f3 100%);box-shadow:0 4px 18px rgba(232,130,159,0.12);transform:rotate(-0.35deg)}
+.book-list.view-diary .book-card:nth-child(even){transform:rotate(0.3deg)}
+.book-list.view-diary .book-card::before{content:'memo';position:absolute;right:16px;top:8px;font-family:'Noto Serif SC',serif;font-size:10px;color:#e8a07a;opacity:.55}
+.book-list.view-magic .book-card{background:linear-gradient(140deg,#fff 0%,#f8f1ff 55%,#fff8f3 100%);border-color:#ead7f6;box-shadow:0 6px 22px rgba(150,120,210,0.13)}
+.book-list.view-magic .book-cover{border-radius:10px 4px 10px 4px}
 .book-cover{width:52px;height:70px;border-radius:8px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;text-align:center;line-height:1.3;padding:4px;overflow:hidden}
 .book-info{flex:1;min-width:0}
 .book-title-row{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:3px}
@@ -253,6 +260,9 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
 .stat-list-name{font-size:13px;color:var(--text);font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .stat-list-meta{font-size:11px;color:var(--text3);margin-top:2px}
 .stat-list-num{font-size:12px;color:var(--pink2);font-weight:700;white-space:nowrap}
+.tag-orbit{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.tag-ball{border:none;border-radius:999px;min-width:34px;min-height:34px;padding:7px 10px;font-size:11px;color:#6b4b5c;background:var(--pink3);box-shadow:0 4px 12px rgba(232,130,159,.16);cursor:pointer}
+.tag-ball:nth-child(3n){background:#e8f4ee;color:#4a9966}.tag-ball:nth-child(3n+1){background:#e8f0fe;color:#4a6eb0}.tag-ball:nth-child(3n+2){background:#fef3e2;color:#b07820}
 .stats-modal{position:fixed;inset:0;background:var(--bg2);z-index:203;transform:translateY(100%);transition:transform 0.3s cubic-bezier(0.32,0.72,0,1);display:flex;flex-direction:column}
 .stats-modal.show{transform:translateY(0)}
 .stats-modal-header{padding:18px 18px 12px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:12px}
@@ -262,6 +272,16 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
 .stats-modal-controls{display:flex;gap:8px;margin-bottom:12px;overflow-x:auto}
 .stats-modal-controls .form-select{width:auto;min-width:112px;padding:8px 30px 8px 10px;font-size:12px}
 .stats-close{width:36px;height:36px;border:none;border-radius:50%;background:var(--pink3);color:var(--pink2);font-size:20px;cursor:pointer;flex-shrink:0}
+.encounter-hero{margin:0 16px 14px;padding:18px;border-radius:20px;background:linear-gradient(145deg,#fce8f0,#fff8f3 55%,#e8f0fe);border:1px solid var(--border);box-shadow:var(--shadow2)}
+.encounter-title{font-family:'Noto Serif SC',serif;font-size:22px;font-weight:700;color:var(--text)}
+.encounter-sub{font-size:12px;color:var(--text3);line-height:1.7;margin-top:6px}
+.encounter-wrap{padding:0 16px 24px;display:flex;flex-direction:column;gap:14px}
+.encounter-section{background:rgba(255,255,255,.78);border:1px solid var(--border);border-radius:18px;padding:14px;box-shadow:var(--shadow)}
+.encounter-section-title{font-size:13px;color:var(--text2);font-weight:700;margin-bottom:10px}
+.encounter-note{font-size:12px;color:var(--text3);line-height:1.7;margin-top:8px}
+.segmented{display:flex;gap:6px;background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:4px}
+.segmented button{flex:1;border:none;border-radius:9px;padding:8px 6px;background:transparent;color:var(--text2);font-size:12px}
+.segmented button.active{background:var(--pink2);color:white}
 
 .fade-in{animation:fadeIn 0.3s ease}
 @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
@@ -301,6 +321,16 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
         </div>
       </div>
       <div class="filter-summary" id="filter-summary"></div>
+      <div class="filter-sort-row" id="filter-sort-row">
+        <select class="form-select" id="shelf-sort" onchange="renderShelf()">
+          <option value="updated-desc">最近更新</option>
+          <option value="rating-desc">评分高到低</option>
+          <option value="rating-asc">评分低到高</option>
+          <option value="year-desc">作品年代新到旧</option>
+          <option value="year-asc">作品年代旧到新</option>
+          <option value="title-asc">书名 A-Z</option>
+        </select>
+      </div>
       <div class="filter-row" id="filter-row">
         <button class="filter-pill active" onclick="setFilter('all',this)">全部</button>
         <button class="filter-pill" onclick="setFilter('reading',this)">在读</button>
@@ -310,6 +340,22 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
         <button class="filter-pill" onclick="setFilter('unfiled',this)">未整理</button>
       </div>
       <div class="book-list" id="book-list"></div>
+    </div>
+
+    <!-- ═══ PAGE: ENCOUNTER ═══ -->
+    <div class="page" id="page-encounter">
+      <div class="page-header">
+        <div>
+          <div class="page-title serif">偶　遇</div>
+          <div class="page-subtitle">和旧日阅读擦肩而过</div>
+        </div>
+        <button class="btn-icon" onclick="renderEncounter()">↻</button>
+      </div>
+      <div class="encounter-hero">
+        <div class="encounter-title">今天会遇见哪一本？</div>
+        <div class="encounter-sub">从往年今日、随机书、作者和标签里翻出一些旧时刻。每次进来都会重新洗牌。</div>
+      </div>
+      <div class="encounter-wrap" id="encounter-content"></div>
     </div>
 
     <!-- ═══ PAGE: STATS ═══ -->
@@ -408,6 +454,22 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
           </div>
           <span class="settings-arrow">›</span>
         </div>
+        <div class="settings-item" style="cursor:default">
+          <div class="settings-item-left" style="width:100%;display:block">
+            <div class="settings-item-title" style="margin-bottom:8px">书架呈现形式</div>
+            <div class="segmented" id="shelf-view-control"></div>
+          </div>
+        </div>
+        <div class="settings-item" onclick="openTagManager()">
+          <div class="settings-item-left">
+            <div class="settings-item-icon" style="background:#e8f4ee">🏷️</div>
+            <div>
+              <div class="settings-item-title">管理历史标签</div>
+              <div class="settings-item-sub">统一修改或删除标签</div>
+            </div>
+          </div>
+          <span class="settings-arrow">›</span>
+        </div>
         <div class="settings-item" onclick="clearData()">
           <div class="settings-item-left">
             <div class="settings-item-icon" style="background:#fdecea">🗑️</div>
@@ -422,7 +484,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
           <div class="settings-item-left">
             <div class="settings-item-icon" style="background:#e8f0fe">ℹ️</div>
             <div>
-              <div class="settings-item-title">幻 maboroshi v2.3</div>
+              <div class="settings-item-title">幻 maboroshi v2.4</div>
               <div class="settings-item-sub">数据和密码均存储于本地</div>
             </div>
           </div>
@@ -442,6 +504,10 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
     <button class="nav-item" id="nav-stats" onclick="showPage('stats')">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
       <span>统计</span>
+    </button>
+    <button class="nav-item" id="nav-encounter" onclick="showPage('encounter')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 3l2.2 5.2L20 10l-4.5 3.7L16.8 20 12 16.7 7.2 20l1.3-6.3L4 10l5.8-1.8L12 3z"/></svg>
+      <span>偶遇</span>
     </button>
   </nav>
 
@@ -481,6 +547,16 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
     <div class="stats-modal-controls" id="stats-modal-controls"></div>
     <div id="stats-modal-content"></div>
   </div>
+</div>
+
+<!-- ═══ TAG MANAGER SHEET ═══ -->
+<div class="sheet" id="sheet-tag-manager">
+  <div class="sheet-handle"></div>
+  <div class="sheet-header">
+    <span class="sheet-title">管理历史标签</span>
+    <button class="sheet-close" onclick="closeSheet('sheet-tag-manager')">×</button>
+  </div>
+  <div class="sheet-body" id="tag-manager-body"></div>
 </div>
 
 <!-- ═══ BATCH IMPORT SHEET ═══ -->
@@ -626,7 +702,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
 // ═══════════════════════════════════════
 //  DATA LAYER
 // ═══════════════════════════════════════
-const APP_VERSION = '2.3.0';
+const APP_VERSION = '2.4.0';
 const STORE_KEY = 'shuji_v1';
 const LOCK_KEY = 'maboroshi_lock_v2';
 const TAG_CATS = [
@@ -643,7 +719,7 @@ const DEFAULT_TAG_HISTORY = {shou:[],gong:[],era:[],plot:[],vibe:[],warn:[]};
 const COVER_COLORS = ['#f2a8c4','#f5c4a1','#a8d5b5','#a8c4d5','#c4a8d5','#d5c4a8','#d5a8a8'];
 const PLATFORMS = ['晋江','长佩','长佩旧站','废文','其他'];
 
-let db = {books:[], tagHistory:{...DEFAULT_TAG_HISTORY}, apiKey:'', lastBackupAt:''};
+let db = {books:[], tagHistory:{...DEFAULT_TAG_HISTORY}, apiKey:'', lastBackupAt:'', settings:{shelfView:'list'}};
 let currentFilter = 'all';
 let editingBookId = null;
 let editingLogIdx = null;
@@ -661,6 +737,8 @@ function load(){
   try{const s=localStorage.getItem(STORE_KEY);if(s)db=JSON.parse(s);}catch(e){}
   if(!db.tagHistory){db.tagHistory={shou:[],gong:[],era:[],plot:[],vibe:[],warn:[]};}
   if(!db.lastBackupAt) db.lastBackupAt='';
+  if(!db.settings) db.settings={shelfView:'list'};
+  if(!db.settings.shelfView) db.settings.shelfView='list';
   TAG_CATS.forEach(c=>{if(!db.tagHistory[c.key])db.tagHistory[c.key]=[];});
 }
 function save(){localStorage.setItem(STORE_KEY,JSON.stringify(db));}
@@ -725,6 +803,7 @@ function showPage(p, opts={}){
   if(p==='stats') renderStats();
   if(p==='shelf') renderShelf();
   if(p==='settings') renderSettings();
+  if(p==='encounter') renderEncounter();
   window.scrollTo&&document.getElementById('main').scrollTo(0,0);
   if(opts.pushState!==false) pushAppState({type:'page',page:p});
 }
@@ -804,7 +883,9 @@ function renderShelf(){
            tags.includes(q);
   });
   books=applyShelfFilterToBooks(books);
+  books=sortShelfBooks(books);
   const list=document.getElementById('book-list');
+  list.className=`book-list view-${db.settings?.shelfView||'list'}`;
   const sub=document.getElementById('shelf-subtitle');
   const fc=filterCount();
   sub.textContent=`共 ${db.books.length} 本 · 已读 ${db.books.filter(b=>b.status==='done').length} 本${fc?` · 筛选中 ${books.length} 本`:''}`;
@@ -841,6 +922,18 @@ function renderShelf(){
   }).join('');
 }
 
+function sortShelfBooks(books){
+  const sort=document.getElementById('shelf-sort')?.value||'updated-desc';
+  const arr=[...books];
+  if(sort==='rating-desc') arr.sort((a,b)=>(getLatestRating(b)??-1)-(getLatestRating(a)??-1));
+  else if(sort==='rating-asc') arr.sort((a,b)=>(getLatestRating(a)??99)-(getLatestRating(b)??99));
+  else if(sort==='year-desc') arr.sort((a,b)=>(parseInt(b.finishYear)||0)-(parseInt(a.finishYear)||0));
+  else if(sort==='year-asc') arr.sort((a,b)=>(parseInt(a.finishYear)||9999)-(parseInt(b.finishYear)||9999));
+  else if(sort==='title-asc') arr.sort((a,b)=>a.title.localeCompare(b.title,'zh-CN'));
+  else arr.sort((a,b)=>(b.updatedAt||0)-(a.updatedAt||0));
+  return arr;
+}
+
 function applyShelfFilterToBooks(books){
   const f=shelfFilters;
   return books.filter(b=>{
@@ -864,17 +957,28 @@ function applyShelfFilterToBooks(books){
 
 function renderFilterSummary(){
   const el=document.getElementById('filter-summary');
+  const sortRow=document.getElementById('filter-sort-row');
   if(!el) return;
   const chips=[];
-  shelfFilters.authorMust?.forEach(a=>chips.push(`作者必须：${a}`));
-  shelfFilters.authorAny?.forEach(a=>chips.push(`作者可选：${a}`));
+  shelfFilters.authorMust?.forEach(a=>chips.push({label:`作者必须：${a}`,group:'authorMust',value:a}));
+  shelfFilters.authorAny?.forEach(a=>chips.push({label:`作者可选：${a}`,group:'authorAny',value:a}));
   TAG_CATS.filter(c=>c.key!=='warn').forEach(c=>{
-    (shelfFilters.tagsMust?.[c.key]||[]).forEach(t=>chips.push(`${c.label}必须：${t}`));
-    (shelfFilters.tagsAny?.[c.key]||[]).forEach(t=>chips.push(`${c.label}可选：${t}`));
+    (shelfFilters.tagsMust?.[c.key]||[]).forEach(t=>chips.push({label:`${c.label}必须：${t}`,group:`must:${c.key}`,value:t}));
+    (shelfFilters.tagsAny?.[c.key]||[]).forEach(t=>chips.push({label:`${c.label}可选：${t}`,group:`any:${c.key}`,value:t}));
   });
-  shelfFilters.warnExclude?.forEach(t=>chips.push(`排除：${t}`));
+  shelfFilters.warnExclude?.forEach(t=>chips.push({label:`排除：${t}`,group:'warnExclude',value:t}));
   el.classList.toggle('show',chips.length>0);
-  el.innerHTML=chips.map(t=>`<span class="tag-chip tag-4">${escapeHtml(t)}</span>`).join('');
+  if(sortRow) sortRow.classList.toggle('show',chips.length>0);
+  el.innerHTML=chips.map(c=>`<button class="tag-chip tag-4" style="border:none" onclick="removeShelfFilter('${c.group}',decodeURIComponent('${encodeURIComponent(c.value)}'))">${escapeHtml(c.label)} ×</button>`).join('');
+}
+
+function removeShelfFilter(group,value){
+  draftShelfFilters=cloneFilters(shelfFilters);
+  const arr=getDraftFilterArray(group);
+  const idx=arr.indexOf(value);
+  if(idx>-1) arr.splice(idx,1);
+  shelfFilters=cloneFilters(draftShelfFilters);
+  renderShelf();
 }
 
 function openShelfFilter(){
@@ -1439,6 +1543,8 @@ function renderStats(){
     if(l.rating) authorStats[l.author].ratings.push(l.rating);
   });
   renderStatPreview('author-chart',normalizeStats(authorStats).sort((a,b)=>(b.avg??0)-(a.avg??0)||b.count-a.count||a.name.localeCompare(b.name,'zh-CN')),'author');
+  const authorTitle=document.querySelector('#author-chart')?.previousElementSibling;
+  if(authorTitle) authorTitle.textContent=`✍️ 最爱作者（${Object.keys(authorStats).length} 位）`;
 
   // Month chart
   const monthFreq={};
@@ -1459,6 +1565,11 @@ function renderStatPreview(id,items,type){
   const top=items.slice(0,5);
   if(!top.length){el.innerHTML='<div style="color:var(--text3);font-size:12px;text-align:center;padding:8px">暂无数据</div>';return;}
   const allTitle=type==='author'?'全部作者':type==='tag'?'全部标签':'全部月份';
+  if(type==='tag'){
+    el.innerHTML=`<div class="tag-orbit">${top.map(item=>`<button class="tag-ball" onclick="openStatsBooksBy('tag',decodeURIComponent('${encodeURIComponent(item.name)}'))">${escapeHtml(item.name)}<br>${item.count}</button>`).join('')}</div>`+
+      `<div class="stat-list-item" style="margin-top:8px" onclick="openStatsIndex('tag')"><div class="stat-list-main"><div class="stat-list-name">${allTitle}</div><div class="stat-list-meta">查看完整列表与排序</div></div><div class="stat-list-num">›</div></div>`;
+    return;
+  }
   el.innerHTML=top.map(item=>statListItem(item,type)).join('')+
     `<div class="stat-list-item" onclick="openStatsIndex('${type}')"><div class="stat-list-main"><div class="stat-list-name">${allTitle}</div><div class="stat-list-meta">查看完整列表与排序</div></div><div class="stat-list-num">›</div></div>`;
 }
@@ -1583,6 +1694,54 @@ function openStatsBooksBy(type,value){
   else openStatsBooks(`月份：${value}`, db.books.filter(b=>(b.readLogs||[]).some(l=>l.date?.startsWith(value))));
 }
 
+// ═══════════════════════════════════════
+//  ENCOUNTER
+// ═══════════════════════════════════════
+function sampleArray(arr,n,usedIds=new Set()){
+  const pool=[...arr].filter(x=>!x.id||!usedIds.has(x.id)).sort(()=>Math.random()-0.5);
+  const picked=pool.slice(0,n);
+  picked.forEach(x=>{if(x.id) usedIds.add(x.id);});
+  return picked;
+}
+
+function encounterBookCard(b,note=''){
+  if(!b) return '';
+  return `<div>${renderStatsBookCard(b)}${note?`<div class="encounter-note">${escapeHtml(note)}</div>`:''}</div>`;
+}
+
+function renderEncounter(){
+  const wrap=document.getElementById('encounter-content');
+  if(!wrap) return;
+  const used=new Set();
+  const today=new Date().toISOString().slice(5,10);
+  const all=[...db.books];
+  const todayBooks=all.filter(b=>(b.readLogs||[]).some(l=>l.date&&l.date.slice(5,10)===today));
+  const randomBooks=sampleArray(all,3,used);
+  const authors=uniqueList(all.map(b=>b.author).filter(Boolean)).sort(()=>Math.random()-0.5).slice(0,2);
+  const tagSections=TAG_CATS.map(c=>{
+    const tags=uniqueList(all.flatMap(b=>b.tags?.[c.key]||[]));
+    const tag=tags[Math.floor(Math.random()*tags.length)];
+    if(!tag) return '';
+    const books=sampleArray(all.filter(b=>(b.tags?.[c.key]||[]).includes(tag)),2,used);
+    if(!books.length) return '';
+    return `<div class="encounter-section"><div class="encounter-section-title">${c.label} · ${escapeHtml(tag)}</div>${books.map(b=>encounterBookCard(b,`你还记着这本「${tag}」的书吗？曾经的感动是否还在。`)).join('')}</div>`;
+  }).filter(Boolean).join('');
+  const authorHtml=authors.map(a=>{
+    const books=all.filter(b=>b.author===a);
+    return `<div class="encounter-section"><div class="encounter-section-title">作者 · ${escapeHtml(a)}</div><div class="encounter-note">她写过 ${books.length} 本，你曾经给过的平均分是 ${avgBooksRating(books)}。</div>${sampleArray(books,2,used).map(b=>encounterBookCard(b)).join('')}</div>`;
+  }).join('');
+  wrap.innerHTML=`
+    <div class="encounter-section"><div class="encounter-section-title">往年今日</div>${todayBooks.length?sampleArray(todayBooks,3,used).map(b=>encounterBookCard(b,'某一年的今天，你和它见过面。')).join(''):'<div class="encounter-note">今天暂时没有往年记录，先让随机回忆替你开门。</div>'}</div>
+    <div class="encounter-section"><div class="encounter-section-title">随机翻到的三本</div>${randomBooks.length?randomBooks.map(b=>encounterBookCard(b,'如果今天重读一段，会不会还是当年的心情？')).join(''):'<div class="encounter-note">书架还空着，等你慢慢填满。</div>'}</div>
+    ${authorHtml}
+    ${tagSections}`;
+}
+
+function avgBooksRating(books){
+  const rs=books.map(getLatestRating).filter(v=>typeof v==='number');
+  return rs.length?(rs.reduce((a,b)=>a+b,0)/rs.length).toFixed(1):'暂无';
+}
+
 function renderStatsModal(){
   const controls=document.getElementById('stats-modal-controls');
   const content=document.getElementById('stats-modal-content');
@@ -1619,6 +1778,34 @@ function renderSettings(){
   keyEl.textContent=db.apiKey?db.apiKey.slice(0,8)+'…（已设置）':'未设置';
   const backupEl=document.getElementById('backup-display');
   if(backupEl) backupEl.textContent=db.lastBackupAt?`上次备份：${db.lastBackupAt.slice(0,10)}`:'尚未备份';
+  const viewEl=document.getElementById('shelf-view-control');
+  if(viewEl){
+    const v=db.settings?.shelfView||'list';
+    viewEl.innerHTML=[
+      ['list','列表'],
+      ['diary','手账'],
+      ['magic','书页']
+    ].map(([key,label])=>`<button class="${v===key?'active':''}" onclick="setShelfView('${key}')">${label}</button>`).join('');
+  }
+}
+
+function setShelfView(view){
+  db.settings=db.settings||{};
+  db.settings.shelfView=view;
+  save();
+  renderSettings();
+  renderShelf();
+  toast('书架样式已更新');
+}
+
+function openTagManager(){
+  renderTagManager();
+  openSheet('sheet-tag-manager');
+}
+
+function renderTagManager(){
+  const body=document.getElementById('tag-manager-body');
+  body.innerHTML=TAG_CATS.map(c=>`<div class="filter-section"><div class="filter-section-title">${c.label}</div><div class="tag-chips-wrap">${(db.tagHistory[c.key]||[]).map(t=>`<button class="tag-chip-sel" onclick="manageTag('${c.key}',decodeURIComponent('${encodeURIComponent(t)}'));renderTagManager()">${escapeHtml(t)}</button>`).join('')||'<span class="tag-selected-empty">暂无标签</span>'}</div></div>`).join('');
 }
 
 function editApiKey(){
