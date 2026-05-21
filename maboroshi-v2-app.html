@@ -100,13 +100,18 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
 .book-list.view-diary .book-card:nth-child(even){transform:rotate(0.3deg)}
 .book-list.view-diary .book-card::before{content:'';position:absolute;left:-9px;top:13px;width:18px;height:34px;border-radius:9px;background:rgba(255,255,255,.75);border:1px solid #efd4c4;box-shadow:0 42px 0 rgba(255,255,255,.75),0 84px 0 rgba(255,255,255,.75)}
 .book-list.view-diary .book-card::after{content:'読完';position:absolute;right:18px;bottom:10px;background:#f6b5c9;color:white;font-size:10px;padding:3px 10px;border-radius:3px;transform:rotate(-2deg);opacity:.82}
-.book-list.view-diary .book-cover{box-shadow:3px 4px 0 rgba(232,130,159,.18);border:3px solid rgba(255,255,255,.7)}
+.book-list.view-diary .book-cover,.book-list.view-diary .book-cover-art{box-shadow:3px 4px 0 rgba(232,130,159,.18);border:3px solid rgba(255,255,255,.7)}
 .book-list.view-magic{padding-top:10px}
 .book-list.view-magic .book-card{position:relative;background:linear-gradient(140deg,#fffaf1 0%,#f7efff 58%,#fff8f3 100%);border-color:#dcc6ef;box-shadow:0 8px 26px rgba(103,83,150,0.18);border-radius:18px}
 .book-list.view-magic .book-card::before{content:'☾';position:absolute;right:16px;top:8px;color:#8e73bd;font-size:18px;opacity:.65}
 .book-list.view-magic .book-card::after{content:'✦';position:absolute;right:40px;top:20px;color:#e6b84a;font-size:12px;opacity:.7}
-.book-list.view-magic .book-cover{border-radius:16px 16px 5px 5px;background-image:linear-gradient(180deg,rgba(255,255,255,.25),rgba(0,0,0,.04));box-shadow:inset 0 0 0 2px rgba(255,255,255,.35),0 5px 12px rgba(103,83,150,.18)}
+.book-list.view-magic .book-cover,.book-list.view-magic .book-cover-art{border-radius:16px 16px 5px 5px;box-shadow:inset 0 0 0 2px rgba(255,255,255,.35),0 5px 12px rgba(103,83,150,.18)}
 .book-cover{width:52px;height:70px;border-radius:8px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;text-align:center;line-height:1.3;padding:4px;overflow:hidden}
+.book-cover-art{position:relative;width:62px;height:84px;border-radius:10px;flex-shrink:0;display:flex;align-items:flex-end;justify-content:center;color:#fff;text-align:center;line-height:1.25;padding:8px 5px;font-size:11px;font-weight:700;overflow:hidden;box-shadow:0 4px 14px rgba(0,0,0,.13)}
+.book-cover-art::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 32% 25%,rgba(255,255,255,.65),transparent 18%),radial-gradient(circle at 72% 64%,rgba(255,255,255,.28),transparent 22%),linear-gradient(165deg,transparent 0 55%,rgba(255,255,255,.22) 56% 58%,transparent 59%);opacity:.9}
+.book-cover-art::after{content:attr(data-mark);position:absolute;top:8px;right:8px;font-size:17px;color:rgba(255,255,255,.78);font-weight:400}
+.book-cover-title{position:relative;z-index:1;text-shadow:0 1px 4px rgba(0,0,0,.22)}
+.book-quote{font-size:12px;color:var(--text2);line-height:1.55;margin:4px 0 7px;padding-left:8px;border-left:2px solid rgba(232,130,159,.28);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .book-info{flex:1;min-width:0}
 .book-title-row{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:3px}
 .book-title{font-family:'Noto Serif SC',serif;font-size:15px;font-weight:600;color:var(--text);line-height:1.3;flex:1}
@@ -506,7 +511,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
           <div class="settings-item-left">
             <div class="settings-item-icon" style="background:#e8f0fe">ℹ️</div>
             <div>
-              <div class="settings-item-title">幻 maboroshi v2.6</div>
+              <div class="settings-item-title">幻 maboroshi v2.7</div>
               <div class="settings-item-sub">数据和密码均存储于本地</div>
             </div>
           </div>
@@ -724,7 +729,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
 // ═══════════════════════════════════════
 //  DATA LAYER
 // ═══════════════════════════════════════
-const APP_VERSION = '2.6.0';
+const APP_VERSION = '2.7.0';
 const STORE_KEY = 'shuji_v1';
 const LOCK_KEY = 'maboroshi_lock_v2';
 const TAG_CATS = [
@@ -768,6 +773,26 @@ function save(){localStorage.setItem(STORE_KEY,JSON.stringify(db));}
 function genId(){return Date.now().toString(36)+Math.random().toString(36).slice(2);}
 function coverColor(title){return COVER_COLORS[(title.charCodeAt(0)||0)%COVER_COLORS.length];}
 function coverText(title){return title.slice(0,4);}
+function titleSeed(title){return [...String(title||'')].reduce((a,c)=>a+c.charCodeAt(0),0);}
+function coverStyle(title){
+  const palettes=[
+    ['#f2a8c4','#f7d98b','#a8c4d5','✦'],
+    ['#8e73bd','#5f7fb3','#f5c4a1','☾'],
+    ['#a8d5b5','#70a9a1','#f2a8c4','✿'],
+    ['#f5c4a1','#e8829f','#a8c4d5','♡'],
+    ['#6f87c8','#b9a7e8','#f7d98b','★'],
+    ['#d8a7b1','#f1d6a8','#97b8a6','✧']
+  ];
+  const p=palettes[titleSeed(title)%palettes.length];
+  return {style:`background:linear-gradient(145deg,${p[0]},${p[1]} 58%,${p[2]});`,mark:p[3]};
+}
+function getLatestReviewExcerpt(book){
+  const logs=book.readLogs||[];
+  const latest=logs[logs.length-1];
+  const text=getBookLogText(latest);
+  if(text) return text.replace(/\n/g,' ').slice(0,56);
+  return book.summary?book.summary.slice(0,56):'';
+}
 function escapeHtml(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));}
 function escapeAttr(v){return escapeHtml(v);}
 function getLatestRating(book){
@@ -930,32 +955,37 @@ function renderShelf(){
     list.innerHTML=`<div class="empty-state"><div class="empty-icon">📚</div><div class="empty-text">${q?'没有找到相关书籍':'还没有书籍记录'}</div><div class="empty-sub">${q?'换个关键词试试':'点击右下角 ＋ 添加第一本'}</div></div>`;
     return;
   }
-  list.innerHTML=books.map(b=>{
-    const logs=b.readLogs||[];
-    const latestLog=logs[logs.length-1];
-    const rating=latestLog?latestLog.rating:null;
-    const allTags=Object.entries(b.tags||{}).flatMap(([k,arr])=>arr.map(t=>({t,ci:TAG_CATS.findIndex(c=>c.key===k)})));
-    const tagsHtml=allTags.slice(0,4).map(({t,ci})=>`<span class="tag-chip tag-${ci}">${t}</span>`).join('');
-    const progress=b.progress||0;
-    const readCount=logs.length;
-    return `<div class="book-card fade-in" onclick="openDetail('${b.id}')">
-      <div class="book-cover" style="background:${coverColor(b.title)}">${coverText(b.title)}</div>
-      <div class="book-info">
-        <div class="book-title-row">
-          <div class="book-title">${b.title}</div>
-          ${rating!==null?`<span class="book-rating-badge">★ ${rating.toFixed(1)}</span>`:''}
-        </div>
-        <div class="book-author">${escapeHtml(b.author||'未知作者')} · ${escapeHtml(b.platform||'')}${b.finishYear?` · ${escapeHtml(b.finishYear)}完结`:''}</div>
-        <div class="book-tags-row">${tagsHtml}</div>
-        <div class="book-meta">
-          <span class="badge badge-pink">${STATUS_MAP[b.status]||b.status}</span>
-          ${readCount>1?`<span class="read-count-badge">${readCount}刷</span>`:''}
-          ${b.readLogs&&b.readLogs[0]&&b.readLogs[0].date?`<span>${b.readLogs[b.readLogs.length-1].date||''}</span>`:''}
-        </div>
-        ${progress<100?`<div class="status-bar"><div class="status-fill" style="width:${progress}%"></div></div>`:''}
+  list.innerHTML=books.map(b=>renderBookCard(b,{excerpt:true})).join('');
+}
+
+function renderBookCard(b,opts={}){
+  const logs=b.readLogs||[];
+  const latestLog=logs[logs.length-1];
+  const rating=latestLog?latestLog.rating:null;
+  const allTags=Object.entries(b.tags||{}).flatMap(([k,arr])=>arr.map(t=>({t,ci:TAG_CATS.findIndex(c=>c.key===k)})));
+  const tagsHtml=allTags.slice(0,4).map(({t,ci})=>`<span class="tag-chip tag-${ci}">${escapeHtml(t)}</span>`).join('');
+  const progress=b.progress||0;
+  const readCount=logs.length;
+  const cover=coverStyle(b.title);
+  const excerpt=getLatestReviewExcerpt(b);
+  return `<div class="book-card fade-in" onclick="openDetail('${b.id}')">
+    <div class="book-cover-art" style="${cover.style}" data-mark="${cover.mark}"><span class="book-cover-title">${escapeHtml(coverText(b.title))}</span></div>
+    <div class="book-info">
+      <div class="book-title-row">
+        <div class="book-title">${escapeHtml(b.title)}</div>
+        ${rating!==null?`<span class="book-rating-badge">★ ${rating.toFixed(1)}</span>`:''}
       </div>
-    </div>`;
-  }).join('');
+      <div class="book-author">${escapeHtml(b.author||'未知作者')} · ${escapeHtml(b.platform||'')}${b.finishYear?` · ${escapeHtml(b.finishYear)}完结`:''}</div>
+      ${opts.excerpt&&excerpt?`<div class="book-quote">“${escapeHtml(excerpt)}”</div>`:''}
+      <div class="book-tags-row">${tagsHtml}</div>
+      <div class="book-meta">
+        <span class="badge badge-pink">${STATUS_MAP[b.status]||b.status}</span>
+        ${readCount>1?`<span class="read-count-badge">${readCount}刷</span>`:''}
+        ${logs[0]?.date?`<span>${logs[logs.length-1].date||''}</span>`:''}
+      </div>
+      ${progress<100?`<div class="status-bar"><div class="status-fill" style="width:${progress}%"></div></div>`:''}
+    </div>
+  </div>`;
 }
 
 function sortShelfBooks(books){
@@ -1669,25 +1699,7 @@ function sortIndexItems(items){
 }
 
 function renderStatsBookCard(b){
-  const rating=getLatestRating(b);
-  const allTags=Object.entries(b.tags||{}).flatMap(([k,arr])=>arr.map(t=>({t,ci:TAG_CATS.findIndex(c=>c.key===k)})));
-  const tagsHtml=allTags.slice(0,3).map(({t,ci})=>`<span class="tag-chip tag-${ci}">${escapeHtml(t)}</span>`).join('');
-  return `<div class="book-card fade-in" onclick="openDetail('${b.id}')">
-    <div class="book-cover" style="background:${coverColor(b.title)}">${escapeHtml(coverText(b.title))}</div>
-    <div class="book-info">
-      <div class="book-title-row">
-        <div class="book-title">${escapeHtml(b.title)}</div>
-        ${rating!==null?`<span class="book-rating-badge">★ ${rating.toFixed(1)}</span>`:''}
-      </div>
-      <div class="book-author">${escapeHtml(b.author||'未知作者')} · ${escapeHtml(b.platform||'')}</div>
-      <div class="book-tags-row">${tagsHtml}</div>
-      <div class="book-meta">
-        <span class="badge badge-pink">${STATUS_MAP[b.status]||b.status}</span>
-        ${(b.readLogs||[]).length>1?`<span class="read-count-badge">${(b.readLogs||[]).length}刷</span>`:''}
-        <span>${getLatestDate(b)||''}</span>
-      </div>
-    </div>
-  </div>`;
+  return renderBookCard(b,{excerpt:false});
 }
 
 function getStatsIndex(type){
