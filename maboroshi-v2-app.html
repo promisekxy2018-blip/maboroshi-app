@@ -95,11 +95,17 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
 .book-list{padding:0 16px;display:flex;flex-direction:column;gap:12px}
 .book-card{background:var(--card);border-radius:var(--r);border:1px solid var(--border);padding:16px;box-shadow:var(--shadow);display:flex;gap:14px;cursor:pointer;transition:box-shadow 0.2s}
 .book-card:active{box-shadow:var(--shadow2)}
-.book-list.view-diary .book-card{position:relative;border-style:dashed;background:linear-gradient(135deg,#fff 0%,#fff8f3 100%);box-shadow:0 4px 18px rgba(232,130,159,0.12);transform:rotate(-0.35deg)}
+.book-list.view-diary{background:linear-gradient(90deg,transparent 31px,rgba(232,130,159,.16) 32px,transparent 33px);padding-left:22px}
+.book-list.view-diary .book-card{position:relative;border:1px solid #efd4c4;background:repeating-linear-gradient(0deg,#fffdf9 0,#fffdf9 27px,#f7eadf 28px);box-shadow:0 5px 18px rgba(172,112,92,0.14);transform:rotate(-0.35deg);border-radius:10px 16px 16px 10px}
 .book-list.view-diary .book-card:nth-child(even){transform:rotate(0.3deg)}
-.book-list.view-diary .book-card::before{content:'memo';position:absolute;right:16px;top:8px;font-family:'Noto Serif SC',serif;font-size:10px;color:#e8a07a;opacity:.55}
-.book-list.view-magic .book-card{background:linear-gradient(140deg,#fff 0%,#f8f1ff 55%,#fff8f3 100%);border-color:#ead7f6;box-shadow:0 6px 22px rgba(150,120,210,0.13)}
-.book-list.view-magic .book-cover{border-radius:10px 4px 10px 4px}
+.book-list.view-diary .book-card::before{content:'';position:absolute;left:-9px;top:13px;width:18px;height:34px;border-radius:9px;background:rgba(255,255,255,.75);border:1px solid #efd4c4;box-shadow:0 42px 0 rgba(255,255,255,.75),0 84px 0 rgba(255,255,255,.75)}
+.book-list.view-diary .book-card::after{content:'読完';position:absolute;right:18px;bottom:10px;background:#f6b5c9;color:white;font-size:10px;padding:3px 10px;border-radius:3px;transform:rotate(-2deg);opacity:.82}
+.book-list.view-diary .book-cover{box-shadow:3px 4px 0 rgba(232,130,159,.18);border:3px solid rgba(255,255,255,.7)}
+.book-list.view-magic{padding-top:10px}
+.book-list.view-magic .book-card{position:relative;background:linear-gradient(140deg,#fffaf1 0%,#f7efff 58%,#fff8f3 100%);border-color:#dcc6ef;box-shadow:0 8px 26px rgba(103,83,150,0.18);border-radius:18px}
+.book-list.view-magic .book-card::before{content:'☾';position:absolute;right:16px;top:8px;color:#8e73bd;font-size:18px;opacity:.65}
+.book-list.view-magic .book-card::after{content:'✦';position:absolute;right:40px;top:20px;color:#e6b84a;font-size:12px;opacity:.7}
+.book-list.view-magic .book-cover{border-radius:16px 16px 5px 5px;background-image:linear-gradient(180deg,rgba(255,255,255,.25),rgba(0,0,0,.04));box-shadow:inset 0 0 0 2px rgba(255,255,255,.35),0 5px 12px rgba(103,83,150,.18)}
 .book-cover{width:52px;height:70px;border-radius:8px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;text-align:center;line-height:1.3;padding:4px;overflow:hidden}
 .book-info{flex:1;min-width:0}
 .book-title-row{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:3px}
@@ -215,8 +221,8 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
 .stat-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r2);padding:14px;text-align:center}
 .stat-num{font-family:'Noto Serif SC',serif;font-size:28px;font-weight:700;color:var(--pink2)}
 .stat-label{font-size:11px;color:var(--text3);margin-top:3px}
-.chart-section{padding:0 16px 16px}
-.chart-title{font-size:13px;font-weight:500;color:var(--text2);margin-bottom:10px}
+.chart-section{margin:0 16px 14px;padding:14px;background:rgba(255,255,255,.78);border:1px solid var(--border);border-radius:18px;box-shadow:var(--shadow)}
+.chart-title{font-size:13px;font-weight:700;color:var(--text2);margin-bottom:10px}
 .bar-chart{display:flex;flex-direction:column;gap:8px}
 .bar-row{display:flex;align-items:center;gap:8px}
 .bar-name{font-size:11px;color:var(--text3);width:70px;text-align:right;flex-shrink:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -263,6 +269,19 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
 .tag-orbit{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
 .tag-ball{border:none;border-radius:999px;min-width:34px;min-height:34px;padding:7px 10px;font-size:11px;color:#6b4b5c;background:var(--pink3);box-shadow:0 4px 12px rgba(232,130,159,.16);cursor:pointer}
 .tag-ball:nth-child(3n){background:#e8f4ee;color:#4a9966}.tag-ball:nth-child(3n+1){background:#e8f0fe;color:#4a6eb0}.tag-ball:nth-child(3n+2){background:#fef3e2;color:#b07820}
+.author-hall{display:flex;flex-direction:column;gap:10px}
+.author-medal{display:grid;grid-template-columns:44px 1fr auto;gap:10px;align-items:center;background:linear-gradient(135deg,#fffaf2,#fff);border:1px solid #ead5b8;border-radius:16px;padding:10px;box-shadow:0 4px 14px rgba(176,120,32,.12);cursor:pointer}
+.author-rank{width:38px;height:38px;border-radius:50%;background:linear-gradient(145deg,#f7d98b,#e8a07a);display:flex;align-items:center;justify-content:center;color:white;font-weight:800;box-shadow:0 3px 8px rgba(176,120,32,.18)}
+.author-medal:nth-child(n+4) .author-rank{background:#f4e8d8;color:#b07820}
+.author-name{font-size:14px;font-weight:700;color:var(--text)}
+.author-meta{font-size:11px;color:var(--text3);margin-top:2px}
+.author-score{font-family:'Noto Serif SC',serif;color:#e6b84a;font-size:18px;font-weight:700}
+.month-garden{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.month-card{min-height:88px;border:none;border-radius:16px;background:linear-gradient(145deg,#fff,#fff8f3);box-shadow:0 4px 14px rgba(200,130,100,.12);padding:10px;text-align:left;cursor:pointer;color:var(--text2);position:relative;overflow:hidden}
+.month-card::after{content:'✿';position:absolute;right:8px;bottom:4px;font-size:34px;color:#f2a8c4;opacity:.32}
+.month-card:nth-child(3n)::after{content:'❀';color:#a8d5b5}.month-card:nth-child(3n+1)::after{content:'✿';color:#f2a8c4}.month-card:nth-child(3n+2)::after{content:'✾';color:#a8c4d5}
+.month-name{font-size:13px;font-weight:700;color:var(--text)}
+.month-count{font-size:12px;color:var(--text3);margin-top:4px}
 .stats-modal{position:fixed;inset:0;background:var(--bg2);z-index:203;transform:translateY(100%);transition:transform 0.3s cubic-bezier(0.32,0.72,0,1);display:flex;flex-direction:column}
 .stats-modal.show{transform:translateY(0)}
 .stats-modal-header{padding:18px 18px 12px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:12px}
@@ -487,7 +506,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
           <div class="settings-item-left">
             <div class="settings-item-icon" style="background:#e8f0fe">ℹ️</div>
             <div>
-              <div class="settings-item-title">幻 maboroshi v2.5</div>
+              <div class="settings-item-title">幻 maboroshi v2.6</div>
               <div class="settings-item-sub">数据和密码均存储于本地</div>
             </div>
           </div>
@@ -705,7 +724,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
 // ═══════════════════════════════════════
 //  DATA LAYER
 // ═══════════════════════════════════════
-const APP_VERSION = '2.5.0';
+const APP_VERSION = '2.6.0';
 const STORE_KEY = 'shuji_v1';
 const LOCK_KEY = 'maboroshi_lock_v2';
 const TAG_CATS = [
@@ -1585,6 +1604,25 @@ function renderStatPreview(id,items,type){
   if(type==='tag'){
     el.innerHTML=`<div class="tag-orbit">${top.map(item=>`<button class="tag-ball" onclick="openStatsBooksBy('tag',decodeURIComponent('${encodeURIComponent(item.name)}'))">${escapeHtml(item.name)}<br>${item.count}</button>`).join('')}</div>`+
       `<div class="stat-list-item" style="margin-top:8px" onclick="openStatsIndex('tag')"><div class="stat-list-main"><div class="stat-list-name">${allTitle}</div><div class="stat-list-meta">查看完整列表与排序</div></div><div class="stat-list-num">›</div></div>`;
+    return;
+  }
+  if(type==='author'){
+    el.innerHTML=`<div class="author-hall">${top.map((item,i)=>`
+      <div class="author-medal" onclick="openStatsBooksBy('author',decodeURIComponent('${encodeURIComponent(item.name)}'))">
+        <div class="author-rank">${i+1}</div>
+        <div><div class="author-name">${escapeHtml(item.name)}</div><div class="author-meta">阅读 ${item.count} 次${item.avg?` · 平均 ${item.avg.toFixed(1)}`:''}</div></div>
+        <div class="author-score">${item.avg?item.avg.toFixed(1):'—'}</div>
+      </div>`).join('')}</div>`+
+      `<div class="stat-list-item" style="margin-top:8px" onclick="openStatsIndex('author')"><div class="stat-list-main"><div class="stat-list-name">${allTitle}</div><div class="stat-list-meta">查看完整列表与排序</div></div><div class="stat-list-num">›</div></div>`;
+    return;
+  }
+  if(type==='month'){
+    el.innerHTML=`<div class="month-garden">${top.map(item=>`
+      <button class="month-card" onclick="openStatsBooksBy('month',decodeURIComponent('${encodeURIComponent(item.name)}'))">
+        <div class="month-name">${escapeHtml(item.name.slice(5)||item.name)}</div>
+        <div class="month-count">${item.count} 次阅读</div>
+      </button>`).join('')}</div>`+
+      `<div class="stat-list-item" style="margin-top:8px" onclick="openStatsIndex('month')"><div class="stat-list-main"><div class="stat-list-name">${allTitle}</div><div class="stat-list-meta">查看完整列表与排序</div></div><div class="stat-list-num">›</div></div>`;
     return;
   }
   el.innerHTML=top.map(item=>statListItem(item,type)).join('')+
