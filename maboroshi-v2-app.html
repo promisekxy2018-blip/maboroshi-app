@@ -282,6 +282,9 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
 .segmented{display:flex;gap:6px;background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:4px}
 .segmented button{flex:1;border:none;border-radius:9px;padding:8px 6px;background:transparent;color:var(--text2);font-size:12px}
 .segmented button.active{background:var(--pink2);color:white}
+.author-note-box{background:linear-gradient(135deg,#fff8f3,#fce8f0);border:1px dashed var(--border2);border-radius:16px;padding:12px;margin-bottom:12px}
+.author-note-title{font-size:13px;font-weight:700;color:var(--text2);margin-bottom:8px}
+.author-note-text{font-size:12px;color:var(--text3);line-height:1.7;white-space:pre-line;margin-top:8px}
 
 .fade-in{animation:fadeIn 0.3s ease}
 @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
@@ -484,7 +487,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
           <div class="settings-item-left">
             <div class="settings-item-icon" style="background:#e8f0fe">ℹ️</div>
             <div>
-              <div class="settings-item-title">幻 maboroshi v2.4</div>
+              <div class="settings-item-title">幻 maboroshi v2.5</div>
               <div class="settings-item-sub">数据和密码均存储于本地</div>
             </div>
           </div>
@@ -501,13 +504,13 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 19V6a2 2 0 012-2h12a2 2 0 012 2v13M4 19a2 2 0 002 2h12a2 2 0 002-2M4 19h16M9 11h6"/></svg>
       <span>书架</span>
     </button>
-    <button class="nav-item" id="nav-stats" onclick="showPage('stats')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
-      <span>统计</span>
-    </button>
     <button class="nav-item" id="nav-encounter" onclick="showPage('encounter')">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 3l2.2 5.2L20 10l-4.5 3.7L16.8 20 12 16.7 7.2 20l1.3-6.3L4 10l5.8-1.8L12 3z"/></svg>
       <span>偶遇</span>
+    </button>
+    <button class="nav-item" id="nav-stats" onclick="showPage('stats')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
+      <span>统计</span>
     </button>
   </nav>
 
@@ -702,7 +705,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
 // ═══════════════════════════════════════
 //  DATA LAYER
 // ═══════════════════════════════════════
-const APP_VERSION = '2.4.0';
+const APP_VERSION = '2.5.0';
 const STORE_KEY = 'shuji_v1';
 const LOCK_KEY = 'maboroshi_lock_v2';
 const TAG_CATS = [
@@ -719,7 +722,7 @@ const DEFAULT_TAG_HISTORY = {shou:[],gong:[],era:[],plot:[],vibe:[],warn:[]};
 const COVER_COLORS = ['#f2a8c4','#f5c4a1','#a8d5b5','#a8c4d5','#c4a8d5','#d5c4a8','#d5a8a8'];
 const PLATFORMS = ['晋江','长佩','长佩旧站','废文','其他'];
 
-let db = {books:[], tagHistory:{...DEFAULT_TAG_HISTORY}, apiKey:'', lastBackupAt:'', settings:{shelfView:'list'}};
+let db = {books:[], tagHistory:{...DEFAULT_TAG_HISTORY}, apiKey:'', lastBackupAt:'', settings:{shelfView:'list'}, authorNotes:{}};
 let currentFilter = 'all';
 let editingBookId = null;
 let editingLogIdx = null;
@@ -739,6 +742,7 @@ function load(){
   if(!db.lastBackupAt) db.lastBackupAt='';
   if(!db.settings) db.settings={shelfView:'list'};
   if(!db.settings.shelfView) db.settings.shelfView='list';
+  if(!db.authorNotes) db.authorNotes={};
   TAG_CATS.forEach(c=>{if(!db.tagHistory[c.key])db.tagHistory[c.key]=[];});
 }
 function save(){localStorage.setItem(STORE_KEY,JSON.stringify(db));}
@@ -823,10 +827,23 @@ function appBack(){
   if(document.getElementById('stats-modal')?.classList.contains('show')){closeStatsModal();return true;}
   if(hasOpenOverlay()){closeAllSheets();return true;}
   const active=document.querySelector('.page.active')?.id?.replace('page-','')||'shelf';
-  if(active==='detail'||active==='settings'||active==='stats'){showPage('shelf',{pushState:false});return true;}
-  if(confirm('要退出「幻」吗？')) return false;
+  if(active==='detail'||active==='settings'||active==='stats'||active==='encounter'){showPage('shelf',{pushState:false});return true;}
+  if(confirm('要退出「幻」吗？')){exitApp();return true;}
   pushAppState({type:'page',page:'shelf'});
   return true;
+}
+
+function exitApp(){
+  try{window.close();}catch(e){}
+  setTimeout(()=>{
+    document.getElementById('app').style.display='none';
+    document.getElementById('lockscreen').style.display='flex';
+    document.getElementById('lock-hint').textContent='已退出「幻」';
+    document.getElementById('lock-input').style.display='none';
+    document.getElementById('lock-input-confirm').style.display='none';
+    document.getElementById('lock-submit').textContent='重新进入';
+    document.getElementById('lock-submit').onclick=()=>location.reload();
+  },80);
 }
 
 window.addEventListener('popstate',()=>{
@@ -1689,9 +1706,16 @@ function openStatsIndex(type){
 }
 
 function openStatsBooksBy(type,value){
-  if(type==='author') openStatsBooks(`作者：${value}`, getStatsBooksForCurrentPeriod().filter(b=>b.author===value));
+  if(type==='author') openAuthorDetail(value);
   else if(type==='tag') openStatsBooks(`标签：${value}`, getStatsBooksForCurrentPeriod().filter(b=>Object.values(b.tags||{}).some(arr=>arr.includes(value))));
   else openStatsBooks(`月份：${value}`, db.books.filter(b=>(b.readLogs||[]).some(l=>l.date?.startsWith(value))));
+}
+
+function openAuthorDetail(author){
+  const books=getStatsBooksForCurrentPeriod().filter(b=>b.author===author);
+  statsModal={mode:'author',title:`作者：${author}`,books,items:[],author};
+  openStatsModal(`作者：${author}`,`${books.length} 本书 · 可记录你对这位作者的评价`);
+  renderStatsModal();
 }
 
 // ═══════════════════════════════════════
@@ -1745,7 +1769,7 @@ function avgBooksRating(books){
 function renderStatsModal(){
   const controls=document.getElementById('stats-modal-controls');
   const content=document.getElementById('stats-modal-content');
-  if(statsModal.mode==='books'){
+  if(statsModal.mode==='books'||statsModal.mode==='author'){
     const prev=document.getElementById('modal-book-sort')?.value||'date-desc';
     controls.innerHTML=`<select id="modal-book-sort" class="form-select" onchange="renderStatsModal()">
       <option value="date-desc">最近阅读</option>
@@ -1755,7 +1779,8 @@ function renderStatsModal(){
     </select>`;
     document.getElementById('modal-book-sort').value=prev;
     const books=sortBooksForStats(statsModal.books);
-    content.innerHTML=`<div class="book-list compact">${books.length?books.map(renderStatsBookCard).join(''):'<div style="color:var(--text3);font-size:12px;text-align:center;padding:16px">暂无书籍</div>'}</div>`;
+    const authorBox=statsModal.mode==='author'?renderAuthorNoteBox(statsModal.author):'';
+    content.innerHTML=`${authorBox}<div class="book-list compact">${books.length?books.map(renderStatsBookCard).join(''):'<div style="color:var(--text3);font-size:12px;text-align:center;padding:16px">暂无书籍</div>'}</div>`;
     return;
   }
   const prev=document.getElementById('modal-index-sort')?.value||'count-desc';
@@ -1768,6 +1793,24 @@ function renderStatsModal(){
   document.getElementById('modal-index-sort').value=prev;
   const items=sortIndexItems(statsModal.items);
   content.innerHTML=`<div class="stat-list">${items.length?items.map(item=>statListItem(item,statsModal.mode)).join(''):'<div style="color:var(--text3);font-size:12px;text-align:center;padding:16px">暂无数据</div>'}</div>`;
+}
+
+function renderAuthorNoteBox(author){
+  const note=db.authorNotes?.[author]||'';
+  return `<div class="author-note-box">
+    <div class="author-note-title">我的作者评价</div>
+    <textarea class="form-textarea" id="author-note-input" style="min-height:110px" placeholder="写下你对这位作者的评价、文风、雷点、偏好…">${escapeHtml(note)}</textarea>
+    <button class="btn btn-primary" style="margin-top:8px;width:100%" onclick="saveAuthorNote(decodeURIComponent('${encodeURIComponent(author)}'))">保存作者评价</button>
+    ${note?`<div class="author-note-text">${escapeHtml(note)}</div>`:''}
+  </div>`;
+}
+
+function saveAuthorNote(author){
+  db.authorNotes=db.authorNotes||{};
+  db.authorNotes[author]=document.getElementById('author-note-input').value.trim();
+  save();
+  toast('作者评价已保存');
+  renderStatsModal();
 }
 
 // ═══════════════════════════════════════
