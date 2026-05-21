@@ -81,6 +81,13 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
 .search-box input{flex:1;border:none;background:none;font-size:14px;color:var(--text);font-family:'Noto Sans SC',sans-serif;outline:none}
 .search-box input::placeholder{color:var(--text3)}
 .search-icon{color:var(--text3);font-size:16px}
+.search-filter-btn{width:34px;height:34px;border-radius:50%;border:none;background:var(--pink3);color:var(--pink2);font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.filter-summary{padding:0 16px 8px;display:none;flex-wrap:wrap;gap:6px}
+.filter-summary.show{display:flex}
+.filter-summary .tag-chip{font-size:11px;padding:4px 10px}
+.filter-section{background:var(--card);border:1px solid var(--border);border-radius:var(--r2);padding:12px;margin-bottom:12px}
+.filter-section-title{font-size:12px;color:var(--text2);font-weight:600;margin-bottom:8px}
+.filter-mode-title{font-size:11px;color:var(--text3);margin:8px 0 6px}
 
 /* ── BOOK CARDS ── */
 .book-list{padding:0 16px;display:flex;flex-direction:column;gap:12px}
@@ -290,8 +297,10 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
         <div class="search-box">
           <span class="search-icon">🔍</span>
           <input id="search-input" placeholder="书名 / 作者 / 标签" oninput="renderShelf()">
+          <button class="search-filter-btn" onclick="openShelfFilter()" title="筛选">☰</button>
         </div>
       </div>
+      <div class="filter-summary" id="filter-summary"></div>
       <div class="filter-row" id="filter-row">
         <button class="filter-pill active" onclick="setFilter('all',this)">全部</button>
         <button class="filter-pill" onclick="setFilter('reading',this)">在读</button>
@@ -413,7 +422,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
           <div class="settings-item-left">
             <div class="settings-item-icon" style="background:#e8f0fe">ℹ️</div>
             <div>
-              <div class="settings-item-title">幻 maboroshi v2.2</div>
+              <div class="settings-item-title">幻 maboroshi v2.3</div>
               <div class="settings-item-sub">数据和密码均存储于本地</div>
             </div>
           </div>
@@ -442,6 +451,22 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
 <!-- ── OVERLAY ── -->
 <div class="overlay" id="overlay" onclick="closeAllSheets()"></div>
 <div class="toast" id="toast"></div>
+
+<!-- ═══ SHELF FILTER SHEET ═══ -->
+<div class="sheet" id="sheet-filter">
+  <div class="sheet-handle"></div>
+  <div class="sheet-header">
+    <span class="sheet-title">筛选书架</span>
+    <button class="sheet-close" onclick="closeSheet('sheet-filter')">×</button>
+  </div>
+  <div class="sheet-body">
+    <div id="shelf-filter-body"></div>
+  </div>
+  <div class="sheet-footer">
+    <button class="btn btn-ghost" style="flex:1" onclick="clearShelfFilters()">清空</button>
+    <button class="btn btn-primary" style="flex:2" onclick="applyShelfFilters()">应用筛选</button>
+  </div>
+</div>
 
 <!-- ═══ STATS DETAIL MODAL ═══ -->
 <div class="stats-modal" id="stats-modal">
@@ -532,6 +557,10 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
       </div>
     </div>
     <div class="form-group">
+      <label class="form-label">完结年份</label>
+      <input class="form-input" id="f-finish-year" inputmode="numeric" pattern="[0-9]*" placeholder="例如 2024">
+    </div>
+    <div class="form-group">
       <label class="form-label">简介</label>
       <textarea class="form-textarea" id="f-summary" placeholder="作品简介（可自动抓取）" style="min-height:70px"></textarea>
     </div>
@@ -597,7 +626,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
 // ═══════════════════════════════════════
 //  DATA LAYER
 // ═══════════════════════════════════════
-const APP_VERSION = '2.2.0';
+const APP_VERSION = '2.3.0';
 const STORE_KEY = 'shuji_v1';
 const LOCK_KEY = 'maboroshi_lock_v2';
 const TAG_CATS = [
@@ -622,6 +651,11 @@ let currentLogDraft = {};
 let statsSort = 'date-desc';
 let statsModal = {mode:'books', title:'统计明细', items:[], books:[]};
 let tagHoldTimer = null;
+let shelfFilters = {authorMust:[],authorAny:[],tagsMust:{},tagsAny:{},warnExclude:[]};
+let draftShelfFilters = null;
+let navReady = false;
+let suppressNextPop = false;
+let edgeTouch = null;
 
 function load(){
   try{const s=localStorage.getItem(STORE_KEY);if(s)db=JSON.parse(s);}catch(e){}
@@ -661,12 +695,25 @@ function progressOptions(selected=100){
   for(let i=100;i>=0;i-=10) opts.push(`<option value="${i}" ${Number(selected)===i?'selected':''}>${i}%</option>`);
   return opts.join('');
 }
+function cloneFilters(filters=shelfFilters){
+  return JSON.parse(JSON.stringify(filters||{authorMust:[],authorAny:[],tagsMust:{},tagsAny:{},warnExclude:[]}));
+}
+function emptyFilters(){
+  return {authorMust:[],authorAny:[],tagsMust:{},tagsAny:{},warnExclude:[]};
+}
+function uniqueList(arr){return [...new Set((arr||[]).filter(Boolean))];}
+function filterCount(filters=shelfFilters){
+  let n=(filters.authorMust||[]).length+(filters.authorAny||[]).length+(filters.warnExclude||[]).length;
+  Object.values(filters.tagsMust||{}).forEach(a=>n+=a.length);
+  Object.values(filters.tagsAny||{}).forEach(a=>n+=a.length);
+  return n;
+}
 
 // ═══════════════════════════════════════
 //  NAVIGATION
 // ═══════════════════════════════════════
 let pageHistory = ['shelf'];
-function showPage(p){
+function showPage(p, opts={}){
   document.querySelectorAll('.page').forEach(el=>el.classList.remove('active'));
   document.getElementById('page-'+p).classList.add('active');
   document.querySelectorAll('.nav-item').forEach(el=>el.classList.remove('active'));
@@ -679,8 +726,62 @@ function showPage(p){
   if(p==='shelf') renderShelf();
   if(p==='settings') renderSettings();
   window.scrollTo&&document.getElementById('main').scrollTo(0,0);
+  if(opts.pushState!==false) pushAppState({type:'page',page:p});
 }
 function goSettings(){showPage('settings');}
+
+function pushAppState(state){
+  if(!navReady) return;
+  try{history.pushState(state,'');}catch(e){}
+}
+
+function hasOpenOverlay(){
+  return document.getElementById('stats-modal')?.classList.contains('show')||
+    [...document.querySelectorAll('.sheet,.mini-sheet')].some(s=>s.classList.contains('show'));
+}
+
+function appBack(){
+  if(document.getElementById('stats-modal')?.classList.contains('show')){closeStatsModal();return true;}
+  if(hasOpenOverlay()){closeAllSheets();return true;}
+  const active=document.querySelector('.page.active')?.id?.replace('page-','')||'shelf';
+  if(active==='detail'||active==='settings'||active==='stats'){showPage('shelf',{pushState:false});return true;}
+  if(confirm('要退出「幻」吗？')) return false;
+  pushAppState({type:'page',page:'shelf'});
+  return true;
+}
+
+window.addEventListener('popstate',()=>{
+  if(suppressNextPop){suppressNextPop=false;return;}
+  const handled=appBack();
+  if(handled) suppressNextPop=true, history.pushState({type:'guard'},'');
+});
+
+function setupAppNavigation(){
+  if(navReady) return;
+  navReady=true;
+  history.replaceState({type:'root'},'');
+  history.pushState({type:'guard'},'');
+  window.addEventListener('beforeunload',e=>{
+    if(!sessionStorage.getItem(SESSION_KEY)) return;
+    e.preventDefault();
+    e.returnValue='确定退出「幻」吗？';
+  });
+  document.addEventListener('touchstart',e=>{
+    const t=e.touches[0];
+    if(!t) return;
+    if(t.clientX<24||t.clientX>window.innerWidth-24) edgeTouch={x:t.clientX,y:t.clientY,time:Date.now()};
+  },{passive:true});
+  document.addEventListener('touchend',e=>{
+    if(!edgeTouch) return;
+    const t=e.changedTouches[0];
+    const dx=t.clientX-edgeTouch.x;
+    const dy=Math.abs(t.clientY-edgeTouch.y);
+    const fromLeft=edgeTouch.x<24&&dx>70;
+    const fromRight=edgeTouch.x>window.innerWidth-24&&dx<-70;
+    edgeTouch=null;
+    if(dy<80&&(fromLeft||fromRight)) appBack();
+  },{passive:true});
+}
 
 // ═══════════════════════════════════════
 //  SHELF
@@ -702,9 +803,12 @@ function renderShelf(){
            (b.author||'').toLowerCase().includes(q)||
            tags.includes(q);
   });
+  books=applyShelfFilterToBooks(books);
   const list=document.getElementById('book-list');
   const sub=document.getElementById('shelf-subtitle');
-  sub.textContent=`共 ${db.books.length} 本 · 已读 ${db.books.filter(b=>b.status==='done').length} 本`;
+  const fc=filterCount();
+  sub.textContent=`共 ${db.books.length} 本 · 已读 ${db.books.filter(b=>b.status==='done').length} 本${fc?` · 筛选中 ${books.length} 本`:''}`;
+  renderFilterSummary();
   if(books.length===0){
     list.innerHTML=`<div class="empty-state"><div class="empty-icon">📚</div><div class="empty-text">${q?'没有找到相关书籍':'还没有书籍记录'}</div><div class="empty-sub">${q?'换个关键词试试':'点击右下角 ＋ 添加第一本'}</div></div>`;
     return;
@@ -724,7 +828,7 @@ function renderShelf(){
           <div class="book-title">${b.title}</div>
           ${rating!==null?`<span class="book-rating-badge">★ ${rating.toFixed(1)}</span>`:''}
         </div>
-        <div class="book-author">${b.author||'未知作者'} · ${b.platform||''}</div>
+        <div class="book-author">${escapeHtml(b.author||'未知作者')} · ${escapeHtml(b.platform||'')}${b.finishYear?` · ${escapeHtml(b.finishYear)}完结`:''}</div>
         <div class="book-tags-row">${tagsHtml}</div>
         <div class="book-meta">
           <span class="badge badge-pink">${STATUS_MAP[b.status]||b.status}</span>
@@ -735,6 +839,105 @@ function renderShelf(){
       </div>
     </div>`;
   }).join('');
+}
+
+function applyShelfFilterToBooks(books){
+  const f=shelfFilters;
+  return books.filter(b=>{
+    if(f.authorMust?.length && !f.authorMust.every(a=>b.author===a)) return false;
+    if(f.authorAny?.length && !f.authorAny.includes(b.author)) return false;
+    for(const [cat,vals] of Object.entries(f.tagsMust||{})){
+      const tags=b.tags?.[cat]||[];
+      if(vals.length && !vals.every(v=>tags.includes(v))) return false;
+    }
+    for(const [cat,vals] of Object.entries(f.tagsAny||{})){
+      const tags=b.tags?.[cat]||[];
+      if(vals.length && !vals.some(v=>tags.includes(v))) return false;
+    }
+    if(f.warnExclude?.length){
+      const warns=b.tags?.warn||[];
+      if(f.warnExclude.some(v=>warns.includes(v))) return false;
+    }
+    return true;
+  });
+}
+
+function renderFilterSummary(){
+  const el=document.getElementById('filter-summary');
+  if(!el) return;
+  const chips=[];
+  shelfFilters.authorMust?.forEach(a=>chips.push(`作者必须：${a}`));
+  shelfFilters.authorAny?.forEach(a=>chips.push(`作者可选：${a}`));
+  TAG_CATS.filter(c=>c.key!=='warn').forEach(c=>{
+    (shelfFilters.tagsMust?.[c.key]||[]).forEach(t=>chips.push(`${c.label}必须：${t}`));
+    (shelfFilters.tagsAny?.[c.key]||[]).forEach(t=>chips.push(`${c.label}可选：${t}`));
+  });
+  shelfFilters.warnExclude?.forEach(t=>chips.push(`排除：${t}`));
+  el.classList.toggle('show',chips.length>0);
+  el.innerHTML=chips.map(t=>`<span class="tag-chip tag-4">${escapeHtml(t)}</span>`).join('');
+}
+
+function openShelfFilter(){
+  draftShelfFilters=cloneFilters();
+  renderShelfFilterBody();
+  openSheet('sheet-filter');
+}
+
+function filterChip(label,group,value){
+  const arr=getDraftFilterArray(group);
+  const selected=arr.includes(value);
+  return `<button type="button" class="tag-chip-sel ${selected?'selected':''}" onclick="toggleDraftFilter('${group}',decodeURIComponent('${encodeURIComponent(value)}'))">${escapeHtml(label)}</button>`;
+}
+
+function getDraftFilterArray(group){
+  const f=draftShelfFilters;
+  if(group==='authorMust') return f.authorMust;
+  if(group==='authorAny') return f.authorAny;
+  if(group==='warnExclude') return f.warnExclude;
+  const [kind,cat]=group.split(':');
+  const root=kind==='must'?f.tagsMust:f.tagsAny;
+  if(!root[cat]) root[cat]=[];
+  return root[cat];
+}
+
+function toggleDraftFilter(group,value){
+  const arr=getDraftFilterArray(group);
+  const idx=arr.indexOf(value);
+  if(idx>-1) arr.splice(idx,1); else arr.push(value);
+  renderShelfFilterBody();
+}
+
+function renderShelfFilterBody(){
+  const body=document.getElementById('shelf-filter-body');
+  const authors=uniqueList(db.books.map(b=>b.author).filter(Boolean)).sort((a,b)=>a.localeCompare(b,'zh-CN'));
+  const authorHtml=authors.length?`
+    <div class="filter-mode-title">必须是</div><div class="tag-chips-wrap">${authors.map(a=>filterChip(a,'authorMust',a)).join('')}</div>
+    <div class="filter-mode-title">可以是任意一个</div><div class="tag-chips-wrap">${authors.map(a=>filterChip(a,'authorAny',a)).join('')}</div>`:
+    '<div class="tag-selected-empty">还没有作者数据</div>';
+  const tagHtml=TAG_CATS.map(c=>{
+    const tags=db.tagHistory[c.key]||[];
+    if(c.key==='warn'){
+      return `<div class="filter-section"><div class="filter-section-title">排雷反选</div><div class="filter-mode-title">排除含有这些排雷的书</div><div class="tag-chips-wrap">${tags.length?tags.map(t=>filterChip(t,'warnExclude',t)).join(''):'<span class="tag-selected-empty">还没有排雷标签</span>'}</div></div>`;
+    }
+    return `<div class="filter-section"><div class="filter-section-title">${c.label}</div>
+      <div class="filter-mode-title">必须全部含有</div><div class="tag-chips-wrap">${tags.length?tags.map(t=>filterChip(t,`must:${c.key}`,t)).join(''):'<span class="tag-selected-empty">还没有历史标签</span>'}</div>
+      <div class="filter-mode-title">含有任意一个即可</div><div class="tag-chips-wrap">${tags.length?tags.map(t=>filterChip(t,`any:${c.key}`,t)).join(''):'<span class="tag-selected-empty">还没有历史标签</span>'}</div>
+    </div>`;
+  }).join('');
+  body.innerHTML=`<div class="filter-section"><div class="filter-section-title">作者</div>${authorHtml}</div>${tagHtml}`;
+}
+
+function applyShelfFilters(){
+  shelfFilters=cloneFilters(draftShelfFilters);
+  closeSheet('sheet-filter');
+  renderShelf();
+}
+
+function clearShelfFilters(){
+  draftShelfFilters=emptyFilters();
+  shelfFilters=emptyFilters();
+  renderShelfFilterBody();
+  renderShelf();
 }
 
 // ═══════════════════════════════════════
@@ -776,7 +979,8 @@ function openDetail(id){
     <div class="detail-body">
       ${progress>0&&progress<100?`<div class="detail-section"><div class="detail-section-title">阅读进度</div><div class="status-row"><div class="status-bar-big"><div class="status-fill-big" style="width:${progress}%"></div></div><div class="status-pct">${progress}%</div></div></div>`:''}
       ${tagGroups.length?`<div class="detail-section"><div class="detail-section-title">标签</div>${tagsHtml}</div>`:''}
-      ${b.summary?`<div class="detail-section"><div class="detail-section-title">简介</div><div style="font-size:13px;color:var(--text2);line-height:1.7">${b.summary}</div></div>`:''}
+      ${b.finishYear?`<div class="detail-section"><div class="detail-section-title">完结年份</div><div style="font-size:13px;color:var(--text2);line-height:1.7">${escapeHtml(b.finishYear)} 年</div></div>`:''}
+      ${b.summary?`<div class="detail-section"><div class="detail-section-title">简介</div><div style="font-size:13px;color:var(--text2);line-height:1.7">${escapeHtml(b.summary)}</div></div>`:''}
       <div class="detail-section">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
           <div class="detail-section-title" style="margin-bottom:0">阅读记录</div>
@@ -811,6 +1015,7 @@ function openAddSheet(){
   document.getElementById('f-platform').value='晋江';
   document.getElementById('f-status').value='done';
   document.getElementById('f-progress').innerHTML=progressOptions(100);
+  document.getElementById('f-finish-year').value='';
   document.getElementById('f-summary').value='';
   renderTagCategories({});
   renderReadLogs([]);
@@ -850,6 +1055,7 @@ function importBatchBooks(){
       status:'unfiled',
       progress:0,
       summary:'',
+      finishYear:'',
       tags:{shou:[],gong:[],era:[],plot:[],vibe:[],warn:[]},
       readLogs:[],
       updatedAt:Date.now()
@@ -872,6 +1078,7 @@ function openEditSheet(id){
   document.getElementById('f-platform').value=b.platform||'晋江';
   document.getElementById('f-status').value=b.status||'done';
   document.getElementById('f-progress').innerHTML=progressOptions(b.progress??100);
+  document.getElementById('f-finish-year').value=b.finishYear||'';
   document.getElementById('f-summary').value=b.summary||'';
   renderTagCategories(b.tags||{});
   renderReadLogs(b.readLogs||[]);
@@ -1052,6 +1259,7 @@ function openMiniLog(saveToBook=false){
   updateLogRating();
   document.getElementById('mini-log').classList.add('show');
   document.getElementById('overlay').classList.add('show');
+  pushAppState({type:'mini-log'});
 }
 
 function closeMiniLog(){
@@ -1120,6 +1328,7 @@ function saveBook(){
     platform:document.getElementById('f-platform').value,
     status:document.getElementById('f-status').value,
     progress:parseInt(document.getElementById('f-progress').value),
+    finishYear:document.getElementById('f-finish-year').value.trim(),
     summary:document.getElementById('f-summary').value.trim(),
     tags:{...formTags},
     readLogs:[...formLogs],
@@ -1348,6 +1557,7 @@ function openStatsModal(title,sub){
   document.getElementById('stats-modal-title').textContent=title;
   document.getElementById('stats-modal-sub').textContent=sub||'';
   document.getElementById('stats-modal').classList.add('show');
+  pushAppState({type:'stats-modal'});
 }
 
 function closeStatsModal(){
@@ -1518,6 +1728,7 @@ function lockNow(){
 function openSheet(id){
   document.getElementById(id).classList.add('show');
   document.getElementById('overlay').classList.add('show');
+  pushAppState({type:'sheet',id});
 }
 function closeSheet(id){
   document.getElementById(id).classList.remove('show');
@@ -1584,6 +1795,7 @@ function unlockApp(){
   document.getElementById('lockscreen').style.display='none';
   document.getElementById('app').style.display='flex';
   load();
+  setupAppNavigation();
   renderShelf();
 }
 function prepareLockScreen(){
