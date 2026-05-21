@@ -1,0 +1,1059 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#fdf6f0">
+<title>书迹</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=Noto+Sans+SC:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{
+  --bg:#fdf6f0;
+  --bg2:#fff8f3;
+  --bg3:#fff;
+  --card:#fff;
+  --pink:#f2a8c4;
+  --pink2:#e8829f;
+  --pink3:#fce8f0;
+  --pink4:#fbdcea;
+  --peach:#f5c4a1;
+  --peach2:#e8a07a;
+  --cream:#faebd7;
+  --text:#3d2b1f;
+  --text2:#7a5c4e;
+  --text3:#b08b7e;
+  --border:#f0d9cc;
+  --border2:#e8c9b8;
+  --green:#a8d5b5;
+  --green2:#6db88a;
+  --yellow:#f7d98b;
+  --yellow2:#e6b84a;
+  --red:#f4a5a5;
+  --red2:#e07070;
+  --shadow:0 2px 12px rgba(200,130,100,0.10);
+  --shadow2:0 4px 24px rgba(200,130,100,0.15);
+  --r:16px;
+  --r2:12px;
+  --r3:8px;
+}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto Sans SC',sans-serif;font-size:15px;overflow:hidden}
+.serif{font-family:'Noto Serif SC',serif}
+
+/* ── LAYOUT ── */
+#app{display:flex;flex-direction:column;height:100vh;height:100dvh}
+#main{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;padding-bottom:80px}
+.page{display:none;padding:0 0 16px}
+.page.active{display:block}
+
+/* ── BOTTOM NAV ── */
+#nav{position:fixed;bottom:0;left:0;right:0;height:68px;background:var(--card);border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-around;padding-bottom:env(safe-area-inset-bottom);z-index:100;box-shadow:0 -2px 16px rgba(200,130,100,0.08)}
+.nav-item{display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 20px;cursor:pointer;border:none;background:none;color:var(--text3);transition:color 0.2s;font-family:'Noto Sans SC',sans-serif}
+.nav-item.active{color:var(--pink2)}
+.nav-item svg{width:22px;height:22px;stroke-width:1.8}
+.nav-item span{font-size:10px;font-weight:500}
+
+/* ── HEADER ── */
+.page-header{padding:20px 20px 12px;display:flex;align-items:center;justify-content:space-between}
+.page-title{font-family:'Noto Serif SC',serif;font-size:22px;font-weight:700;color:var(--text)}
+.page-subtitle{font-size:12px;color:var(--text3);margin-top:2px}
+
+/* ── BUTTONS ── */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:none;cursor:pointer;font-family:'Noto Sans SC',sans-serif;transition:all 0.15s;border-radius:var(--r3)}
+.btn-primary{background:var(--pink2);color:#fff;padding:10px 20px;font-size:14px;font-weight:500;box-shadow:0 2px 8px rgba(232,130,159,0.3)}
+.btn-primary:active{transform:scale(0.97)}
+.btn-ghost{background:var(--pink3);color:var(--pink2);padding:8px 16px;font-size:13px;font-weight:500}
+.btn-icon{width:40px;height:40px;border-radius:50%;background:var(--pink3);color:var(--pink2);font-size:20px;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.fab{position:fixed;bottom:84px;right:20px;width:52px;height:52px;border-radius:50%;background:var(--pink2);color:#fff;font-size:26px;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(232,130,159,0.4);z-index:99;transition:transform 0.15s}
+.fab:active{transform:scale(0.93)}
+
+/* ── SEARCH BAR ── */
+.search-wrap{padding:0 16px 12px}
+.search-box{display:flex;align-items:center;background:var(--card);border:1px solid var(--border);border-radius:24px;padding:8px 16px;gap:8px}
+.search-box input{flex:1;border:none;background:none;font-size:14px;color:var(--text);font-family:'Noto Sans SC',sans-serif;outline:none}
+.search-box input::placeholder{color:var(--text3)}
+.search-icon{color:var(--text3);font-size:16px}
+
+/* ── BOOK CARDS ── */
+.book-list{padding:0 16px;display:flex;flex-direction:column;gap:12px}
+.book-card{background:var(--card);border-radius:var(--r);border:1px solid var(--border);padding:16px;box-shadow:var(--shadow);display:flex;gap:14px;cursor:pointer;transition:box-shadow 0.2s}
+.book-card:active{box-shadow:var(--shadow2)}
+.book-cover{width:52px;height:70px;border-radius:8px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;text-align:center;line-height:1.3;padding:4px;overflow:hidden}
+.book-info{flex:1;min-width:0}
+.book-title-row{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:3px}
+.book-title{font-family:'Noto Serif SC',serif;font-size:15px;font-weight:600;color:var(--text);line-height:1.3;flex:1}
+.book-rating-badge{background:var(--yellow);color:var(--yellow2);font-size:12px;font-weight:700;padding:2px 8px;border-radius:20px;white-space:nowrap;flex-shrink:0}
+.book-author{font-size:12px;color:var(--text3);margin-bottom:6px}
+.book-tags-row{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:6px}
+.tag-chip{font-size:10px;padding:2px 8px;border-radius:20px;font-weight:500}
+.tag-0{background:#fce8f0;color:#c4607e}
+.tag-1{background:#fce8f0;color:#c4607e}
+.tag-2{background:#e8f4ee;color:#4a9966}
+.tag-3{background:#fef3e2;color:#b07820}
+.tag-4{background:#e8f0fe;color:#4a6eb0}
+.tag-5{background:#fdecea;color:#b05050}
+.book-meta{display:flex;align-items:center;gap:10px;font-size:11px;color:var(--text3)}
+.read-count-badge{background:var(--pink3);color:var(--pink2);padding:1px 7px;border-radius:10px;font-size:10px;font-weight:500}
+.status-bar{height:3px;background:var(--border);border-radius:2px;margin-top:8px;overflow:hidden}
+.status-fill{height:100%;background:linear-gradient(90deg,var(--pink),var(--peach));border-radius:2px;transition:width 0.3s}
+
+/* ── EMPTY STATE ── */
+.empty-state{text-align:center;padding:60px 20px;color:var(--text3)}
+.empty-icon{font-size:48px;margin-bottom:12px}
+.empty-text{font-size:15px;margin-bottom:6px;color:var(--text2)}
+.empty-sub{font-size:13px}
+
+/* ── MODAL / SHEET ── */
+.overlay{position:fixed;inset:0;background:rgba(61,43,31,0.35);z-index:200;opacity:0;transition:opacity 0.25s;pointer-events:none}
+.overlay.show{opacity:1;pointer-events:all}
+.sheet{position:fixed;bottom:0;left:0;right:0;background:var(--bg2);border-radius:24px 24px 0 0;z-index:201;transform:translateY(100%);transition:transform 0.3s cubic-bezier(0.32,0.72,0,1);max-height:92vh;display:flex;flex-direction:column}
+.sheet.show{transform:translateY(0)}
+.sheet-handle{width:36px;height:4px;background:var(--border2);border-radius:2px;margin:12px auto 0}
+.sheet-header{padding:16px 20px 12px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border)}
+.sheet-title{font-family:'Noto Serif SC',serif;font-size:18px;font-weight:600}
+.sheet-close{width:32px;height:32px;border-radius:50%;background:var(--border);border:none;cursor:pointer;font-size:18px;color:var(--text2);display:flex;align-items:center;justify-content:center}
+.sheet-body{flex:1;overflow-y:auto;padding:20px;-webkit-overflow-scrolling:touch}
+.sheet-footer{padding:16px 20px;padding-bottom:calc(16px + env(safe-area-inset-bottom));border-top:1px solid var(--border);display:flex;gap:10px}
+
+/* ── FORM ── */
+.form-group{margin-bottom:18px}
+.form-label{font-size:12px;font-weight:500;color:var(--text2);margin-bottom:6px;display:flex;align-items:center;gap:4px}
+.form-input,.form-textarea,.form-select{width:100%;padding:11px 14px;background:var(--card);border:1px solid var(--border2);border-radius:var(--r3);font-size:14px;color:var(--text);font-family:'Noto Sans SC',sans-serif;outline:none;transition:border-color 0.15s;-webkit-appearance:none;appearance:none}
+.form-input:focus,.form-textarea:focus,.form-select:focus{border-color:var(--pink2)}
+.form-textarea{min-height:90px;resize:vertical;line-height:1.6}
+.form-select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23b08b7e' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:36px}
+.form-row{display:flex;gap:10px}
+.form-row .form-group{flex:1}
+
+/* ── RATING SLIDER ── */
+.rating-display{text-align:center;margin-bottom:8px}
+.rating-num{font-family:'Noto Serif SC',serif;font-size:36px;font-weight:700;color:var(--pink2)}
+.rating-label{font-size:11px;color:var(--text3);margin-top:2px}
+.rating-slider{width:100%;-webkit-appearance:none;appearance:none;height:6px;border-radius:3px;background:var(--border);outline:none;cursor:pointer}
+.rating-slider::-webkit-slider-thumb{-webkit-appearance:none;width:24px;height:24px;border-radius:50%;background:var(--pink2);box-shadow:0 2px 8px rgba(232,130,159,0.4);cursor:pointer}
+.nearby-books{margin-top:10px;font-size:11px;color:var(--text3);background:var(--pink3);border-radius:var(--r3);padding:8px 12px;min-height:32px;line-height:1.6}
+
+/* ── TAG SYSTEM ── */
+.tag-categories{display:flex;flex-direction:column;gap:14px}
+.tag-category{background:var(--card);border-radius:var(--r2);border:1px solid var(--border);padding:12px}
+.tag-category-label{font-size:11px;font-weight:500;color:var(--text3);margin-bottom:8px;display:flex;align-items:center;justify-content:space-between}
+.tag-chips-wrap{display:flex;flex-wrap:wrap;gap:6px}
+.tag-chip-sel{font-size:12px;padding:5px 12px;border-radius:20px;border:1.5px solid transparent;cursor:pointer;transition:all 0.15s;font-family:'Noto Sans SC',sans-serif;background:var(--bg);color:var(--text2);border-color:var(--border2)}
+.tag-chip-sel.selected{border-color:currentColor}
+.tag-chip-sel.cat-0{color:#c4607e}.tag-chip-sel.cat-0.selected{background:#fce8f0}
+.tag-chip-sel.cat-1{color:#c4607e}.tag-chip-sel.cat-1.selected{background:#fce8f0}
+.tag-chip-sel.cat-2{color:#4a9966}.tag-chip-sel.cat-2.selected{background:#e8f4ee}
+.tag-chip-sel.cat-3{color:#b07820}.tag-chip-sel.cat-3.selected{background:#fef3e2}
+.tag-chip-sel.cat-4{color:#4a6eb0}.tag-chip-sel.cat-4.selected{background:#e8f0fe}
+.tag-chip-sel.cat-5{color:#b05050}.tag-chip-sel.cat-5.selected{background:#fdecea}
+.tag-add-row{display:flex;gap:6px;margin-top:8px}
+.tag-add-input{flex:1;padding:6px 10px;border:1px solid var(--border2);border-radius:20px;font-size:12px;background:var(--bg);color:var(--text);font-family:'Noto Sans SC',sans-serif;outline:none}
+.tag-add-btn{padding:6px 12px;border-radius:20px;background:var(--pink3);color:var(--pink2);border:none;font-size:12px;cursor:pointer;font-weight:500}
+
+/* ── READ LOGS ── */
+.read-logs{display:flex;flex-direction:column;gap:10px}
+.read-log-item{background:var(--card);border:1px solid var(--border);border-radius:var(--r2);padding:12px 14px;position:relative}
+.read-log-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.read-log-num{font-size:11px;color:var(--pink2);font-weight:500;background:var(--pink3);padding:2px 8px;border-radius:10px}
+.read-log-date{font-size:11px;color:var(--text3)}
+.read-log-rating{font-weight:700;color:var(--yellow2);font-size:13px}
+.read-log-review{font-size:13px;color:var(--text2);line-height:1.6;margin-top:4px}
+.read-log-edit{position:absolute;top:10px;right:10px;background:none;border:none;color:var(--text3);font-size:14px;cursor:pointer;padding:4px}
+.add-log-btn{display:flex;align-items:center;justify-content:center;gap:6px;padding:12px;border:1.5px dashed var(--border2);border-radius:var(--r2);color:var(--text3);font-size:13px;cursor:pointer;background:none;width:100%;font-family:'Noto Sans SC',sans-serif}
+
+/* ── DETAIL PAGE ── */
+.detail-hero{background:linear-gradient(160deg,var(--pink3) 0%,var(--cream) 100%);padding:24px 20px 20px;position:relative}
+.detail-back{background:rgba(255,255,255,0.7);border:none;border-radius:50%;width:36px;height:36px;display:flex;align-items:center;justify-content:center;cursor:pointer;margin-bottom:16px;color:var(--text2);font-size:18px}
+.detail-cover{width:80px;height:108px;border-radius:12px;margin-bottom:14px;box-shadow:0 4px 16px rgba(0,0,0,0.15);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#fff;text-align:center;padding:6px}
+.detail-title{font-family:'Noto Serif SC',serif;font-size:22px;font-weight:700;color:var(--text);margin-bottom:4px}
+.detail-author{font-size:13px;color:var(--text2);margin-bottom:10px}
+.detail-badges{display:flex;flex-wrap:wrap;gap:6px}
+.badge{font-size:11px;padding:3px 10px;border-radius:20px;font-weight:500}
+.badge-pink{background:var(--pink3);color:var(--pink2)}
+.badge-yellow{background:var(--yellow);color:var(--yellow2)}
+.badge-green{background:#e8f4ee;color:#4a9966}
+.detail-body{padding:16px 20px}
+.detail-section{margin-bottom:20px}
+.detail-section-title{font-size:12px;font-weight:500;color:var(--text3);margin-bottom:10px;text-transform:uppercase;letter-spacing:0.05em}
+.status-row{display:flex;align-items:center;gap:10px}
+.status-pct{font-size:13px;font-weight:500;color:var(--pink2)}
+.status-bar-big{flex:1;height:6px;background:var(--border);border-radius:3px;overflow:hidden}
+.status-fill-big{height:100%;background:linear-gradient(90deg,var(--pink),var(--peach));border-radius:3px}
+
+/* ── STATS PAGE ── */
+.stats-hero{background:linear-gradient(160deg,var(--pink3),var(--cream));padding:24px 20px 20px}
+.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:16px}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r2);padding:14px;text-align:center}
+.stat-num{font-family:'Noto Serif SC',serif;font-size:28px;font-weight:700;color:var(--pink2)}
+.stat-label{font-size:11px;color:var(--text3);margin-top:3px}
+.chart-section{padding:0 16px 16px}
+.chart-title{font-size:13px;font-weight:500;color:var(--text2);margin-bottom:10px}
+.bar-chart{display:flex;flex-direction:column;gap:8px}
+.bar-row{display:flex;align-items:center;gap:8px}
+.bar-name{font-size:11px;color:var(--text3);width:70px;text-align:right;flex-shrink:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bar-track{flex:1;height:16px;background:var(--border);border-radius:8px;overflow:hidden}
+.bar-fill{height:100%;border-radius:8px;background:linear-gradient(90deg,var(--pink),var(--peach));display:flex;align-items:center;padding-right:6px;justify-content:flex-end;min-width:20px;transition:width 0.4s}
+.bar-val{font-size:9px;color:#fff;font-weight:700}
+
+/* ── SETTINGS PAGE ── */
+.settings-list{padding:16px;display:flex;flex-direction:column;gap:10px}
+.settings-item{background:var(--card);border:1px solid var(--border);border-radius:var(--r2);padding:14px 16px;display:flex;align-items:center;justify-content:space-between;cursor:pointer}
+.settings-item-left{display:flex;align-items:center;gap:12px}
+.settings-item-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px}
+.settings-item-title{font-size:14px;font-weight:500;color:var(--text)}
+.settings-item-sub{font-size:11px;color:var(--text3);margin-top:1px}
+.settings-arrow{color:var(--text3);font-size:16px}
+.api-key-display{font-size:11px;color:var(--text3);font-family:monospace;margin-top:3px}
+
+/* ── TOAST ── */
+.toast{position:fixed;top:20px;left:50%;transform:translateX(-50%) translateY(-80px);background:var(--text);color:#fff;padding:10px 20px;border-radius:20px;font-size:13px;z-index:999;transition:transform 0.3s;white-space:nowrap}
+.toast.show{transform:translateX(-50%) translateY(0)}
+
+/* ── FILTER PILLS ── */
+.filter-row{display:flex;gap:8px;padding:0 16px 12px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.filter-row::-webkit-scrollbar{display:none}
+.filter-pill{padding:6px 14px;border-radius:20px;font-size:12px;border:1.5px solid var(--border2);background:var(--card);color:var(--text2);cursor:pointer;white-space:nowrap;font-family:'Noto Sans SC',sans-serif;transition:all 0.15s;flex-shrink:0}
+.filter-pill.active{background:var(--pink2);color:#fff;border-color:var(--pink2)}
+
+/* ── LOG EDIT MINI SHEET ── */
+.mini-sheet{position:fixed;bottom:0;left:0;right:0;background:var(--bg2);border-radius:24px 24px 0 0;z-index:202;transform:translateY(100%);transition:transform 0.3s cubic-bezier(0.32,0.72,0,1);padding:20px;padding-bottom:calc(20px + env(safe-area-inset-bottom))}
+.mini-sheet.show{transform:translateY(0)}
+
+.fade-in{animation:fadeIn 0.3s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+</style>
+</head>
+<body>
+<div id="app">
+  <div id="main">
+
+    <!-- ═══ PAGE: SHELF ═══ -->
+    <div class="page active" id="page-shelf">
+      <div class="page-header">
+        <div>
+          <div class="page-title serif">书　迹</div>
+          <div class="page-subtitle" id="shelf-subtitle">加载中…</div>
+        </div>
+        <button class="btn-icon" onclick="goSettings()">⚙️</button>
+      </div>
+      <div class="search-wrap">
+        <div class="search-box">
+          <span class="search-icon">🔍</span>
+          <input id="search-input" placeholder="书名 / 作者 / 标签" oninput="renderShelf()">
+        </div>
+      </div>
+      <div class="filter-row" id="filter-row">
+        <button class="filter-pill active" onclick="setFilter('all',this)">全部</button>
+        <button class="filter-pill" onclick="setFilter('reading',this)">在读</button>
+        <button class="filter-pill" onclick="setFilter('done',this)">已读</button>
+        <button class="filter-pill" onclick="setFilter('want',this)">想读</button>
+        <button class="filter-pill" onclick="setFilter('dropped',this)">弃坑</button>
+      </div>
+      <div class="book-list" id="book-list"></div>
+    </div>
+
+    <!-- ═══ PAGE: STATS ═══ -->
+    <div class="page" id="page-stats">
+      <div class="page-header">
+        <div>
+          <div class="page-title serif">统　计</div>
+          <div class="page-subtitle">阅读数据一览</div>
+        </div>
+        <select id="stats-year" class="form-select" style="width:90px;padding:6px 28px 6px 10px;font-size:13px" onchange="renderStats()"></select>
+      </div>
+      <div class="stats-grid" id="stats-grid"></div>
+      <div class="chart-section">
+        <div class="chart-title">📌 标签分布</div>
+        <div class="bar-chart" id="tag-chart"></div>
+      </div>
+      <div class="chart-section">
+        <div class="chart-title">✍️ 最爱作者</div>
+        <div class="bar-chart" id="author-chart"></div>
+      </div>
+      <div class="chart-section">
+        <div class="chart-title">📅 月度阅读</div>
+        <div class="bar-chart" id="month-chart"></div>
+      </div>
+    </div>
+
+    <!-- ═══ PAGE: DETAIL (dynamic) ═══ -->
+    <div class="page" id="page-detail"></div>
+
+    <!-- ═══ PAGE: SETTINGS ═══ -->
+    <div class="page" id="page-settings">
+      <div class="page-header">
+        <div>
+          <div class="page-title serif">设　置</div>
+        </div>
+        <button style="background:none;border:none;font-size:22px;cursor:pointer" onclick="showPage('shelf')">←</button>
+      </div>
+      <div class="settings-list">
+        <div class="settings-item" onclick="editApiKey()">
+          <div class="settings-item-left">
+            <div class="settings-item-icon" style="background:#e8f4ee">🤖</div>
+            <div>
+              <div class="settings-item-title">Gemini API Key</div>
+              <div class="api-key-display" id="api-key-display">未设置</div>
+            </div>
+          </div>
+          <span class="settings-arrow">›</span>
+        </div>
+        <div class="settings-item" onclick="exportData()">
+          <div class="settings-item-left">
+            <div class="settings-item-icon" style="background:#fef3e2">📤</div>
+            <div>
+              <div class="settings-item-title">导出书单备份</div>
+              <div class="settings-item-sub">导出 JSON 文件到本地</div>
+            </div>
+          </div>
+          <span class="settings-arrow">›</span>
+        </div>
+        <div class="settings-item" onclick="importData()">
+          <div class="settings-item-left">
+            <div class="settings-item-icon" style="background:#fce8f0">📥</div>
+            <div>
+              <div class="settings-item-title">导入书单备份</div>
+              <div class="settings-item-sub">从 JSON 文件恢复数据</div>
+            </div>
+          </div>
+          <span class="settings-arrow">›</span>
+        </div>
+        <div class="settings-item" onclick="clearData()">
+          <div class="settings-item-left">
+            <div class="settings-item-icon" style="background:#fdecea">🗑️</div>
+            <div>
+              <div class="settings-item-title">清空所有数据</div>
+              <div class="settings-item-sub">危险操作，不可撤销</div>
+            </div>
+          </div>
+          <span class="settings-arrow">›</span>
+        </div>
+        <div class="settings-item" style="cursor:default">
+          <div class="settings-item-left">
+            <div class="settings-item-icon" style="background:#e8f0fe">ℹ️</div>
+            <div>
+              <div class="settings-item-title">书迹 v1.0</div>
+              <div class="settings-item-sub">数据存储于本地</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <input type="file" id="import-file" accept=".json" style="display:none" onchange="handleImport(event)">
+    </div>
+
+  </div><!-- /main -->
+
+  <!-- ── BOTTOM NAV ── -->
+  <nav id="nav">
+    <button class="nav-item active" id="nav-shelf" onclick="showPage('shelf')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 19V6a2 2 0 012-2h12a2 2 0 012 2v13M4 19a2 2 0 002 2h12a2 2 0 002-2M4 19h16M9 11h6"/></svg>
+      <span>书架</span>
+    </button>
+    <button class="nav-item" id="nav-stats" onclick="showPage('stats')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
+      <span>统计</span>
+    </button>
+  </nav>
+
+  <button class="fab" onclick="openAddSheet()" id="fab">＋</button>
+</div><!-- /app -->
+
+<!-- ── OVERLAY ── -->
+<div class="overlay" id="overlay" onclick="closeAllSheets()"></div>
+<div class="toast" id="toast"></div>
+
+<!-- ═══ ADD/EDIT BOOK SHEET ═══ -->
+<div class="sheet" id="sheet-book">
+  <div class="sheet-handle"></div>
+  <div class="sheet-header">
+    <span class="sheet-title" id="sheet-book-title">添加书籍</span>
+    <button class="sheet-close" onclick="closeSheet('sheet-book')">×</button>
+  </div>
+  <div class="sheet-body" id="sheet-book-body">
+    <div class="form-group">
+      <label class="form-label">书名 <span style="color:var(--pink2)">*</span></label>
+      <div style="display:flex;gap:8px">
+        <input class="form-input" id="f-title" placeholder="输入书名" style="flex:1">
+        <button class="btn btn-ghost" onclick="autoFetch()" style="white-space:nowrap;font-size:12px">🔍 抓取</button>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">作者</label>
+        <input class="form-input" id="f-author" placeholder="作者">
+      </div>
+      <div class="form-group">
+        <label class="form-label">平台</label>
+        <select class="form-select" id="f-platform">
+          <option value="晋江">晋江</option>
+          <option value="长佩">长佩</option>
+          <option value="长佩旧站">长佩旧站</option>
+          <option value="废文">废文</option>
+          <option value="其他">其他</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">阅读状态</label>
+        <select class="form-select" id="f-status">
+          <option value="done">已读</option>
+          <option value="reading">在读</option>
+          <option value="want">想读</option>
+          <option value="dropped">弃坑</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">阅读进度 %</label>
+        <input class="form-input" id="f-progress" type="number" min="0" max="100" placeholder="100">
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">简介</label>
+      <textarea class="form-textarea" id="f-summary" placeholder="作品简介（可自动抓取）" style="min-height:70px"></textarea>
+    </div>
+
+    <!-- TAG SYSTEM -->
+    <div class="form-group">
+      <label class="form-label">标签</label>
+      <div class="tag-categories" id="tag-categories"></div>
+    </div>
+
+    <!-- READING LOGS -->
+    <div class="form-group">
+      <label class="form-label">阅读记录</label>
+      <div class="read-logs" id="f-read-logs"></div>
+      <button class="add-log-btn" onclick="addReadLog()">＋ 添加阅读记录</button>
+    </div>
+  </div>
+  <div class="sheet-footer">
+    <button class="btn btn-ghost" style="flex:1" onclick="closeSheet('sheet-book')">取消</button>
+    <button class="btn btn-primary" style="flex:2" onclick="saveBook()">保存</button>
+  </div>
+</div>
+
+<!-- ═══ READ LOG MINI SHEET ═══ -->
+<div class="mini-sheet" id="mini-log">
+  <div style="font-family:'Noto Serif SC',serif;font-size:16px;font-weight:600;margin-bottom:16px" id="mini-log-title">添加阅读记录</div>
+  <div class="form-group">
+    <label class="form-label">读完日期</label>
+    <input class="form-input" id="log-date" type="date">
+  </div>
+  <div class="form-group">
+    <label class="form-label">评分</label>
+    <div class="rating-display">
+      <div class="rating-num" id="log-rating-num">3.0</div>
+      <div class="rating-label" id="log-nearby"></div>
+    </div>
+    <input class="rating-slider" id="log-rating" type="range" min="0" max="50" value="15" oninput="updateLogRating()">
+    <div class="nearby-books" id="log-nearby-books">滑动评分，将显示同分段的书籍</div>
+  </div>
+  <div class="form-group">
+    <label class="form-label">这次的感受</label>
+    <textarea class="form-textarea" id="log-review" placeholder="写下这次阅读的感受…"></textarea>
+  </div>
+  <div style="display:flex;gap:10px">
+    <button class="btn btn-ghost" style="flex:1" onclick="closeMiniLog()">取消</button>
+    <button class="btn btn-primary" style="flex:2" onclick="saveMiniLog()">保存记录</button>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════
+//  DATA LAYER
+// ═══════════════════════════════════════
+const STORE_KEY = 'shuji_v1';
+const TAG_CATS = [
+  {key:'shou', label:'受性格', color:0},
+  {key:'gong', label:'攻性格', color:1},
+  {key:'era',  label:'时代背景', color:2},
+  {key:'plot', label:'突出情节', color:3},
+  {key:'vibe', label:'作品氛围', color:4},
+  {key:'warn', label:'排雷',   color:5},
+];
+const STATUS_MAP = {done:'已读',reading:'在读',want:'想读',dropped:'弃坑'};
+const COVER_COLORS = ['#f2a8c4','#f5c4a1','#a8d5b5','#a8c4d5','#c4a8d5','#d5c4a8','#d5a8a8'];
+const PLATFORMS = ['晋江','长佩','长佩旧站','废文','其他'];
+
+let db = {books:[], tagHistory:{shou:[],gong:[],era:[],plot:[],vibe:[],warn:[]}, apiKey:''};
+let currentFilter = 'all';
+let editingBookId = null;
+let editingLogIdx = null;
+let currentLogDraft = {};
+
+function load(){
+  try{const s=localStorage.getItem(STORE_KEY);if(s)db=JSON.parse(s);}catch(e){}
+  if(!db.tagHistory){db.tagHistory={shou:[],gong:[],era:[],plot:[],vibe:[],warn:[]};}
+  TAG_CATS.forEach(c=>{if(!db.tagHistory[c.key])db.tagHistory[c.key]=[];});
+}
+function save(){localStorage.setItem(STORE_KEY,JSON.stringify(db));}
+function genId(){return Date.now().toString(36)+Math.random().toString(36).slice(2);}
+function coverColor(title){return COVER_COLORS[(title.charCodeAt(0)||0)%COVER_COLORS.length];}
+function coverText(title){return title.slice(0,4);}
+
+// ═══════════════════════════════════════
+//  NAVIGATION
+// ═══════════════════════════════════════
+let pageHistory = ['shelf'];
+function showPage(p){
+  document.querySelectorAll('.page').forEach(el=>el.classList.remove('active'));
+  document.getElementById('page-'+p).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(el=>el.classList.remove('active'));
+  const ni = document.getElementById('nav-'+p);
+  if(ni) ni.classList.add('active');
+  const fab = document.getElementById('fab');
+  fab.style.display = (p==='shelf') ? 'flex' : 'none';
+  pageHistory.push(p);
+  if(p==='stats') renderStats();
+  if(p==='shelf') renderShelf();
+  if(p==='settings') renderSettings();
+  window.scrollTo&&document.getElementById('main').scrollTo(0,0);
+}
+function goSettings(){showPage('settings');}
+
+// ═══════════════════════════════════════
+//  SHELF
+// ═══════════════════════════════════════
+function setFilter(f,el){
+  currentFilter=f;
+  document.querySelectorAll('.filter-pill').forEach(p=>p.classList.remove('active'));
+  el.classList.add('active');
+  renderShelf();
+}
+
+function renderShelf(){
+  const q=(document.getElementById('search-input').value||'').trim().toLowerCase();
+  let books=[...db.books];
+  if(currentFilter!=='all') books=books.filter(b=>b.status===currentFilter);
+  if(q) books=books.filter(b=>{
+    const tags=Object.values(b.tags||{}).flat().join(' ').toLowerCase();
+    return b.title.toLowerCase().includes(q)||
+           (b.author||'').toLowerCase().includes(q)||
+           tags.includes(q);
+  });
+  const list=document.getElementById('book-list');
+  const sub=document.getElementById('shelf-subtitle');
+  sub.textContent=`共 ${db.books.length} 本 · 已读 ${db.books.filter(b=>b.status==='done').length} 本`;
+  if(books.length===0){
+    list.innerHTML=`<div class="empty-state"><div class="empty-icon">📚</div><div class="empty-text">${q?'没有找到相关书籍':'还没有书籍记录'}</div><div class="empty-sub">${q?'换个关键词试试':'点击右下角 ＋ 添加第一本'}</div></div>`;
+    return;
+  }
+  list.innerHTML=books.map(b=>{
+    const logs=b.readLogs||[];
+    const latestLog=logs[logs.length-1];
+    const rating=latestLog?latestLog.rating:null;
+    const allTags=Object.entries(b.tags||{}).flatMap(([k,arr])=>arr.map(t=>({t,ci:TAG_CATS.findIndex(c=>c.key===k)})));
+    const tagsHtml=allTags.slice(0,4).map(({t,ci})=>`<span class="tag-chip tag-${ci}">${t}</span>`).join('');
+    const progress=b.progress||0;
+    const readCount=logs.length;
+    return `<div class="book-card fade-in" onclick="openDetail('${b.id}')">
+      <div class="book-cover" style="background:${coverColor(b.title)}">${coverText(b.title)}</div>
+      <div class="book-info">
+        <div class="book-title-row">
+          <div class="book-title">${b.title}</div>
+          ${rating!==null?`<span class="book-rating-badge">★ ${rating.toFixed(1)}</span>`:''}
+        </div>
+        <div class="book-author">${b.author||'未知作者'} · ${b.platform||''}</div>
+        <div class="book-tags-row">${tagsHtml}</div>
+        <div class="book-meta">
+          <span class="badge badge-pink">${STATUS_MAP[b.status]||b.status}</span>
+          ${readCount>1?`<span class="read-count-badge">${readCount}刷</span>`:''}
+          ${b.readLogs&&b.readLogs[0]&&b.readLogs[0].date?`<span>${b.readLogs[b.readLogs.length-1].date||''}</span>`:''}
+        </div>
+        ${progress<100?`<div class="status-bar"><div class="status-fill" style="width:${progress}%"></div></div>`:''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ═══════════════════════════════════════
+//  DETAIL
+// ═══════════════════════════════════════
+function openDetail(id){
+  const b=db.books.find(x=>x.id===id);
+  if(!b) return;
+  const logs=b.readLogs||[];
+  const allTags=Object.entries(b.tags||{}).flatMap(([k,arr])=>arr.map(t=>({t,ci:TAG_CATS.findIndex(c=>c.key===k),label:TAG_CATS.find(c=>c.key===k)?.label})));
+  const tagsHtml=allTags.map(({t,ci})=>`<span class="tag-chip tag-${ci}" style="font-size:12px;padding:4px 12px">${t}</span>`).join('');
+  const logsHtml=logs.length?logs.map((l,i)=>`
+    <div class="read-log-item">
+      <div class="read-log-header">
+        <span class="read-log-num">第 ${i+1} 刷</span>
+        <span class="read-log-date">${l.date||''}</span>
+        <span class="read-log-rating">★ ${(l.rating||0).toFixed(1)}</span>
+      </div>
+      <div class="read-log-review">${l.review||'无感想记录'}</div>
+      <button class="read-log-edit" onclick="event.stopPropagation();editLog('${id}',${i})">✏️</button>
+    </div>`).join(''):`<div style="color:var(--text3);font-size:13px;text-align:center;padding:16px">暂无阅读记录</div>`;
+  const progress=b.progress||0;
+  document.getElementById('page-detail').innerHTML=`
+    <div class="detail-hero">
+      <button class="detail-back" onclick="showPage('shelf')">←</button>
+      <div class="detail-cover" style="background:${coverColor(b.title)}">${coverText(b.title)}</div>
+      <div class="detail-title">${b.title}</div>
+      <div class="detail-author">${b.author||'未知作者'}</div>
+      <div class="detail-badges">
+        <span class="badge badge-pink">${STATUS_MAP[b.status]||''}</span>
+        <span class="badge badge-green">${b.platform||''}</span>
+        ${logs.length>1?`<span class="badge badge-yellow">${logs.length} 刷</span>`:''}
+      </div>
+    </div>
+    <div class="detail-body">
+      ${progress>0&&progress<100?`<div class="detail-section"><div class="detail-section-title">阅读进度</div><div class="status-row"><div class="status-bar-big"><div class="status-fill-big" style="width:${progress}%"></div></div><div class="status-pct">${progress}%</div></div></div>`:''}
+      ${allTags.length?`<div class="detail-section"><div class="detail-section-title">标签</div><div style="display:flex;flex-wrap:wrap;gap:6px">${tagsHtml}</div></div>`:''}
+      ${b.summary?`<div class="detail-section"><div class="detail-section-title">简介</div><div style="font-size:13px;color:var(--text2);line-height:1.7">${b.summary}</div></div>`:''}
+      <div class="detail-section">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+          <div class="detail-section-title" style="margin-bottom:0">阅读记录</div>
+          <button class="btn btn-ghost" style="font-size:12px;padding:5px 12px" onclick="quickAddLog('${id}')">＋ 添加记录</button>
+        </div>
+        <div class="read-logs">${logsHtml}</div>
+      </div>
+      <div style="display:flex;gap:10px;margin-top:8px">
+        <button class="btn btn-ghost" style="flex:1;padding:12px" onclick="openEditSheet('${id}')">✏️ 编辑书籍</button>
+        <button class="btn" style="flex:1;padding:12px;background:var(--red2);color:#fff;font-size:14px" onclick="deleteBook('${id}')">🗑️ 删除</button>
+      </div>
+    </div>`;
+  showPage('detail');
+}
+
+function deleteBook(id){
+  if(!confirm('确定删除这本书吗？')) return;
+  db.books=db.books.filter(b=>b.id!==id);
+  save();
+  showPage('shelf');
+  toast('已删除');
+}
+
+// ═══════════════════════════════════════
+//  ADD / EDIT SHEET
+// ═══════════════════════════════════════
+function openAddSheet(){
+  editingBookId=null;
+  document.getElementById('sheet-book-title').textContent='添加书籍';
+  document.getElementById('f-title').value='';
+  document.getElementById('f-author').value='';
+  document.getElementById('f-platform').value='晋江';
+  document.getElementById('f-status').value='done';
+  document.getElementById('f-progress').value='100';
+  document.getElementById('f-summary').value='';
+  renderTagCategories({});
+  renderReadLogs([]);
+  openSheet('sheet-book');
+}
+
+function openEditSheet(id){
+  const b=db.books.find(x=>x.id===id);
+  if(!b) return;
+  editingBookId=id;
+  document.getElementById('sheet-book-title').textContent='编辑书籍';
+  document.getElementById('f-title').value=b.title||'';
+  document.getElementById('f-author').value=b.author||'';
+  document.getElementById('f-platform').value=b.platform||'晋江';
+  document.getElementById('f-status').value=b.status||'done';
+  document.getElementById('f-progress').value=b.progress||100;
+  document.getElementById('f-summary').value=b.summary||'';
+  renderTagCategories(b.tags||{});
+  renderReadLogs(b.readLogs||[]);
+  closeAllSheets();
+  setTimeout(()=>openSheet('sheet-book'),100);
+}
+
+let formTags={};
+let formLogs=[];
+
+function renderTagCategories(existing){
+  formTags={};
+  TAG_CATS.forEach(c=>{formTags[c.key]=[...(existing[c.key]||[])];});
+  const wrap=document.getElementById('tag-categories');
+  wrap.innerHTML=TAG_CATS.map((c,ci)=>{
+    const hist=db.tagHistory[c.key]||[];
+    const sel=formTags[c.key]||[];
+    const chipsHtml=hist.map(t=>`<button type="button" class="tag-chip-sel cat-${ci} ${sel.includes(t)?'selected':''}" onclick="toggleTag('${c.key}','${t}',this)">${t}</button>`).join('');
+    return `<div class="tag-category">
+      <div class="tag-category-label"><span>${c.label}</span><span style="color:var(--text3);font-size:10px">${sel.length?sel.join('、'):''}</span></div>
+      <div class="tag-chips-wrap" id="chips-${c.key}">${chipsHtml}</div>
+      <div class="tag-add-row">
+        <input class="tag-add-input" id="taginput-${c.key}" placeholder="输入新标签…" onkeydown="if(event.key==='Enter'){addNewTag('${c.key}');event.preventDefault()}">
+        <button type="button" class="tag-add-btn" onclick="addNewTag('${c.key}')">添加</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function toggleTag(catKey,tag,el){
+  const arr=formTags[catKey];
+  const idx=arr.indexOf(tag);
+  if(idx>-1){arr.splice(idx,1);el.classList.remove('selected');}
+  else{arr.push(tag);el.classList.add('selected');}
+  const cat=TAG_CATS.find(c=>c.key===catKey);
+  const labelEl=el.closest('.tag-category').querySelector('.tag-category-label span:last-child');
+  if(labelEl) labelEl.textContent=arr.length?arr.join('、'):'';
+}
+
+function addNewTag(catKey){
+  const inp=document.getElementById('taginput-'+catKey);
+  const val=inp.value.trim();
+  if(!val) return;
+  inp.value='';
+  if(!db.tagHistory[catKey].includes(val)){
+    db.tagHistory[catKey].push(val);
+    save();
+  }
+  if(!formTags[catKey].includes(val)) formTags[catKey].push(val);
+  const ci=TAG_CATS.findIndex(c=>c.key===catKey);
+  const chips=document.getElementById('chips-'+catKey);
+  // re-render chips
+  const hist=db.tagHistory[catKey]||[];
+  const sel=formTags[catKey]||[];
+  chips.innerHTML=hist.map(t=>`<button type="button" class="tag-chip-sel cat-${ci} ${sel.includes(t)?'selected':''}" onclick="toggleTag('${catKey}','${t}',this)">${t}</button>`).join('');
+}
+
+function renderReadLogs(logs){
+  formLogs=logs.map(l=>({...l}));
+  refreshLogsUI();
+}
+
+function refreshLogsUI(){
+  const wrap=document.getElementById('f-read-logs');
+  wrap.innerHTML=formLogs.map((l,i)=>`
+    <div class="read-log-item">
+      <div class="read-log-header">
+        <span class="read-log-num">第 ${i+1} 刷</span>
+        <span class="read-log-date">${l.date||'未填日期'}</span>
+        <span class="read-log-rating">★ ${(l.rating||0).toFixed(1)}</span>
+      </div>
+      <div class="read-log-review" style="font-size:12px">${l.review||'无感想'}</div>
+      <button class="read-log-edit" onclick="editFormLog(${i})">✏️</button>
+    </div>`).join('');
+}
+
+function addReadLog(){
+  editingLogIdx=null;
+  currentLogDraft={date:new Date().toISOString().slice(0,10),rating:3,review:''};
+  openMiniLog();
+}
+
+function editFormLog(i){
+  editingLogIdx=i;
+  currentLogDraft={...formLogs[i]};
+  openMiniLog();
+}
+
+function editLog(bookId, i){
+  const b=db.books.find(x=>x.id===bookId);
+  if(!b) return;
+  editingBookId=bookId;
+  editingLogIdx=i;
+  currentLogDraft={...b.readLogs[i]};
+  formLogs=[...(b.readLogs||[])];
+  openMiniLog(true);
+}
+
+function quickAddLog(bookId){
+  editingBookId=bookId;
+  editingLogIdx=null;
+  const b=db.books.find(x=>x.id===bookId);
+  formLogs=[...(b.readLogs||[])];
+  currentLogDraft={date:new Date().toISOString().slice(0,10),rating:3,review:''};
+  openMiniLog(true);
+}
+
+let miniLogSaveToBook=false;
+function openMiniLog(saveToBook=false){
+  miniLogSaveToBook=saveToBook;
+  document.getElementById('log-date').value=currentLogDraft.date||new Date().toISOString().slice(0,10);
+  const sliderVal=Math.round((currentLogDraft.rating||3)*10);
+  document.getElementById('log-rating').value=sliderVal;
+  document.getElementById('log-rating-num').textContent=(sliderVal/10).toFixed(1);
+  document.getElementById('log-review').value=currentLogDraft.review||'';
+  document.getElementById('mini-log-title').textContent=editingLogIdx!==null?'编辑阅读记录':'添加阅读记录';
+  updateLogRating();
+  document.getElementById('mini-log').classList.add('show');
+  document.getElementById('overlay').classList.add('show');
+}
+
+function closeMiniLog(){
+  document.getElementById('mini-log').classList.remove('show');
+  document.getElementById('overlay').classList.remove('show');
+}
+
+function updateLogRating(){
+  const v=parseInt(document.getElementById('log-rating').value);
+  const r=v/10;
+  document.getElementById('log-rating-num').textContent=r.toFixed(1);
+  // show nearby books
+  const nearby=db.books.filter(b=>{
+    const logs=b.readLogs||[];
+    return logs.some(l=>Math.abs((l.rating||0)-r)<0.15);
+  }).map(b=>b.title).slice(0,5);
+  const nbEl=document.getElementById('log-nearby-books');
+  if(nearby.length){
+    nbEl.textContent=`${r.toFixed(1)} 分附近：${nearby.join('、')}`;
+  } else {
+    nbEl.textContent='这个分段暂无其他书籍';
+  }
+}
+
+function saveMiniLog(){
+  const r=parseInt(document.getElementById('log-rating').value)/10;
+  const log={
+    date:document.getElementById('log-date').value,
+    rating:r,
+    review:document.getElementById('log-review').value
+  };
+  if(editingLogIdx!==null){
+    formLogs[editingLogIdx]=log;
+  } else {
+    formLogs.push(log);
+  }
+  if(miniLogSaveToBook && editingBookId){
+    const b=db.books.find(x=>x.id===editingBookId);
+    if(b){
+      b.readLogs=formLogs;
+      save();
+      toast('记录已保存');
+      closeMiniLog();
+      openDetail(editingBookId);
+      return;
+    }
+  }
+  refreshLogsUI();
+  closeMiniLog();
+}
+
+function saveBook(){
+  const title=document.getElementById('f-title').value.trim();
+  if(!title){toast('请填写书名');return;}
+  const book={
+    id: editingBookId||genId(),
+    title,
+    author:document.getElementById('f-author').value.trim(),
+    platform:document.getElementById('f-platform').value,
+    status:document.getElementById('f-status').value,
+    progress:parseInt(document.getElementById('f-progress').value)||100,
+    summary:document.getElementById('f-summary').value.trim(),
+    tags:{...formTags},
+    readLogs:[...formLogs],
+    updatedAt:Date.now()
+  };
+  if(editingBookId){
+    const idx=db.books.findIndex(b=>b.id===editingBookId);
+    if(idx>-1) db.books[idx]=book;
+  } else {
+    db.books.unshift(book);
+  }
+  save();
+  closeSheet('sheet-book');
+  renderShelf();
+  toast(editingBookId?'已更新':'已添加 🎉');
+}
+
+// ═══════════════════════════════════════
+//  AUTO FETCH
+// ═══════════════════════════════════════
+async function autoFetch(){
+  const title=document.getElementById('f-title').value.trim();
+  const platform=document.getElementById('f-platform').value;
+  if(!title){toast('请先填写书名');return;}
+  if(!db.apiKey){toast('请先在设置中填写 API Key');return;}
+  toast('正在获取…');
+  try{
+    const prompt=`请帮我查找网文《${title}》（平台：${platform}）的以下信息，用JSON格式回复，不要有任何其他内容：
+{"author":"作者名","summary":"100字左右的简介","tags":{"gong":"攻的性格特点（2-3个词用顿号分隔）","shou":"受的性格特点","era":"时代背景（如现代、古代、架空等）","plot":"主要情节亮点","vibe":"作品氛围（如甜宠、虐心、搞笑等）"}}
+如果不知道某项，填空字符串。`;
+    const res=await callGemini(prompt);
+    const json=JSON.parse(res.replace(/```json|```/g,'').trim());
+    if(json.author) document.getElementById('f-author').value=json.author;
+    if(json.summary) document.getElementById('f-summary').value=json.summary;
+    if(json.tags){
+      Object.entries(json.tags).forEach(([k,v])=>{
+        if(!v) return;
+        const vals=v.split(/[、，,]/g).map(s=>s.trim()).filter(Boolean);
+        vals.forEach(t=>{
+          if(t&&!db.tagHistory[k]?.includes(t)){db.tagHistory[k]=(db.tagHistory[k]||[]).concat(t);}
+          if(t&&!formTags[k]?.includes(t)){(formTags[k]=formTags[k]||[]).push(t);}
+        });
+      });
+      save();
+      renderTagCategories(formTags);
+    }
+    toast('获取成功 ✨');
+  }catch(e){
+    toast('获取失败，请手动填写');
+    console.error(e);
+  }
+}
+
+async function callGemini(prompt){
+  const res=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${db.apiKey}`,{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({contents:[{parts:[{text:prompt}]}]})
+  });
+  if(!res.ok) throw new Error('API error '+res.status);
+  const data=await res.json();
+  return data.candidates[0].content.parts[0].text;
+}
+
+// ═══════════════════════════════════════
+//  STATS
+// ═══════════════════════════════════════
+function renderStats(){
+  const yearSel=document.getElementById('stats-year');
+  const years=[...new Set(db.books.flatMap(b=>(b.readLogs||[]).map(l=>l.date?.slice(0,4))).filter(Boolean))].sort().reverse();
+  if(years.length===0) years.push(new Date().getFullYear().toString());
+  yearSel.innerHTML=['全部',...years].map(y=>`<option value="${y}">${y}</option>`).join('');
+  const selYear=yearSel.value||'全部';
+
+  let books=db.books;
+  let logs=books.flatMap(b=>(b.readLogs||[]).map(l=>({...l,bookId:b.id,title:b.title,author:b.author,tags:b.tags})));
+  if(selYear!=='全部') logs=logs.filter(l=>l.date?.startsWith(selYear));
+
+  const totalBooks=new Set(logs.map(l=>l.bookId)).size;
+  const totalLogs=logs.length;
+  const ratings=logs.filter(l=>l.rating).map(l=>l.rating);
+  const avgRating=ratings.length?(ratings.reduce((a,b)=>a+b,0)/ratings.length):0;
+  const rereadBooks=db.books.filter(b=>(b.readLogs||[]).length>1).length;
+
+  document.getElementById('stats-grid').innerHTML=`
+    <div class="stat-card"><div class="stat-num">${totalBooks}</div><div class="stat-label">阅读书目</div></div>
+    <div class="stat-card"><div class="stat-num">${totalLogs}</div><div class="stat-label">阅读次数</div></div>
+    <div class="stat-card"><div class="stat-num">${avgRating?avgRating.toFixed(1):'—'}</div><div class="stat-label">平均评分</div></div>
+    <div class="stat-card"><div class="stat-num">${rereadBooks}</div><div class="stat-label">二刷以上</div></div>`;
+
+  // Tag chart
+  const tagFreq={};
+  logs.forEach(l=>{
+    Object.values(l.tags||{}).flat().forEach(t=>{tagFreq[t]=(tagFreq[t]||0)+1;});
+  });
+  renderBarChart('tag-chart',tagFreq,6);
+
+  // Author chart
+  const authorFreq={};
+  logs.forEach(l=>{if(l.author)authorFreq[l.author]=(authorFreq[l.author]||0)+1;});
+  renderBarChart('author-chart',authorFreq,5);
+
+  // Month chart
+  const monthFreq={};
+  logs.forEach(l=>{if(l.date){const m=l.date.slice(0,7);monthFreq[m]=(monthFreq[m]||0)+1;}});
+  renderBarChart('month-chart',monthFreq,12,true);
+}
+
+function renderBarChart(id,freq,maxItems,sortByKey=false){
+  const el=document.getElementById(id);
+  let entries=Object.entries(freq);
+  if(sortByKey) entries.sort((a,b)=>a[0].localeCompare(b[0]));
+  else entries.sort((a,b)=>b[1]-a[1]);
+  entries=entries.slice(0,maxItems);
+  if(!entries.length){el.innerHTML='<div style="color:var(--text3);font-size:12px;text-align:center;padding:8px">暂无数据</div>';return;}
+  const max=Math.max(...entries.map(e=>e[1]));
+  el.innerHTML=entries.map(([k,v])=>`
+    <div class="bar-row">
+      <div class="bar-name" title="${k}">${k}</div>
+      <div class="bar-track"><div class="bar-fill" style="width:${Math.round(v/max*100)}%"><span class="bar-val">${v}</span></div></div>
+    </div>`).join('');
+}
+
+// ═══════════════════════════════════════
+//  SETTINGS
+// ═══════════════════════════════════════
+function renderSettings(){
+  const keyEl=document.getElementById('api-key-display');
+  keyEl.textContent=db.apiKey?db.apiKey.slice(0,8)+'…（已设置）':'未设置';
+}
+
+function editApiKey(){
+  const key=prompt('请输入 Gemini API Key\n（在 aistudio.google.com 获取）',db.apiKey||'');
+  if(key===null) return;
+  db.apiKey=key.trim();
+  save();
+  renderSettings();
+  toast('API Key 已保存');
+}
+
+function exportData(){
+  const data=JSON.stringify(db,null,2);
+  const blob=new Blob([data],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;
+  a.download=`shuji_backup_${new Date().toISOString().slice(0,10)}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  toast('导出成功');
+}
+
+function importData(){document.getElementById('import-file').click();}
+function handleImport(e){
+  const file=e.target.files[0];
+  if(!file) return;
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    try{
+      const data=JSON.parse(ev.target.result);
+      if(!data.books) throw new Error('格式错误');
+      if(!confirm(`确定导入？将覆盖现有 ${db.books.length} 本书的数据。`)) return;
+      db=data;
+      save();
+      renderShelf();
+      toast(`导入成功，共 ${db.books.length} 本书`);
+    }catch(err){toast('文件格式错误');}
+  };
+  reader.readAsText(file);
+  e.target.value='';
+}
+
+function clearData(){
+  if(!confirm('确定清空所有数据？此操作不可撤销！')) return;
+  db={books:[],tagHistory:{shou:[],gong:[],era:[],plot:[],vibe:[],warn:[]},apiKey:db.apiKey};
+  save();
+  renderShelf();
+  toast('已清空');
+}
+
+// ═══════════════════════════════════════
+//  SHEET HELPERS
+// ═══════════════════════════════════════
+function openSheet(id){
+  document.getElementById(id).classList.add('show');
+  document.getElementById('overlay').classList.add('show');
+}
+function closeSheet(id){
+  document.getElementById(id).classList.remove('show');
+  document.getElementById('overlay').classList.remove('show');
+}
+function closeAllSheets(){
+  document.querySelectorAll('.sheet,.mini-sheet').forEach(s=>s.classList.remove('show'));
+  document.getElementById('overlay').classList.remove('show');
+}
+
+// ═══════════════════════════════════════
+//  TOAST
+// ═══════════════════════════════════════
+let toastTimer;
+function toast(msg){
+  const el=document.getElementById('toast');
+  el.textContent=msg;
+  el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>el.classList.remove('show'),2200);
+}
+
+// ═══════════════════════════════════════
+//  INIT
+// ═══════════════════════════════════════
+load();
+renderShelf();
+
+// stats year init
+const nowYear=new Date().getFullYear().toString();
+const yearSel=document.getElementById('stats-year');
+if(yearSel) yearSel.value=nowYear;
+</script>
+</body>
+</html>
