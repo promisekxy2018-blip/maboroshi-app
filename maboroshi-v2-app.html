@@ -99,7 +99,6 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
 .book-list.view-diary .book-card{position:relative;border:1px solid #efd4c4;background:repeating-linear-gradient(0deg,#fffdf9 0,#fffdf9 27px,#f7eadf 28px);box-shadow:0 5px 18px rgba(172,112,92,0.14);transform:rotate(-0.35deg);border-radius:10px 16px 16px 10px}
 .book-list.view-diary .book-card:nth-child(even){transform:rotate(0.3deg)}
 .book-list.view-diary .book-card::before{content:'';position:absolute;left:-9px;top:13px;width:18px;height:34px;border-radius:9px;background:rgba(255,255,255,.75);border:1px solid #efd4c4;box-shadow:0 42px 0 rgba(255,255,255,.75),0 84px 0 rgba(255,255,255,.75)}
-.book-list.view-diary .book-card::after{content:'読完';position:absolute;right:18px;bottom:10px;background:#f6b5c9;color:white;font-size:10px;padding:3px 10px;border-radius:3px;transform:rotate(-2deg);opacity:.82}
 .book-list.view-diary .book-cover,.book-list.view-diary .book-cover-art{box-shadow:3px 4px 0 rgba(232,130,159,.18);border:3px solid rgba(255,255,255,.7)}
 .book-list.view-magic{padding-top:10px}
 .book-list.view-magic .book-card{position:relative;background:linear-gradient(140deg,#fffaf1 0%,#f7efff 58%,#fff8f3 100%);border-color:#dcc6ef;box-shadow:0 8px 26px rgba(103,83,150,0.18);border-radius:18px}
@@ -397,6 +396,15 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
       <div class="stats-grid" id="stats-grid"></div>
       <div class="chart-section">
         <div class="chart-title">📌 标签分布</div>
+        <select id="tag-stats-cat" class="form-select" style="margin-bottom:10px;padding:7px 32px 7px 10px;font-size:13px" onchange="renderStats()">
+          <option value="all">全部标签</option>
+          <option value="shou">受性格</option>
+          <option value="gong">攻性格</option>
+          <option value="era">时代背景</option>
+          <option value="plot">突出情节</option>
+          <option value="vibe">作品氛围</option>
+          <option value="warn">排雷</option>
+        </select>
         <div class="stat-list" id="tag-chart"></div>
       </div>
       <div class="chart-section">
@@ -511,7 +519,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
           <div class="settings-item-left">
             <div class="settings-item-icon" style="background:#e8f0fe">ℹ️</div>
             <div>
-              <div class="settings-item-title">幻 maboroshi v2.7</div>
+              <div class="settings-item-title">幻 maboroshi v2.8</div>
               <div class="settings-item-sub">数据和密码均存储于本地</div>
             </div>
           </div>
@@ -624,7 +632,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
       <label class="form-label">书名 <span style="color:var(--pink2)">*</span></label>
       <div style="display:flex;gap:8px">
         <input class="form-input" id="f-title" placeholder="输入书名" style="flex:1">
-        <button class="btn btn-ghost" onclick="autoFetch()" style="white-space:nowrap;font-size:12px">🔍 抓取</button>
+        <button class="btn btn-ghost" onclick="autoFetch()" style="white-space:nowrap;font-size:12px">🔍 AI补全</button>
       </div>
     </div>
     <div class="form-row">
@@ -662,6 +670,18 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
     <div class="form-group">
       <label class="form-label">完结年份</label>
       <input class="form-input" id="f-finish-year" inputmode="numeric" pattern="[0-9]*" placeholder="例如 2024">
+    </div>
+    <div class="form-group">
+      <label class="form-label">作品阅读时间</label>
+      <select class="form-select" id="f-read-period">
+        <option value="">不确定 / 未填写</option>
+        <option value="初中">初中</option>
+        <option value="高中">高中</option>
+        <option value="大学">大学</option>
+        <option value="研究生">研究生</option>
+        <option value="工作后">工作后</option>
+        <option value="其他">其他</option>
+      </select>
     </div>
     <div class="form-group">
       <label class="form-label">简介</label>
@@ -975,7 +995,7 @@ function renderBookCard(b,opts={}){
         <div class="book-title">${escapeHtml(b.title)}</div>
         ${rating!==null?`<span class="book-rating-badge">★ ${rating.toFixed(1)}</span>`:''}
       </div>
-      <div class="book-author">${escapeHtml(b.author||'未知作者')} · ${escapeHtml(b.platform||'')}${b.finishYear?` · ${escapeHtml(b.finishYear)}完结`:''}</div>
+      <div class="book-author">${escapeHtml(b.author||'未知作者')} · ${escapeHtml(b.platform||'')}${b.finishYear?` · ${escapeHtml(b.finishYear)}完结`:''}${b.readPeriod?` · ${escapeHtml(b.readPeriod)}读`:''}</div>
       ${opts.excerpt&&excerpt?`<div class="book-quote">“${escapeHtml(excerpt)}”</div>`:''}
       <div class="book-tags-row">${tagsHtml}</div>
       <div class="book-meta">
@@ -1150,6 +1170,7 @@ function openDetail(id){
       ${progress>0&&progress<100?`<div class="detail-section"><div class="detail-section-title">阅读进度</div><div class="status-row"><div class="status-bar-big"><div class="status-fill-big" style="width:${progress}%"></div></div><div class="status-pct">${progress}%</div></div></div>`:''}
       ${tagGroups.length?`<div class="detail-section"><div class="detail-section-title">标签</div>${tagsHtml}</div>`:''}
       ${b.finishYear?`<div class="detail-section"><div class="detail-section-title">完结年份</div><div style="font-size:13px;color:var(--text2);line-height:1.7">${escapeHtml(b.finishYear)} 年</div></div>`:''}
+      ${b.readPeriod?`<div class="detail-section"><div class="detail-section-title">作品阅读时间</div><div style="font-size:13px;color:var(--text2);line-height:1.7">${escapeHtml(b.readPeriod)}</div></div>`:''}
       ${b.summary?`<div class="detail-section"><div class="detail-section-title">简介</div><div style="font-size:13px;color:var(--text2);line-height:1.7">${escapeHtml(b.summary)}</div></div>`:''}
       <div class="detail-section">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
@@ -1186,6 +1207,7 @@ function openAddSheet(){
   document.getElementById('f-status').value='done';
   document.getElementById('f-progress').innerHTML=progressOptions(100);
   document.getElementById('f-finish-year').value='';
+  document.getElementById('f-read-period').value='';
   document.getElementById('f-summary').value='';
   renderTagCategories({});
   renderReadLogs([]);
@@ -1226,6 +1248,7 @@ function importBatchBooks(){
       progress:0,
       summary:'',
       finishYear:'',
+      readPeriod:'',
       tags:{shou:[],gong:[],era:[],plot:[],vibe:[],warn:[]},
       readLogs:[],
       updatedAt:Date.now()
@@ -1249,6 +1272,7 @@ function openEditSheet(id){
   document.getElementById('f-status').value=b.status||'done';
   document.getElementById('f-progress').innerHTML=progressOptions(b.progress??100);
   document.getElementById('f-finish-year').value=b.finishYear||'';
+  document.getElementById('f-read-period').value=b.readPeriod||'';
   document.getElementById('f-summary').value=b.summary||'';
   renderTagCategories(b.tags||{});
   renderReadLogs(b.readLogs||[]);
@@ -1499,6 +1523,7 @@ function saveBook(){
     status:document.getElementById('f-status').value,
     progress:parseInt(document.getElementById('f-progress').value),
     finishYear:document.getElementById('f-finish-year').value.trim(),
+    readPeriod:document.getElementById('f-read-period').value,
     summary:document.getElementById('f-summary').value.trim(),
     tags:{...formTags},
     readLogs:[...formLogs],
@@ -1523,15 +1548,20 @@ async function autoFetch(){
   const title=document.getElementById('f-title').value.trim();
   const platform=document.getElementById('f-platform').value;
   if(!title){toast('请先填写书名');return;}
-  if(!db.apiKey){toast('请先在设置中填写 API Key');return;}
-  toast('正在获取…');
+  if(!db.apiKey){toast('请先在设置中填写 Gemini API Key');return;}
+  toast('正在补全作品信息…');
   try{
-    const prompt=`请帮我查找网文《${title}》（平台：${platform}）的以下信息，用JSON格式回复，不要有任何其他内容：
-{"author":"作者名","summary":"100字左右的简介","tags":{"gong":"攻的性格特点（2-3个词用顿号分隔）","shou":"受的性格特点","era":"时代背景（如现代、古代、架空等）","plot":"主要情节亮点","vibe":"作品氛围（如甜宠、虐心、搞笑等）"}}
-如果不知道某项，填空字符串。`;
+    const prompt=`请帮我补全 BL/耽美网文《${title}》的信息。优先参考晋江文学城、长佩文学（新站/旧站）的公开作品信息；如果无法确定，不要编造，填空字符串。
+请只回复 JSON，不要有任何解释或 Markdown：
+{"author":"作者名","platform":"晋江/长佩/长佩旧站/废文/其他/空字符串","finishYear":"完结年份，只填四位数字或空字符串","summary":"80到140字作品简介","sourceHint":"你判断的信息来源或空字符串","tags":{"gong":"攻的性格特点，2-3个词用顿号分隔","shou":"受的性格特点，2-3个词用顿号分隔","era":"时代背景，如现代、古代、架空等","plot":"突出情节亮点，2-4个词用顿号分隔","vibe":"作品氛围，2-4个词用顿号分隔"}}
+当前用户选择的平台是：${platform}。`;
     const res=await callGemini(prompt);
     const json=JSON.parse(res.replace(/```json|```/g,'').trim());
     if(json.author) document.getElementById('f-author').value=json.author;
+    if(json.platform&&[...document.getElementById('f-platform').options].some(o=>o.value===json.platform)){
+      document.getElementById('f-platform').value=json.platform;
+    }
+    if(json.finishYear) document.getElementById('f-finish-year').value=String(json.finishYear).replace(/[^\d]/g,'').slice(0,4);
     if(json.summary) document.getElementById('f-summary').value=json.summary;
     if(json.tags){
       Object.entries(json.tags).forEach(([k,v])=>{
@@ -1545,9 +1575,9 @@ async function autoFetch(){
       save();
       renderTagCategories(formTags);
     }
-    toast('获取成功 ✨');
+    toast(json.sourceHint?`补全成功：${json.sourceHint}`:'补全成功 ✨');
   }catch(e){
-    toast('获取失败，请手动填写');
+    toast('补全失败，请手动填写');
     console.error(e);
   }
 }
@@ -1595,8 +1625,10 @@ function renderStats(){
 
   // Tag chart
   const tagFreq={};
+  const tagCat=document.getElementById('tag-stats-cat')?.value||'all';
   logs.forEach(l=>{
-    Object.values(l.tags||{}).flat().forEach(t=>{tagFreq[t]=(tagFreq[t]||0)+1;});
+    const tags=tagCat==='all'?Object.values(l.tags||{}).flat():(l.tags?.[tagCat]||[]);
+    tags.forEach(t=>{tagFreq[t]=(tagFreq[t]||0)+1;});
   });
   renderStatPreview('tag-chart',normalizeStats(tagFreq),'tag');
 
@@ -1716,7 +1748,11 @@ function getStatsIndex(type){
   }
   if(type==='tag'){
     const stats={};
-    logs.forEach(l=>Object.values(l.tags||{}).flat().forEach(t=>{stats[t]=(stats[t]||0)+1;}));
+    const cat=document.getElementById('tag-stats-cat')?.value||'all';
+    logs.forEach(l=>{
+      const tags=cat==='all'?Object.values(l.tags||{}).flat():(l.tags?.[cat]||[]);
+      tags.forEach(t=>{stats[t]=(stats[t]||0)+1;});
+    });
     return normalizeStats(stats);
   }
   const stats={};
@@ -1749,7 +1785,9 @@ function openStatsBooks(title,books){
 }
 
 function openStatsIndex(type){
-  const title=type==='author'?'按作者统计':type==='tag'?'按标签统计':'按月份统计';
+  const tagCat=document.getElementById('tag-stats-cat')?.value||'all';
+  const tagName=tagCat==='all'?'全部标签':(TAG_CATS.find(c=>c.key===tagCat)?.label||'标签');
+  const title=type==='author'?'按作者统计':type==='tag'?`按标签统计 · ${tagName}`:'按月份统计';
   statsModal={mode:type,title,items:getStatsIndex(type),books:[]};
   openStatsModal(title,'点击条目查看对应书籍');
   renderStatsModal();
