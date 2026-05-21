@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="112" fill="#fdf6f0"/>
+  <circle cx="360" cy="152" r="76" fill="#f2a8c4" opacity="0.82"/>
+  <path d="M126 132c0-22 18-40 40-40h180c22 0 40 18 40 40v260c0 18-15 28-31 19l-99-55-99 55c-16 9-31-1-31-19V132Z" fill="#fff8f3" stroke="#e8829f" stroke-width="18" stroke-linejoin="round"/>
+  <path d="M176 164h160M176 214h120M176 264h142" stroke="#7a5c4e" stroke-width="20" stroke-linecap="round"/>
+  <text x="256" y="380" text-anchor="middle" font-family="serif" font-size="92" font-weight="700" fill="#e8829f">幻</text>
+</svg>

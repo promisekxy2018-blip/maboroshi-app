@@ -6,8 +6,12 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="幻">
+<meta name="description" content="记录书评、标签、阅读次数和评分的私人读书记录 App">
 <meta name="theme-color" content="#fdf6f0">
 <title>幻</title>
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="icon" href="./icon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=Noto+Sans+SC:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
@@ -232,9 +236,12 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
   <div style="font-family:'Noto Serif SC',serif;font-size:48px;font-weight:700;color:var(--pink2);margin-bottom:8px">幻</div>
   <div style="font-size:13px;color:var(--text3);margin-bottom:40px;letter-spacing:0.1em">我的阅读记录</div>
   <div style="width:100%;max-width:280px;display:flex;flex-direction:column;gap:12px">
+    <div id="lock-hint" style="text-align:center;font-size:13px;color:var(--text2);line-height:1.6">请输入启动密码</div>
     <input id="lock-input" type="password" placeholder="请输入密码" class="form-input" style="text-align:center;font-size:16px;letter-spacing:0.15em"
       onkeydown="if(event.key==='Enter')checkPassword()">
-    <button class="btn btn-primary" style="width:100%;padding:13px;font-size:15px" onclick="checkPassword()">进入</button>
+    <input id="lock-input-confirm" type="password" placeholder="再次输入密码" class="form-input" style="display:none;text-align:center;font-size:16px;letter-spacing:0.15em"
+      onkeydown="if(event.key==='Enter')checkPassword()">
+    <button class="btn btn-primary" id="lock-submit" style="width:100%;padding:13px;font-size:15px" onclick="checkPassword()">进入</button>
     <div id="lock-err" style="text-align:center;font-size:12px;color:var(--red2);min-height:18px"></div>
   </div>
 </div>
@@ -312,12 +319,32 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
           </div>
           <span class="settings-arrow">›</span>
         </div>
+        <div class="settings-item" onclick="changePassword()">
+          <div class="settings-item-left">
+            <div class="settings-item-icon" style="background:#fce8f0">🔒</div>
+            <div>
+              <div class="settings-item-title">修改启动密码</div>
+              <div class="settings-item-sub">密码只保存在当前浏览器本地</div>
+            </div>
+          </div>
+          <span class="settings-arrow">›</span>
+        </div>
+        <div class="settings-item" onclick="lockNow()">
+          <div class="settings-item-left">
+            <div class="settings-item-icon" style="background:#eef4ff">🌙</div>
+            <div>
+              <div class="settings-item-title">立即锁定</div>
+              <div class="settings-item-sub">下次进入需要重新输入密码</div>
+            </div>
+          </div>
+          <span class="settings-arrow">›</span>
+        </div>
         <div class="settings-item" onclick="exportData()">
           <div class="settings-item-left">
             <div class="settings-item-icon" style="background:#fef3e2">📤</div>
             <div>
               <div class="settings-item-title">导出书单备份</div>
-              <div class="settings-item-sub">导出 JSON 文件到本地</div>
+              <div class="settings-item-sub">导出 JSON 文件，不包含 API Key</div>
             </div>
           </div>
           <span class="settings-arrow">›</span>
@@ -346,8 +373,8 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
           <div class="settings-item-left">
             <div class="settings-item-icon" style="background:#e8f0fe">ℹ️</div>
             <div>
-              <div class="settings-item-title">书迹 v1.0</div>
-              <div class="settings-item-sub">数据存储于本地</div>
+              <div class="settings-item-title">幻 maboroshi v2.0</div>
+              <div class="settings-item-sub">数据和密码均存储于本地</div>
             </div>
           </div>
         </div>
@@ -476,7 +503,9 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
 // ═══════════════════════════════════════
 //  DATA LAYER
 // ═══════════════════════════════════════
+const APP_VERSION = '2.0.0';
 const STORE_KEY = 'shuji_v1';
+const LOCK_KEY = 'maboroshi_lock_v2';
 const TAG_CATS = [
   {key:'shou', label:'受性格', color:0},
   {key:'gong', label:'攻性格', color:1},
@@ -987,15 +1016,24 @@ function editApiKey(){
 }
 
 function exportData(){
-  const data=JSON.stringify(db,null,2);
+  const backup={
+    app:'maboroshi',
+    version:APP_VERSION,
+    exportedAt:new Date().toISOString(),
+    data:{
+      books:db.books||[],
+      tagHistory:db.tagHistory||{shou:[],gong:[],era:[],plot:[],vibe:[],warn:[]}
+    }
+  };
+  const data=JSON.stringify(backup,null,2);
   const blob=new Blob([data],{type:'application/json'});
   const url=URL.createObjectURL(blob);
   const a=document.createElement('a');
   a.href=url;
-  a.download=`shuji_backup_${new Date().toISOString().slice(0,10)}.json`;
+  a.download=`maboroshi_backup_${new Date().toISOString().slice(0,10)}.json`;
   a.click();
   URL.revokeObjectURL(url);
-  toast('导出成功');
+  toast('导出成功（不含 API Key）');
 }
 
 function importData(){document.getElementById('import-file').click();}
@@ -1005,10 +1043,16 @@ function handleImport(e){
   const reader=new FileReader();
   reader.onload=ev=>{
     try{
-      const data=JSON.parse(ev.target.result);
+      const raw=JSON.parse(ev.target.result);
+      const data=raw.data||raw;
       if(!data.books) throw new Error('格式错误');
       if(!confirm(`确定导入？将覆盖现有 ${db.books.length} 本书的数据。`)) return;
-      db=data;
+      db={
+        books:data.books||[],
+        tagHistory:data.tagHistory||{shou:[],gong:[],era:[],plot:[],vibe:[],warn:[]},
+        apiKey:db.apiKey||''
+      };
+      TAG_CATS.forEach(c=>{if(!db.tagHistory[c.key])db.tagHistory[c.key]=[];});
       save();
       renderShelf();
       toast(`导入成功，共 ${db.books.length} 本书`);
@@ -1024,6 +1068,24 @@ function clearData(){
   save();
   renderShelf();
   toast('已清空');
+}
+
+async function changePassword(){
+  const next=prompt('请输入新的启动密码（至少 6 位）');
+  if(next===null) return;
+  if(next.length<6){toast('密码至少 6 位');return;}
+  const again=prompt('请再次输入新的启动密码');
+  if(again===null) return;
+  if(next!==again){toast('两次密码不一致');return;}
+  await savePassword(next);
+  toast('启动密码已更新');
+}
+
+function lockNow(){
+  sessionStorage.removeItem(SESSION_KEY);
+  document.getElementById('app').style.display='none';
+  document.getElementById('lockscreen').style.display='flex';
+  prepareLockScreen();
 }
 
 // ═══════════════════════════════════════
@@ -1057,34 +1119,97 @@ function toast(msg){
 // ═══════════════════════════════════════
 //  LOCK SCREEN
 // ═══════════════════════════════════════
-const PWD='aisuoyicunzai!202020';
 const SESSION_KEY='maboroshi_unlocked';
 
-function checkPassword(){
+function hasPassword(){return !!localStorage.getItem(LOCK_KEY);}
+function getBytes(text){return new TextEncoder().encode(text);}
+function toHex(buffer){return [...new Uint8Array(buffer)].map(b=>b.toString(16).padStart(2,'0')).join('');}
+function randomSalt(){
+  const arr=new Uint8Array(16);
+  if(window.crypto?.getRandomValues) crypto.getRandomValues(arr);
+  else for(let i=0;i<arr.length;i++) arr[i]=Math.floor(Math.random()*256);
+  return toHex(arr);
+}
+function simpleHash(text){
+  let h=2166136261;
+  for(let i=0;i<text.length;i++){h^=text.charCodeAt(i);h=Math.imul(h,16777619);}
+  return (h>>>0).toString(16).padStart(8,'0');
+}
+async function hashPassword(password,salt){
+  if(window.crypto?.subtle){
+    const key=await crypto.subtle.importKey('raw',getBytes(password),'PBKDF2',false,['deriveBits']);
+    const bits=await crypto.subtle.deriveBits({name:'PBKDF2',salt:getBytes(salt),iterations:120000,hash:'SHA-256'},key,256);
+    return 'pbkdf2$'+salt+'$'+toHex(bits);
+  }
+  return 'fallback$'+salt+'$'+simpleHash(salt+password);
+}
+async function savePassword(password){
+  const salt=randomSalt();
+  localStorage.setItem(LOCK_KEY,await hashPassword(password,salt));
+}
+async function verifyPassword(password){
+  const stored=localStorage.getItem(LOCK_KEY);
+  if(!stored) return false;
+  const [method,salt,hash]=stored.split('$');
+  if(!method||!salt||!hash) return false;
+  if(method==='fallback') return simpleHash(salt+password)===hash;
+  return (await hashPassword(password,salt))===stored;
+}
+function unlockApp(){
+  sessionStorage.setItem(SESSION_KEY,'1');
+  document.getElementById('lockscreen').style.display='none';
+  document.getElementById('app').style.display='flex';
+  load();
+  renderShelf();
+}
+function prepareLockScreen(){
+  const setup=!hasPassword();
+  document.getElementById('lock-hint').textContent=setup?'第一次使用，请设置启动密码':'请输入启动密码';
+  document.getElementById('lock-submit').textContent=setup?'保存并进入':'进入';
+  document.getElementById('lock-input').placeholder=setup?'设置启动密码':'请输入密码';
+  document.getElementById('lock-input').value='';
+  document.getElementById('lock-input-confirm').value='';
+  document.getElementById('lock-input-confirm').style.display=setup?'block':'none';
+  document.getElementById('lock-err').textContent='';
+  setTimeout(()=>document.getElementById('lock-input').focus(),300);
+}
+function showLockError(msg){
+  document.getElementById('lock-err').textContent=msg;
+  document.getElementById('lock-input').value='';
+  document.getElementById('lock-input-confirm').value='';
+  setTimeout(()=>document.getElementById('lock-err').textContent='',2200);
+}
+async function checkPassword(){
   const val=document.getElementById('lock-input').value;
-  if(val===PWD){
-    sessionStorage.setItem(SESSION_KEY,'1');
-    document.getElementById('lockscreen').style.display='none';
-    document.getElementById('app').style.display='flex';
-    load();
-    renderShelf();
+  if(!hasPassword()){
+    const confirmVal=document.getElementById('lock-input-confirm').value;
+    if(val.length<6){showLockError('密码至少 6 位');return;}
+    if(val!==confirmVal){showLockError('两次密码不一致');return;}
+    await savePassword(val);
+    unlockApp();
+    return;
+  }
+  if(await verifyPassword(val)){
+    unlockApp();
   } else {
-    document.getElementById('lock-err').textContent='密码错误，请重试';
-    document.getElementById('lock-input').value='';
-    setTimeout(()=>document.getElementById('lock-err').textContent='',2000);
+    showLockError('密码错误，请重试');
+  }
+}
+
+function registerPwa(){
+  if('serviceWorker' in navigator && location.protocol.startsWith('http')){
+    navigator.serviceWorker.register('./service-worker.js').catch(()=>{});
   }
 }
 
 // ═══════════════════════════════════════
 //  INIT
 // ═══════════════════════════════════════
-if(sessionStorage.getItem(SESSION_KEY)==='1'){
-  document.getElementById('lockscreen').style.display='none';
-  document.getElementById('app').style.display='flex';
-  load();
-  renderShelf();
+registerPwa();
+if(sessionStorage.getItem(SESSION_KEY)==='1' && hasPassword()){
+  unlockApp();
 } else {
-  setTimeout(()=>document.getElementById('lock-input').focus(),300);
+  prepareLockScreen();
 }
 
 

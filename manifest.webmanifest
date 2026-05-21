@@ -1,0 +1,20 @@
+{
+  "name": "幻 maboroshi",
+  "short_name": "幻",
+  "description": "私人读书记录、评分、标签和阅读统计 App",
+  "start_url": "./maboroshi-v2-app.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#fdf6f0",
+  "theme_color": "#fdf6f0",
+  "lang": "zh-CN",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "./icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
