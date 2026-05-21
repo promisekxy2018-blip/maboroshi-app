@@ -240,8 +240,21 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
 .book-list.compact .book-card{box-shadow:none}
 .stat-card.clickable{cursor:pointer;transition:box-shadow 0.2s}
 .stat-card.clickable:active{box-shadow:var(--shadow2)}
-.bar-row.clickable{cursor:pointer}
-.bar-meta{font-size:9px;color:#fff;font-weight:600;margin-left:4px;white-space:nowrap}
+.stat-list{display:flex;flex-direction:column;gap:8px}
+.stat-list-item{background:var(--card);border:1px solid var(--border);border-radius:var(--r2);padding:10px 12px;display:flex;align-items:center;justify-content:space-between;gap:10px;cursor:pointer}
+.stat-list-main{min-width:0}
+.stat-list-name{font-size:13px;color:var(--text);font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.stat-list-meta{font-size:11px;color:var(--text3);margin-top:2px}
+.stat-list-num{font-size:12px;color:var(--pink2);font-weight:700;white-space:nowrap}
+.stats-modal{position:fixed;inset:0;background:var(--bg2);z-index:203;transform:translateY(100%);transition:transform 0.3s cubic-bezier(0.32,0.72,0,1);display:flex;flex-direction:column}
+.stats-modal.show{transform:translateY(0)}
+.stats-modal-header{padding:18px 18px 12px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:12px}
+.stats-modal-title{font-family:'Noto Serif SC',serif;font-size:18px;font-weight:700;color:var(--text);min-width:0}
+.stats-modal-sub{font-size:11px;color:var(--text3);margin-top:2px}
+.stats-modal-body{flex:1;overflow-y:auto;padding:14px 16px 90px;-webkit-overflow-scrolling:touch}
+.stats-modal-controls{display:flex;gap:8px;margin-bottom:12px;overflow-x:auto}
+.stats-modal-controls .form-select{width:auto;min-width:112px;padding:8px 30px 8px 10px;font-size:12px}
+.stats-close{width:36px;height:36px;border:none;border-radius:50%;background:var(--pink3);color:var(--pink2);font-size:20px;cursor:pointer;flex-shrink:0}
 
 .fade-in{animation:fadeIn 0.3s ease}
 @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
@@ -300,34 +313,17 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
         <select id="stats-year" class="form-select" style="width:90px;padding:6px 28px 6px 10px;font-size:13px" onchange="renderStats()"></select>
       </div>
       <div class="stats-grid" id="stats-grid"></div>
-      <div class="stats-control-row">
-        <select id="stats-kind" class="form-select" onchange="renderStats()">
-          <option value="all">全部书籍</option>
-          <option value="author">按作者统计</option>
-          <option value="tag">按标签统计</option>
-        </select>
-        <select id="stats-sort" class="form-select" onchange="renderStatsDrill()">
-          <option value="date-desc">最近阅读</option>
-          <option value="rating-desc">评分高到低</option>
-          <option value="rating-asc">评分低到高</option>
-          <option value="title-asc">书名 A-Z</option>
-        </select>
-      </div>
-      <div class="chart-section" id="stats-drill-section" style="display:none">
-        <div class="chart-title" id="stats-drill-title">阅读书目</div>
-        <div class="book-list compact" id="stats-drill-list"></div>
-      </div>
       <div class="chart-section">
         <div class="chart-title">📌 标签分布</div>
-        <div class="bar-chart" id="tag-chart"></div>
+        <div class="stat-list" id="tag-chart"></div>
       </div>
       <div class="chart-section">
         <div class="chart-title">✍️ 最爱作者</div>
-        <div class="bar-chart" id="author-chart"></div>
+        <div class="stat-list" id="author-chart"></div>
       </div>
       <div class="chart-section">
         <div class="chart-title">📅 月度阅读</div>
-        <div class="bar-chart" id="month-chart"></div>
+        <div class="stat-list" id="month-chart"></div>
       </div>
     </div>
 
@@ -417,7 +413,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
           <div class="settings-item-left">
             <div class="settings-item-icon" style="background:#e8f0fe">ℹ️</div>
             <div>
-              <div class="settings-item-title">幻 maboroshi v2.1</div>
+              <div class="settings-item-title">幻 maboroshi v2.2</div>
               <div class="settings-item-sub">数据和密码均存储于本地</div>
             </div>
           </div>
@@ -446,6 +442,21 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
 <!-- ── OVERLAY ── -->
 <div class="overlay" id="overlay" onclick="closeAllSheets()"></div>
 <div class="toast" id="toast"></div>
+
+<!-- ═══ STATS DETAIL MODAL ═══ -->
+<div class="stats-modal" id="stats-modal">
+  <div class="stats-modal-header">
+    <div style="min-width:0">
+      <div class="stats-modal-title" id="stats-modal-title">统计明细</div>
+      <div class="stats-modal-sub" id="stats-modal-sub">点击条目查看对应书籍</div>
+    </div>
+    <button class="stats-close" onclick="closeStatsModal()">×</button>
+  </div>
+  <div class="stats-modal-body">
+    <div class="stats-modal-controls" id="stats-modal-controls"></div>
+    <div id="stats-modal-content"></div>
+  </div>
+</div>
 
 <!-- ═══ BATCH IMPORT SHEET ═══ -->
 <div class="sheet" id="sheet-batch">
@@ -586,7 +597,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
 // ═══════════════════════════════════════
 //  DATA LAYER
 // ═══════════════════════════════════════
-const APP_VERSION = '2.1.0';
+const APP_VERSION = '2.2.0';
 const STORE_KEY = 'shuji_v1';
 const LOCK_KEY = 'maboroshi_lock_v2';
 const TAG_CATS = [
@@ -609,8 +620,7 @@ let editingBookId = null;
 let editingLogIdx = null;
 let currentLogDraft = {};
 let statsSort = 'date-desc';
-let statsDrillBooks = [];
-let statsDrillTitle = '阅读书目';
+let statsModal = {mode:'books', title:'统计明细', items:[], books:[]};
 let tagHoldTimer = null;
 
 function load(){
@@ -1199,17 +1209,17 @@ function renderStats(){
   const rereadBooks=booksInPeriod.filter(b=>(b.readLogs||[]).length>1).length;
 
   document.getElementById('stats-grid').innerHTML=`
-    <div class="stat-card clickable" onclick="showStatsBooks('阅读书目', getStatsBooksForCurrentPeriod())"><div class="stat-num">${totalBooks}</div><div class="stat-label">阅读书目</div></div>
-    <div class="stat-card clickable" onclick="showStatsBooks('阅读次数对应书目', getStatsBooksForCurrentPeriod())"><div class="stat-num">${totalLogs}</div><div class="stat-label">阅读次数</div></div>
+    <div class="stat-card clickable" onclick="openStatsBooks('阅读书目', getStatsBooksForCurrentPeriod())"><div class="stat-num">${totalBooks}</div><div class="stat-label">阅读书目</div></div>
+    <div class="stat-card"><div class="stat-num">${totalLogs}</div><div class="stat-label">阅读次数</div></div>
     <div class="stat-card"><div class="stat-num">${avgRating?avgRating.toFixed(1):'—'}</div><div class="stat-label">平均评分</div></div>
-    <div class="stat-card clickable" onclick="showStatsBooks('二刷以上', getStatsBooksForCurrentPeriod().filter(b=>(b.readLogs||[]).length>1))"><div class="stat-num">${rereadBooks}</div><div class="stat-label">二刷以上</div></div>`;
+    <div class="stat-card clickable" onclick="openStatsBooks('二刷以上', getStatsBooksForCurrentPeriod().filter(b=>(b.readLogs||[]).length>1))"><div class="stat-num">${rereadBooks}</div><div class="stat-label">二刷以上</div></div>`;
 
   // Tag chart
   const tagFreq={};
   logs.forEach(l=>{
     Object.values(l.tags||{}).flat().forEach(t=>{tagFreq[t]=(tagFreq[t]||0)+1;});
   });
-  renderBarChart('tag-chart',tagFreq,8,false,'tag');
+  renderStatPreview('tag-chart',normalizeStats(tagFreq),'tag');
 
   // Author chart
   const authorStats={};
@@ -1219,37 +1229,41 @@ function renderStats(){
     authorStats[l.author].count++;
     if(l.rating) authorStats[l.author].ratings.push(l.rating);
   });
-  renderBarChart('author-chart',authorStats,8,false,'author');
+  renderStatPreview('author-chart',normalizeStats(authorStats).sort((a,b)=>(b.avg??0)-(a.avg??0)||b.count-a.count||a.name.localeCompare(b.name,'zh-CN')),'author');
 
   // Month chart
   const monthFreq={};
   logs.forEach(l=>{if(l.date){const m=l.date.slice(0,7);monthFreq[m]=(monthFreq[m]||0)+1;}});
-  renderBarChart('month-chart',monthFreq,12,true,'month');
-
-  const kind=document.getElementById('stats-kind')?.value||'all';
-  if(kind==='all') showStatsBooks('阅读书目', booksInPeriod, false);
-  if(kind==='author') showStatsBooks('选择作者查看书目', [], false);
-  if(kind==='tag') showStatsBooks('选择标签查看书目', [], false);
+  renderStatPreview('month-chart',normalizeStats(monthFreq).sort((a,b)=>b.name.localeCompare(a.name)),'month');
 }
 
-function renderBarChart(id,freq,maxItems,sortByKey=false,type='plain'){
-  const el=document.getElementById(id);
-  let entries=Object.entries(freq);
-  entries=entries.map(([k,v])=>{
-    if(typeof v==='number') return [k,{count:v,avg:null}];
+function normalizeStats(freq){
+  return Object.entries(freq).map(([name,v])=>{
+    if(typeof v==='number') return {name,count:v,avg:null};
     const avg=v.ratings&&v.ratings.length?(v.ratings.reduce((a,b)=>a+b,0)/v.ratings.length):null;
-    return [k,{count:v.count||0,avg}];
+    return {name,count:v.count||0,avg};
   });
-  if(sortByKey) entries.sort((a,b)=>a[0].localeCompare(b[0]));
-  else entries.sort((a,b)=>b[1].count-a[1].count);
-  entries=entries.slice(0,maxItems);
-  if(!entries.length){el.innerHTML='<div style="color:var(--text3);font-size:12px;text-align:center;padding:8px">暂无数据</div>';return;}
-  const max=Math.max(...entries.map(e=>e[1].count));
-  el.innerHTML=entries.map(([k,v])=>`
-    <div class="bar-row ${type==='author'||type==='tag'||type==='month'?'clickable':''}" ${type==='author'?`onclick="showBooksByAuthor(decodeURIComponent('${encodeURIComponent(k)}'))"`:''} ${type==='tag'?`onclick="showBooksByTag(decodeURIComponent('${encodeURIComponent(k)}'))"`:''} ${type==='month'?`onclick="showBooksByMonth(decodeURIComponent('${encodeURIComponent(k)}'))"`:''}>
-      <div class="bar-name" title="${k}">${k}</div>
-      <div class="bar-track"><div class="bar-fill" style="width:${Math.round(v.count/max*100)}%"><span class="bar-val">${v.count}${v.avg?`<span class="bar-meta">均 ${v.avg.toFixed(1)}</span>`:''}</span></div></div>
-    </div>`).join('');
+}
+
+function renderStatPreview(id,items,type){
+  const el=document.getElementById(id);
+  const top=items.slice(0,5);
+  if(!top.length){el.innerHTML='<div style="color:var(--text3);font-size:12px;text-align:center;padding:8px">暂无数据</div>';return;}
+  const allTitle=type==='author'?'全部作者':type==='tag'?'全部标签':'全部月份';
+  el.innerHTML=top.map(item=>statListItem(item,type)).join('')+
+    `<div class="stat-list-item" onclick="openStatsIndex('${type}')"><div class="stat-list-main"><div class="stat-list-name">${allTitle}</div><div class="stat-list-meta">查看完整列表与排序</div></div><div class="stat-list-num">›</div></div>`;
+}
+
+function statListItem(item,type){
+  const encoded=encodeURIComponent(item.name);
+  const meta=[`${item.count} 次`, item.avg?`均分 ${item.avg.toFixed(1)}`:null].filter(Boolean).join(' · ');
+  return `<div class="stat-list-item" onclick="openStatsBooksBy('${type}',decodeURIComponent('${encoded}'))">
+    <div class="stat-list-main">
+      <div class="stat-list-name">${escapeHtml(item.name)}</div>
+      <div class="stat-list-meta">${meta}</div>
+    </div>
+    <div class="stat-list-num">›</div>
+  </div>`;
 }
 
 function getStatsBooksForCurrentPeriod(){
@@ -1260,12 +1274,22 @@ function getStatsBooksForCurrentPeriod(){
 }
 
 function sortBooksForStats(books){
-  const sort=document.getElementById('stats-sort')?.value||'date-desc';
+  const sort=document.getElementById('modal-book-sort')?.value||'date-desc';
   const arr=[...books];
   if(sort==='rating-desc') arr.sort((a,b)=>(getLatestRating(b)??-1)-(getLatestRating(a)??-1));
   else if(sort==='rating-asc') arr.sort((a,b)=>(getLatestRating(a)??99)-(getLatestRating(b)??99));
   else if(sort==='title-asc') arr.sort((a,b)=>a.title.localeCompare(b.title,'zh-CN'));
   else arr.sort((a,b)=>(getLatestDate(b)||'').localeCompare(getLatestDate(a)||''));
+  return arr;
+}
+
+function sortIndexItems(items){
+  const sort=document.getElementById('modal-index-sort')?.value||'count-desc';
+  const arr=[...items];
+  if(sort==='rating-desc') arr.sort((a,b)=>(b.avg??0)-(a.avg??0)||b.count-a.count||a.name.localeCompare(b.name,'zh-CN'));
+  else if(sort==='rating-asc') arr.sort((a,b)=>(a.avg??99)-(b.avg??99)||b.count-a.count||a.name.localeCompare(b.name,'zh-CN'));
+  else if(sort==='name-asc') arr.sort((a,b)=>a.name.localeCompare(b.name,'zh-CN'));
+  else arr.sort((a,b)=>b.count-a.count||a.name.localeCompare(b.name,'zh-CN'));
   return arr;
 }
 
@@ -1291,34 +1315,90 @@ function renderStatsBookCard(b){
   </div>`;
 }
 
-function showStatsBooks(title,books,scroll=true){
-  statsDrillTitle=title;
-  statsDrillBooks=books||[];
-  renderStatsDrill();
-  if(scroll) document.getElementById('stats-drill-section')?.scrollIntoView({behavior:'smooth',block:'start'});
+function getStatsIndex(type){
+  const logs=getStatsLogsForCurrentPeriod();
+  if(type==='author'){
+    const stats={};
+    logs.forEach(l=>{
+      if(!l.author) return;
+      if(!stats[l.author]) stats[l.author]={count:0,ratings:[]};
+      stats[l.author].count++;
+      if(l.rating) stats[l.author].ratings.push(l.rating);
+    });
+    return normalizeStats(stats);
+  }
+  if(type==='tag'){
+    const stats={};
+    logs.forEach(l=>Object.values(l.tags||{}).flat().forEach(t=>{stats[t]=(stats[t]||0)+1;}));
+    return normalizeStats(stats);
+  }
+  const stats={};
+  logs.forEach(l=>{if(l.date){const m=l.date.slice(0,7);stats[m]=(stats[m]||0)+1;}});
+  return normalizeStats(stats);
 }
 
-function renderStatsDrill(){
-  const section=document.getElementById('stats-drill-section');
-  const list=document.getElementById('stats-drill-list');
-  const title=document.getElementById('stats-drill-title');
-  if(!section||!list||!title) return;
-  section.style.display='block';
-  title.textContent=`${statsDrillTitle}（${statsDrillBooks.length} 本）`;
-  const books=sortBooksForStats(statsDrillBooks);
-  list.innerHTML=books.length?books.map(renderStatsBookCard).join(''):'<div style="color:var(--text3);font-size:12px;text-align:center;padding:8px">点击作者、标签或统计卡片查看书目</div>';
+function getStatsLogsForCurrentPeriod(){
+  const y=document.getElementById('stats-year')?.value||'全部';
+  let logs=db.books.flatMap(b=>(b.readLogs||[]).map(l=>({...l,bookId:b.id,title:b.title,author:b.author,tags:b.tags})));
+  if(y!=='全部') logs=logs.filter(l=>l.date?.startsWith(y));
+  return logs;
 }
 
-function showBooksByAuthor(author){
-  showStatsBooks(`作者：${author}`, getStatsBooksForCurrentPeriod().filter(b=>b.author===author));
+function openStatsModal(title,sub){
+  document.getElementById('stats-modal-title').textContent=title;
+  document.getElementById('stats-modal-sub').textContent=sub||'';
+  document.getElementById('stats-modal').classList.add('show');
 }
 
-function showBooksByTag(tag){
-  showStatsBooks(`标签：${tag}`, getStatsBooksForCurrentPeriod().filter(b=>Object.values(b.tags||{}).some(arr=>arr.includes(tag))));
+function closeStatsModal(){
+  document.getElementById('stats-modal').classList.remove('show');
 }
 
-function showBooksByMonth(month){
-  showStatsBooks(`月份：${month}`, db.books.filter(b=>(b.readLogs||[]).some(l=>l.date?.startsWith(month))));
+function openStatsBooks(title,books){
+  statsModal={mode:'books',title,books:books||[],items:[]};
+  openStatsModal(title,`${statsModal.books.length} 本书`);
+  renderStatsModal();
+}
+
+function openStatsIndex(type){
+  const title=type==='author'?'按作者统计':type==='tag'?'按标签统计':'按月份统计';
+  statsModal={mode:type,title,items:getStatsIndex(type),books:[]};
+  openStatsModal(title,'点击条目查看对应书籍');
+  renderStatsModal();
+}
+
+function openStatsBooksBy(type,value){
+  if(type==='author') openStatsBooks(`作者：${value}`, getStatsBooksForCurrentPeriod().filter(b=>b.author===value));
+  else if(type==='tag') openStatsBooks(`标签：${value}`, getStatsBooksForCurrentPeriod().filter(b=>Object.values(b.tags||{}).some(arr=>arr.includes(value))));
+  else openStatsBooks(`月份：${value}`, db.books.filter(b=>(b.readLogs||[]).some(l=>l.date?.startsWith(value))));
+}
+
+function renderStatsModal(){
+  const controls=document.getElementById('stats-modal-controls');
+  const content=document.getElementById('stats-modal-content');
+  if(statsModal.mode==='books'){
+    const prev=document.getElementById('modal-book-sort')?.value||'date-desc';
+    controls.innerHTML=`<select id="modal-book-sort" class="form-select" onchange="renderStatsModal()">
+      <option value="date-desc">最近阅读</option>
+      <option value="rating-desc">评分高到低</option>
+      <option value="rating-asc">评分低到高</option>
+      <option value="title-asc">书名 A-Z</option>
+    </select>`;
+    document.getElementById('modal-book-sort').value=prev;
+    const books=sortBooksForStats(statsModal.books);
+    content.innerHTML=`<div class="book-list compact">${books.length?books.map(renderStatsBookCard).join(''):'<div style="color:var(--text3);font-size:12px;text-align:center;padding:16px">暂无书籍</div>'}</div>`;
+    return;
+  }
+  const prev=document.getElementById('modal-index-sort')?.value||'count-desc';
+  controls.innerHTML=`<select id="modal-index-sort" class="form-select" onchange="renderStatsModal()">
+    <option value="count-desc">数量多到少</option>
+    <option value="rating-desc">评分高到低</option>
+    <option value="rating-asc">评分低到高</option>
+    <option value="name-asc">名称 A-Z</option>
+  </select>`;
+  document.getElementById('modal-index-sort').value=prev;
+  const items=sortIndexItems(statsModal.items);
+  content.innerHTML=`<div class="stat-list">${items.length?items.map(item=>statListItem(item,statsModal.mode)).join(''):'<div style="color:var(--text3);font-size:12px;text-align:center;padding:16px">暂无数据</div>'}</div>`;
 }
 
 // ═══════════════════════════════════════
