@@ -1,5 +1,5 @@
 {
   "rewrites": [
-    { "source": "/(.*)", "destination": "/maboroshi-app.html" }
+    { "source": "/(.*)", "destination": "/maboroshi-v2-app.html" }
   ]
 }
