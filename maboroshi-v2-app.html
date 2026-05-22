@@ -718,7 +718,7 @@ body.magic-theme .author-wait-card{border-color:rgba(116,110,183,.18)}
           <div class="settings-item-left">
             <div class="settings-item-icon" style="background:#e8f0fe">ℹ️</div>
             <div>
-              <div class="settings-item-title">幻 maboroshi v2.25</div>
+              <div class="settings-item-title">幻 maboroshi v2.26</div>
               <div class="settings-item-sub">数据和密码均存储于本地</div>
             </div>
           </div>
@@ -980,7 +980,7 @@ body.magic-theme .author-wait-card{border-color:rgba(116,110,183,.18)}
 // ═══════════════════════════════════════
 //  DATA LAYER
 // ═══════════════════════════════════════
-const APP_VERSION = '2.15.0';
+const APP_VERSION = '2.16.0';
 const STORE_KEY = 'shuji_v1';
 const LOCK_KEY = 'maboroshi_lock_v2';
 const TAG_CATS = [
@@ -1016,6 +1016,7 @@ let suppressNextPop = false;
 let edgeTouch = null;
 let autoFetchBusy = false;
 let aiCandidateState = {draft:null,items:[]};
+let skipSourceLocateOnce = false;
 
 function load(){
   try{const s=localStorage.getItem(STORE_KEY);if(s)db=JSON.parse(s);}catch(e){}
@@ -2008,6 +2009,53 @@ async function searchBookCandidates(draft){
   }
 }
 
+async function locateKnownBookSource(draft){
+  const title=draft.title.trim();
+  const author=draft.author.trim();
+  toast('先定位作品平台，再做深度补全…');
+  const prompt=`请为一本 BL/耽美网文做轻量定位，只确认它最可能在哪个平台，不要梳理剧情，不要生成标签。
+已知书名：《${title}》
+已知作者：${author}
+请优先查晋江文学城、长佩文学新站、长佩旧站；只有书名和作者同时匹配时才返回。废文如果能可靠确认也可以返回；不要因为用户当前平台是“未知/其他”扩大到泛搜索。
+请只回复 JSON，不要解释或 Markdown；最多返回 3 个匹配：
+{"candidates":[{"title":"书名","author":"作者名","platform":"晋江/长佩/长佩旧站/废文/其他/空字符串","summary":"官方简介或可帮助辨认的简介摘要，40到120字","sourceHint":"定位依据或空字符串"}]}`;
+  const json=parseGeminiJson(await callGemini(prompt));
+  return (Array.isArray(json.candidates)?json.candidates:[]).filter(x=>x&&x.title&&x.author&&x.platform).slice(0,3);
+}
+
+async function prepareUnknownSource(draft){
+  try{
+    const items=await locateKnownBookSource(draft);
+    if(items.length===1){
+      const item=items[0];
+      restoreBookFormDraft({
+        ...draft,
+        title:item.title||draft.title,
+        author:item.author||draft.author,
+        platform:item.platform||draft.platform,
+        summary:draft.summary||item.summary||''
+      });
+      toast(`已定位到${item.platform}，继续深度补全`);
+      skipSourceLocateOnce=true;
+      setAutoFetchBusy(false);
+      await autoFetch();
+      return true;
+    }
+    if(items.length>1){
+      aiCandidateState={draft,items};
+      renderBookCandidates(items);
+      closeAllSheets();
+      setTimeout(()=>openSheet('sheet-ai-candidates'),80);
+      toast('平台还不够确定，先选中那一本');
+      return true;
+    }
+  }catch(e){
+    console.error(e);
+    toast(formatGeminiError(e,'平台定位失败'));
+  }
+  return false;
+}
+
 function chooseBookCandidate(index){
   const item=aiCandidateState.items[index];
   const draft=aiCandidateState.draft;
@@ -2022,6 +2070,7 @@ function chooseBookCandidate(index){
   closeSheet('sheet-ai-candidates');
   openSheet('sheet-book');
   toast(`已选《${item.title}》，继续深度补全`);
+  skipSourceLocateOnce=true;
   autoFetch();
 }
 
@@ -2037,6 +2086,14 @@ async function autoFetch(){
     await searchBookCandidates(draft);
     return;
   }
+  if(!skipSourceLocateOnce && (platform==='未知'||platform==='其他')){
+    setAutoFetchBusy(true);
+    const handled=await prepareUnknownSource(draft);
+    setAutoFetchBusy(false);
+    if(handled) return;
+    toast('没先定位到平台，继续按书名和作者深抓');
+  }
+  skipSourceLocateOnce=false;
   setAutoFetchBusy(true);
   toast('作品在后台补全中，可以先离开编辑页');
   try{
