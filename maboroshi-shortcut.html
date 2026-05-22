@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#394678">
+<title>幻快捷入口</title>
+<link rel="icon" href="./maboroshi-icon-v3.png" type="image/png">
+<style>
+*{box-sizing:border-box}
+html,body{min-height:100%;margin:0}
+body{display:flex;align-items:center;justify-content:center;padding:24px;background:radial-gradient(circle at 20% 18%,rgba(255,235,165,.46),transparent 22%),radial-gradient(circle at 74% 12%,rgba(189,218,255,.3),transparent 20%),linear-gradient(160deg,#2d3767,#475d98 52%,#755d9e);color:#fff7df;font-family:system-ui,-apple-system,"Noto Sans SC",sans-serif}
+.card{width:min(100%,420px);padding:30px 24px;border:1px solid rgba(255,231,184,.28);border-radius:28px;background:rgba(31,39,78,.58);box-shadow:0 20px 55px rgba(8,10,31,.28);text-align:center}
+.mark{width:86px;height:86px;margin:0 auto 18px;border-radius:24px;background:rgba(255,248,226,.94) url("./maboroshi-icon-v3.png") center/cover no-repeat;box-shadow:0 10px 25px rgba(8,10,31,.25)}
+h1{margin:0 0 8px;font:700 28px/1.25 "Noto Serif SC",serif;letter-spacing:0}
+p{margin:0 auto 18px;color:rgba(246,235,255,.78);font-size:14px;line-height:1.8}
+a{display:flex;align-items:center;justify-content:center;width:100%;height:52px;border-radius:16px;background:linear-gradient(135deg,#ffe5a6,#f4b8d3);color:#403258;text-decoration:none;font-weight:700}
+.hint{margin-top:15px;padding:12px;border-radius:16px;background:rgba(255,249,232,.12);color:rgba(255,243,218,.88);font-size:12px;line-height:1.7;text-align:left}
+</style>
+</head>
+<body>
+  <main class="card">
+    <div class="mark"></div>
+    <h1>幻</h1>
+    <p>这是一枚不经过 WebAPK 安装的桌面入口。它和原网页在同一个域名下，仍会读取你现在的本地书单。</p>
+    <a href="./maboroshi-v2-app.html">打开书架</a>
+    <div class="hint">在这个页面点 Chrome 右上角菜单，选择“添加到主屏幕”。如果它显示成快捷方式而不是“安装应用”，就是我们要走的备用路线。</div>
+  </main>
+</body>
+</html>
