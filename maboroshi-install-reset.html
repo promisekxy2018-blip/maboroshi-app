@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#394678">
+<title>清理幻的安装缓存</title>
+<link rel="icon" href="./maboroshi-icon-v3.png" type="image/png">
+<style>
+*{box-sizing:border-box}
+html,body{min-height:100%;margin:0}
+body{display:flex;align-items:center;justify-content:center;padding:24px;background:radial-gradient(circle at 18% 15%,rgba(255,235,165,.42),transparent 21%),radial-gradient(circle at 82% 9%,rgba(189,218,255,.28),transparent 19%),linear-gradient(155deg,#293460,#42588f 54%,#765f9d);color:#fff7df;font-family:system-ui,-apple-system,"Noto Sans SC",sans-serif}
+.card{width:min(100%,440px);padding:28px 22px;border:1px solid rgba(255,231,184,.28);border-radius:28px;background:rgba(28,36,74,.64);box-shadow:0 20px 55px rgba(8,10,31,.3)}
+h1{margin:0 0 10px;font:700 24px/1.35 "Noto Serif SC",serif;letter-spacing:0}
+p,.note{font-size:13px;line-height:1.8;color:rgba(246,235,255,.82)}
+.note{margin:14px 0;padding:12px;border-radius:16px;background:rgba(255,249,232,.12)}
+button,a{display:flex;align-items:center;justify-content:center;width:100%;min-height:50px;margin-top:10px;border:0;border-radius:16px;font:700 15px/1 system-ui,-apple-system,"Noto Sans SC",sans-serif;text-decoration:none;cursor:pointer}
+button{background:linear-gradient(135deg,#ffe5a6,#f4b8d3);color:#403258}
+a{background:rgba(255,249,232,.16);border:1px solid rgba(255,231,184,.22);color:#fff3d2}
+#status{min-height:22px;margin-top:13px;color:#ffe5a6;font-size:12px;line-height:1.6}
+</style>
+</head>
+<body>
+  <main class="card">
+    <h1>清理一次安装缓存</h1>
+    <p>这个页面只清掉幻在浏览器里用来离线加载的 Service Worker 和 Cache，不会删除你的书单、书评、密码设置和 Gemini Key。</p>
+    <div class="note">先点清理，再从下一页用 Chrome 菜单选“添加到主屏幕”。这次目标是走干净的普通桌面入口。</div>
+    <button id="reset-btn">清理并进入快捷入口</button>
+    <a href="./maboroshi-v2-app.html">我先回书架</a>
+    <div id="status"></div>
+  </main>
+<script>
+const statusEl=document.getElementById('status');
+document.getElementById('reset-btn').addEventListener('click',async()=>{
+  const btn=document.getElementById('reset-btn');
+  btn.disabled=true;
+  statusEl.textContent='正在清理旧离线缓存…';
+  try{
+    if('serviceWorker' in navigator){
+      const regs=await navigator.serviceWorker.getRegistrations();
+      await Promise.all(regs.map(reg=>reg.unregister()));
+    }
+    if('caches' in window){
+      const keys=await caches.keys();
+      await Promise.all(keys.filter(key=>key.includes('maboroshi')).map(key=>caches.delete(key)));
+    }
+    statusEl.textContent='清理好了，马上去快捷入口。';
+    setTimeout(()=>location.replace('./maboroshi-shortcut.html?clean=1'),450);
+  }catch(err){
+    statusEl.textContent='清理没完全成功，但可以先去快捷入口再试一次。';
+    btn.disabled=false;
+  }
+});
+</script>
+</body>
+</html>
