@@ -120,32 +120,26 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
 .book-list.view-diary .book-shelf-rule{order:5;margin-top:10px;background:linear-gradient(90deg,rgba(232,130,159,.32),rgba(245,196,161,.18),transparent)}
 .book-list.view-diary .status-bar{order:6;background:rgba(232,130,159,.16)}
 .book-list.view-diary .book-author+.book-tags-row{margin-top:4px}
-.book-list.view-magic{position:relative;padding:34px 16px 20px;gap:17px;background:linear-gradient(180deg,rgba(49,49,91,.28),rgba(76,62,107,.1) 15%,rgba(255,244,226,.08)),radial-gradient(circle at 18% 2%,rgba(255,246,197,.76),transparent 18%),radial-gradient(circle at 86% 4%,rgba(181,164,235,.46),transparent 20%)}
-.book-list.view-magic::before{content:'';position:absolute;inset:9px 5px 2px;border-radius:31px 31px 19px 19px;background:linear-gradient(90deg,rgba(102,77,64,.12),transparent 4%,transparent 47%,rgba(138,103,84,.2) 49.1%,rgba(255,255,247,.9) 50%,rgba(138,103,84,.18) 50.9%,transparent 53%,transparent 96%,rgba(102,77,64,.12)),repeating-linear-gradient(90deg,rgba(255,247,226,.97) 0,rgba(255,247,226,.97) calc(50% - 1px),rgba(248,234,207,.95) 50%,rgba(255,249,234,.97) calc(50% + 1px),rgba(255,249,234,.97) 100%),radial-gradient(circle at 5% 50%,rgba(146,108,82,.15),transparent 20%),radial-gradient(circle at 95% 50%,rgba(146,108,82,.13),transparent 20%);border:1px solid rgba(205,178,141,.58);box-shadow:inset 0 0 0 1px rgba(255,255,255,.52),inset 0 0 42px rgba(216,181,117,.28),0 14px 31px rgba(68,54,89,.17);pointer-events:none}
-.book-list.view-magic::after{content:'☾  我的书页陈列  ✦';position:relative;align-self:center;order:-1;z-index:1;padding:7px 18px;border-radius:999px;background:rgba(255,249,232,.75);border:1px solid rgba(170,142,206,.3);box-shadow:0 3px 12px rgba(70,52,110,.12);color:#76619e;font-family:'Noto Serif SC',serif;font-size:12px;letter-spacing:0}
-.book-list.view-magic .book-card{z-index:1;display:grid;grid-template-columns:84px minmax(0,1fr);gap:15px;min-height:164px;background:linear-gradient(106deg,rgba(255,250,239,.88) 0 42%,rgba(250,243,255,.84) 57%,rgba(255,250,241,.9) 100%);border-color:rgba(164,136,203,.34);box-shadow:inset 0 0 0 1px rgba(255,255,255,.64),0 9px 20px rgba(74,59,116,.13);border-radius:12px 22px 22px 12px;padding:17px 15px 16px 12px;overflow:visible}
-.book-list.view-magic .book-card:nth-of-type(even){margin-left:9px;margin-right:-3px;background:linear-gradient(104deg,rgba(255,248,237,.96),rgba(245,240,255,.96) 55%,rgba(255,249,239,.98))}
-.book-list.view-magic .book-card::before{content:'';position:absolute;left:8px;top:-15px;width:78px;height:151px;border-radius:19px 19px 12px 12px;clip-path:polygon(0 0,100% 0,100% 100%,50% 88%,0 100%);background:linear-gradient(180deg,rgba(183,160,231,.62),rgba(250,224,168,.48));border:1px solid rgba(142,115,189,.2);box-shadow:0 7px 14px rgba(66,50,108,.16)}
-.book-list.view-magic .book-card::after{content:'✦';position:absolute;right:18px;top:11px;color:#ddbb67;font-size:12px;opacity:.82;text-shadow:-28px 13px 0 rgba(142,115,189,.55)}
-.book-list.view-magic .book-cover,.book-list.view-magic .book-cover-art{z-index:1;align-self:start;width:72px;height:126px;margin-top:-6px;border-radius:16px 16px 7px 7px;clip-path:none;box-shadow:inset 0 0 0 2px rgba(255,255,255,.42),0 7px 13px rgba(66,50,108,.24)}
-.book-list.view-magic .book-cover-art::after{top:12px;right:11px}
-.book-list.view-magic .book-card:nth-child(3n+1) .book-cover-art{transform:rotate(-1deg)}
-.book-list.view-magic .book-card:nth-child(3n+2) .book-cover-art{transform:rotate(1deg)}
-.book-list.view-magic .book-info{position:relative;display:flex;flex-direction:column;min-height:118px;padding-right:12px}
-.book-list.view-magic .book-info::before{content:'';position:absolute;left:-9px;top:1px;bottom:3px;width:1px;background:linear-gradient(180deg,transparent,rgba(126,105,166,.28) 15% 85%,transparent)}
-.book-list.view-magic .book-title{font-size:16px;color:#332942}
-.book-list.view-magic .book-title-row{order:0;padding-right:12px;margin-bottom:5px}
-.book-list.view-magic .book-author{order:1;color:#7b6b91;margin-bottom:8px}
-.book-list.view-magic .book-quote{order:4;margin:8px 0 0;padding:8px 10px;border:1px solid rgba(142,115,189,.16);border-left:2px solid rgba(142,115,189,.36);border-radius:4px 12px 12px 4px;background:rgba(255,252,245,.62);font-family:'Noto Serif SC',serif;color:#62557f}
-.book-list.view-magic .book-tags-row{order:2;margin-bottom:8px}
-.book-list.view-magic .book-tags-row .tag-chip{background:rgba(255,255,255,.68);border:1px solid rgba(142,115,189,.16);color:#6e5a8f}
-.book-list.view-magic .book-meta{order:3;margin-top:auto;gap:6px;flex-wrap:wrap}
-.book-list.view-magic .book-meta .badge{background:rgba(255,242,211,.78);color:#8b6a2d;border:1px solid rgba(190,146,73,.15)}
-.book-list.view-magic .read-count-badge{background:rgba(226,214,255,.72);color:#69518f}
-.book-list.view-magic .book-rating-badge{background:transparent;color:#8e73bd;border:1px solid rgba(142,115,189,.28);padding:2px 7px}
+.book-list.view-magic{position:relative;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));align-items:start;gap:12px;padding:190px 21px 34px;min-height:620px;border-radius:0 0 30px 30px;background:radial-gradient(circle at 18% 62px,#fff4bc 0 14px,transparent 15px),radial-gradient(circle at 82% 42px,rgba(255,233,165,.8) 0 2px,transparent 3px),radial-gradient(circle at 70% 78px,rgba(255,255,232,.9) 0 1.5px,transparent 2.5px),radial-gradient(circle at 33% 94px,rgba(255,255,232,.8) 0 2px,transparent 3px),linear-gradient(180deg,#2f355f 0,#343d6f 127px,#f8eed9 128px,#fff5e5 100%)}
+.book-list.view-magic::before{content:'';position:absolute;left:8px;right:8px;top:126px;bottom:8px;border-radius:42% 42% 18px 18px/38px 38px 18px 18px;background:linear-gradient(100deg,rgba(108,81,64,.14),transparent 8%,transparent 52%,rgba(143,111,84,.14) 53%,transparent 58%),linear-gradient(180deg,#fff7e7,#fbedd5 55%,#f5e1bd);border:1px solid rgba(171,137,102,.46);box-shadow:inset 0 0 0 1px rgba(255,255,255,.55),inset 0 0 34px rgba(196,152,104,.2),0 13px 28px rgba(39,37,65,.22);pointer-events:none}
+.book-list.view-magic::after{content:'☾\A 我的书架\A 每一本书都是通往另一世界的门';white-space:pre;position:absolute;z-index:1;left:0;right:0;top:31px;text-align:center;color:#fff8e7;font-family:'Noto Serif SC',serif;font-size:12px;line-height:1.9;text-shadow:0 2px 8px rgba(16,17,44,.42)}
+.book-list.view-magic .book-card{z-index:1;display:flex;flex-direction:column;align-items:stretch;gap:7px;min-width:0;min-height:274px;padding:9px 8px 18px;background:linear-gradient(180deg,rgba(71,89,134,.95),rgba(87,105,145,.92));border:1px solid rgba(255,226,173,.48);border-radius:12px 12px 8px 8px;clip-path:polygon(0 0,100% 0,100% 100%,50% 92%,0 100%);box-shadow:inset 0 0 0 1px rgba(255,255,255,.18),0 7px 14px rgba(54,50,79,.24);overflow:hidden}
+.book-list.view-magic .book-card:nth-child(3n+2){margin-top:8px;background:linear-gradient(180deg,rgba(96,126,112,.95),rgba(119,145,120,.92))}
+.book-list.view-magic .book-card:nth-child(3n){background:linear-gradient(180deg,rgba(124,101,163,.95),rgba(151,123,179,.92))}
+.book-list.view-magic .book-card::before{content:'';position:absolute;left:50%;top:-1px;width:22px;height:17px;transform:translateX(-50%);border-radius:0 0 9px 9px;background:linear-gradient(180deg,#f0d08d,#b7925b);box-shadow:0 2px 4px rgba(48,38,50,.2)}
+.book-list.view-magic .book-card::after{content:'✦';position:absolute;right:10px;bottom:28px;color:rgba(255,237,183,.82);font-size:11px}
+.book-list.view-magic .book-cover,.book-list.view-magic .book-cover-art{order:0;width:100%;height:132px;margin:7px 0 2px;border-radius:9px;border:1px solid rgba(255,255,255,.42);clip-path:none;box-shadow:inset 0 0 0 1px rgba(255,255,255,.18),0 4px 9px rgba(31,27,50,.24);transform:none}
+.book-list.view-magic .book-cover-art::after{top:10px;right:9px}
+.book-list.view-magic .book-info{display:flex;flex:1;flex-direction:column;align-items:center;min-width:0;min-height:0;padding:0;text-align:center;color:#fff9ea}
+.book-list.view-magic .book-title-row{order:0;display:block;width:100%;margin:0;padding:0}
+.book-list.view-magic .book-title{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-size:13px;line-height:1.45;color:#fff9ea}
+.book-list.view-magic .book-rating-badge{display:inline-flex;margin-top:4px;background:transparent;color:#ffe9a7;border:none;padding:0;font-size:11px}
+.book-list.view-magic .book-author{order:1;display:none}
+.book-list.view-magic .book-quote,.book-list.view-magic .book-tags-row,.book-list.view-magic .book-shelf-rule,.book-list.view-magic .status-bar{display:none}
+.book-list.view-magic .book-meta{order:2;display:flex;flex-direction:column;align-items:center;gap:3px;margin-top:auto;color:rgba(255,246,218,.9);font-size:10px}
+.book-list.view-magic .book-meta .badge{display:none}
+.book-list.view-magic .read-count-badge{background:rgba(255,246,218,.16);color:#fff1c7;border:1px solid rgba(255,230,170,.22)}
 .book-list.view-magic .book-memory-mark{display:none}
-.book-list.view-magic .book-shelf-rule{order:5;margin-top:10px;background:linear-gradient(90deg,rgba(142,115,189,.3),rgba(230,184,74,.18),transparent)}
-.book-list.view-magic .status-bar{order:6;background:rgba(142,115,189,.14)}
 .book-cover{width:52px;height:70px;border-radius:8px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;text-align:center;line-height:1.3;padding:4px;overflow:hidden}
 .book-cover-art{position:relative;width:62px;height:84px;border-radius:10px;flex-shrink:0;display:flex;align-items:flex-end;justify-content:center;color:#fff;text-align:center;line-height:1.25;padding:8px 5px;font-size:11px;font-weight:700;overflow:hidden;box-shadow:0 4px 14px rgba(0,0,0,.13)}
 .book-cover-art::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 32% 25%,rgba(255,255,255,.65),transparent 18%),radial-gradient(circle at 72% 64%,rgba(255,255,255,.28),transparent 22%),linear-gradient(165deg,transparent 0 55%,rgba(255,255,255,.22) 56% 58%,transparent 59%);opacity:.9}
@@ -572,7 +566,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
           <div class="settings-item-left">
             <div class="settings-item-icon" style="background:#e8f0fe">ℹ️</div>
             <div>
-              <div class="settings-item-title">幻 maboroshi v2.13</div>
+              <div class="settings-item-title">幻 maboroshi v2.14</div>
               <div class="settings-item-sub">数据和密码均存储于本地</div>
             </div>
           </div>
