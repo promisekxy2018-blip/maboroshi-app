@@ -99,6 +99,12 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
 .filter-accordion.open .filter-accordion-head span:last-child{transform:rotate(180deg)}
 .filter-accordion-panel{display:none;padding:0 12px 12px;border-top:1px dashed var(--border)}
 .filter-accordion.open .filter-accordion-panel{display:block}
+.filter-head-main{min-width:0}
+.filter-head-summary{display:block;max-width:245px;margin-top:3px;color:var(--text3);font-size:11px;font-weight:400;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.filter-mode{margin-top:9px;border:1px solid var(--border);border-radius:12px;background:rgba(255,255,255,.56);overflow:hidden}
+.filter-mode-head{width:100%;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:9px 10px;border:none;background:transparent;color:var(--text2);font-size:12px;text-align:left}
+.filter-mode-panel{display:none;padding:0 10px 10px;border-top:1px dashed var(--border)}
+.filter-mode.open .filter-mode-panel{display:block}
 .filter-picker-input{margin-top:7px}
 .filter-picker-box{display:none;margin-top:8px;padding:9px;border-radius:12px;border:1px solid var(--border);background:var(--bg2);box-shadow:var(--shadow)}
 .filter-picker-box.show{display:block}
@@ -327,6 +333,21 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
 .stats-control-row .form-select{width:auto;min-width:120px;padding-top:7px;padding-bottom:7px;font-size:12px}
 .book-list.compact{padding:0;gap:8px}
 .book-list.compact .book-card{box-shadow:none}
+.book-list.compact.view-diary{padding:0;gap:10px;background:none;border-top:none}
+.book-list.compact.view-diary::before,.book-list.compact.view-diary::after{display:none}
+.book-list.compact.view-magic{display:flex;flex-direction:column;gap:11px;min-height:0;padding:0;background:none;border-radius:0}
+.book-list.compact.view-magic::before,.book-list.compact.view-magic::after{display:none}
+.book-list.compact.view-magic .book-card{display:grid;grid-template-columns:102px minmax(0,1fr);gap:13px;min-height:178px;padding:12px 13px 14px;background:linear-gradient(145deg,rgba(76,92,138,.98),rgba(127,106,168,.96));border-radius:14px;clip-path:none;overflow:visible}
+.book-list.compact.view-magic .book-card::after{top:-28px;height:39px}
+.book-list.compact.view-magic .book-cover,.book-list.compact.view-magic .book-cover-art{width:96px;height:150px;margin:7px 0 0}
+.book-list.compact.view-magic .book-info{align-items:flex-start;text-align:left;min-height:150px}
+.book-list.compact.view-magic .book-title{font-size:16px;-webkit-line-clamp:2}
+.book-list.compact.view-magic .book-author{font-size:11px;text-align:left}
+.book-list.compact.view-magic .book-tags-row{justify-content:flex-start;max-height:none}
+.book-list.compact.view-magic .book-tags-row .tag-chip:nth-child(n+3){display:inline-block}
+.book-list.compact.view-magic .book-quote{order:3;display:-webkit-box;margin:5px 0 7px;padding:7px 8px;border-radius:8px;background:rgba(255,249,234,.16);border-left:2px solid rgba(255,233,165,.52);color:#fff4d2;font-size:11px}
+.book-list.compact.view-magic .book-meta{order:4;flex-direction:row;align-items:center;flex-wrap:wrap;margin-top:auto}
+.book-list.compact.view-magic .book-meta .badge{display:inline-block;background:rgba(255,246,218,.16);color:#fff1c7}
 .stat-card.clickable{cursor:pointer;transition:box-shadow 0.2s}
 .stat-card.clickable:active{box-shadow:var(--shadow2)}
 .stat-list{display:flex;flex-direction:column;gap:8px}
@@ -377,7 +398,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
 .encounter-section{background:rgba(255,255,255,.78);border:1px solid var(--border);border-radius:18px;padding:14px;box-shadow:var(--shadow)}
 .encounter-section-title{font-size:13px;color:var(--text2);font-weight:700;margin-bottom:10px}
 .encounter-note{font-size:12px;color:var(--text3);line-height:1.7;margin-top:8px}
-.encounter-section .book-list.compact.view-magic{grid-template-columns:minmax(0,104px);justify-content:center;min-height:390px;padding-left:34px;padding-right:34px}
+.encounter-section .book-list.compact.view-magic{min-height:0;padding:0}
 .segmented{display:flex;gap:6px;background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:4px}
 .segmented button{flex:1;border:none;border-radius:9px;padding:8px 6px;background:transparent;color:var(--text2);font-size:12px}
 .segmented button.active{background:var(--pink2);color:white}
@@ -597,7 +618,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
           <div class="settings-item-left">
             <div class="settings-item-icon" style="background:#e8f0fe">ℹ️</div>
             <div>
-              <div class="settings-item-title">幻 maboroshi v2.15</div>
+              <div class="settings-item-title">幻 maboroshi v2.16</div>
               <div class="settings-item-sub">数据和密码均存储于本地</div>
             </div>
           </div>
@@ -875,6 +896,7 @@ let draftShelfFilters = null;
 let filterSectionOpen = {author:true,shou:true,gong:false,era:false,plot:false,vibe:false,warn:false};
 let filterPickerOpen = '';
 let filterQueries = {};
+let filterModeOpen = {};
 let navReady = false;
 let suppressNextPop = false;
 let edgeTouch = null;
@@ -1201,6 +1223,7 @@ function setFilterSectionOpen(key){
   renderShelfFilterBody();
 }
 function openFilterPicker(group){
+  if(filterPickerOpen===group) return;
   filterPickerOpen=group;
   renderShelfFilterBody();
   setTimeout(()=>document.getElementById(`filter-q-${safeFilterId(group)}`)?.focus(),0);
@@ -1208,11 +1231,7 @@ function openFilterPicker(group){
 function setFilterQuery(group,value){
   filterQueries[group]=value;
   filterPickerOpen=group;
-  renderShelfFilterBody();
-  setTimeout(()=>{
-    const el=document.getElementById(`filter-q-${safeFilterId(group)}`);
-    if(el){el.focus();el.setSelectionRange(el.value.length,el.value.length);}
-  },0);
+  updateFilterPickerOptions(group);
 }
 function sortedFilterOptions(values,query=''){
   const q=query.trim().toLowerCase();
@@ -1227,10 +1246,32 @@ function renderFilterPicker(title,group,values,emptyText){
   const selected=getDraftFilterArray(group);
   const q=filterQueries[group]||'';
   const ordered=sortedFilterOptions(values,q);
-  return `<div class="filter-mode-title">${title}</div>
+  const open=filterModeOpen[group]!==false;
+  return `<div class="filter-mode ${open?'open':''}"><button type="button" class="filter-mode-head" onclick="toggleFilterMode('${group}')"><span>${title}</span><span>${selected.length?`${selected.length} 已选`:'⌄'}</span></button><div class="filter-mode-panel">
     <div class="filter-picked">${selected.length?selected.map(v=>filterPickedChip(v,group,v)).join(''):'<span class="tag-selected-empty">尚未选择</span>'}</div>
     <input class="form-input filter-picker-input" id="filter-q-${safeFilterId(group)}" value="${escapeAttr(q)}" placeholder="输入或点击选择" onfocus="openFilterPicker('${group}')" oninput="setFilterQuery('${group}',this.value)">
-    <div class="filter-picker-box ${filterPickerOpen===group?'show':''}"><div class="tag-picker-hint">匹配的内容会排在前面，点标签即可勾选</div><div class="tag-chips-wrap">${ordered.length?ordered.map(v=>filterChip(v,group,v)).join(''):`<span class="tag-selected-empty">${emptyText}</span>`}</div></div>`;
+    <div class="filter-picker-box ${filterPickerOpen===group?'show':''}"><div class="tag-picker-hint">匹配的内容会排在前面，点标签即可勾选</div><div class="tag-chips-wrap" id="filter-options-${safeFilterId(group)}">${ordered.length?ordered.map(v=>filterChip(v,group,v)).join(''):`<span class="tag-selected-empty">${emptyText}</span>`}</div></div></div></div>`;
+}
+function toggleFilterMode(group){
+  filterModeOpen[group]=filterModeOpen[group]===false;
+  renderShelfFilterBody();
+}
+function getFilterValuesForGroup(group){
+  if(group==='authorMust'||group==='authorAny') return uniqueList(db.books.map(b=>b.author).filter(Boolean)).sort((a,b)=>a.localeCompare(b,'zh-CN'));
+  if(group==='warnExclude') return db.tagHistory.warn||[];
+  return db.tagHistory[group.split(':')[1]]||[];
+}
+function updateFilterPickerOptions(group){
+  const wrap=document.getElementById(`filter-options-${safeFilterId(group)}`);
+  if(!wrap) return;
+  const values=sortedFilterOptions(getFilterValuesForGroup(group),filterQueries[group]||'');
+  wrap.innerHTML=values.length?values.map(v=>filterChip(v,group,v)).join(''):'<span class="tag-selected-empty">没有可选内容</span>';
+}
+function filterSelectionSummary(key){
+  const f=draftShelfFilters||shelfFilters;
+  if(key==='author') return [...(f.authorMust||[]),...(f.authorAny||[])];
+  if(key==='warn') return f.warnExclude||[];
+  return [...(f.tagsMust?.[key]||[]),...(f.tagsAny?.[key]||[])];
 }
 
 function getDraftFilterArray(group){
@@ -1255,7 +1296,10 @@ function toggleDraftFilter(group,value){
 function renderShelfFilterBody(){
   const body=document.getElementById('shelf-filter-body');
   const authors=uniqueList(db.books.map(b=>b.author).filter(Boolean)).sort((a,b)=>a.localeCompare(b,'zh-CN'));
-  const accordion=(key,title,inner)=>`<div class="filter-section filter-accordion ${filterSectionOpen[key]?'open':''}"><button type="button" class="filter-accordion-head" onclick="setFilterSectionOpen('${key}')"><span>${title}</span><span>⌄</span></button><div class="filter-accordion-panel">${inner}</div></div>`;
+  const accordion=(key,title,inner)=>{
+    const selected=filterSelectionSummary(key);
+    return `<div class="filter-section filter-accordion ${filterSectionOpen[key]?'open':''}"><button type="button" class="filter-accordion-head" onclick="setFilterSectionOpen('${key}')"><span class="filter-head-main">${title}${selected.length?`<span class="filter-head-summary">${escapeHtml(selected.join('、'))}</span>`:''}</span><span>⌄</span></button><div class="filter-accordion-panel">${inner}</div></div>`;
+  };
   const authorHtml=renderFilterPicker('必须是', 'authorMust', authors, '还没有作者数据')+renderFilterPicker('可以是任意一个', 'authorAny', authors, '还没有作者数据');
   const tagHtml=TAG_CATS.map(c=>{
     const tags=db.tagHistory[c.key]||[];
