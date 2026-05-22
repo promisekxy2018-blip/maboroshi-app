@@ -706,7 +706,7 @@ body.magic-theme .author-wait-card{border-color:rgba(116,110,183,.18)}
           <div class="settings-item-left">
             <div class="settings-item-icon" style="background:#e8f0fe">ℹ️</div>
             <div>
-              <div class="settings-item-title">幻 maboroshi v2.20</div>
+              <div class="settings-item-title">幻 maboroshi v2.21</div>
               <div class="settings-item-sub">数据和密码均存储于本地</div>
             </div>
           </div>
@@ -954,7 +954,7 @@ body.magic-theme .author-wait-card{border-color:rgba(116,110,183,.18)}
 // ═══════════════════════════════════════
 //  DATA LAYER
 // ═══════════════════════════════════════
-const APP_VERSION = '2.10.0';
+const APP_VERSION = '2.11.0';
 const STORE_KEY = 'shuji_v1';
 const LOCK_KEY = 'maboroshi_lock_v2';
 const TAG_CATS = [
@@ -1883,9 +1883,8 @@ async function autoFetch(){
 请只回复 JSON，不要有任何解释或 Markdown：
 {"matched":"true/false","author":"作者名","platform":"晋江/长佩/长佩旧站/废文/其他/空字符串","finishYear":"完结年份，只填四位数字或空字符串","shouName":"受的名字或空字符串","gongName":"攻的名字或空字符串","coverUrl":"公开封面图片 URL 或空字符串","summary":"官方简介或空字符串","synopsis":"剧情梗概或空字符串","sourceHint":"你判断的信息来源或空字符串","tags":{"gong":"攻的性格特点，2-3个词用顿号分隔","shou":"受的性格特点，2-3个词用顿号分隔","era":"时代背景，如现代、古代、架空等","plot":"突出情节亮点，2-4个词用顿号分隔","vibe":"作品氛围，2-4个词用顿号分隔"}}
 当前用户选择的平台是：${platform}。`;
-    const res=await callGemini(prompt);
-    const json=JSON.parse(res.replace(/```json|```/g,'').trim());
-    if(String(json.matched||'').toLowerCase()==='false') throw new Error('No exact book match');
+    const json=parseGeminiJson(await callGemini(prompt));
+    if(json.matched===false||String(json.matched||'').toLowerCase()==='false') throw new Error('NO_EXACT_MATCH');
     if(json.author) document.getElementById('f-author').value=json.author;
     if(json.platform&&[...document.getElementById('f-platform').options].some(o=>o.value===json.platform)){
       document.getElementById('f-platform').value=json.platform;
@@ -1910,20 +1909,45 @@ async function autoFetch(){
     }
     toast(json.sourceHint?`补全成功：${json.sourceHint}`:'补全成功 ✨');
   }catch(e){
-    toast('补全失败，请手动填写');
+    toast(formatGeminiError(e,'作品补全失败'));
     console.error(e);
   }
 }
 
 async function callGemini(prompt){
-  const res=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${db.apiKey}`,{
+  const res=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent?key=${encodeURIComponent(db.apiKey)}`,{
     method:'POST',
     headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({contents:[{parts:[{text:prompt}]}]})
+    body:JSON.stringify({
+      contents:[{parts:[{text:prompt}]}],
+      tools:[{google_search:{}}],
+      generationConfig:{temperature:0.2}
+    })
   });
-  if(!res.ok) throw new Error('API error '+res.status);
+  if(!res.ok){
+    let detail='';
+    try{detail=(await res.json())?.error?.message||'';}catch(e){}
+    throw new Error(`GEMINI_HTTP_${res.status}${detail?`: ${detail}`:''}`);
+  }
   const data=await res.json();
-  return data.candidates[0].content.parts[0].text;
+  const text=(data.candidates?.[0]?.content?.parts||[]).map(p=>p.text||'').join('').trim();
+  if(!text) throw new Error('GEMINI_EMPTY');
+  return text;
+}
+
+function parseGeminiJson(text){
+  const clean=String(text||'').replace(/```json|```/g,'').trim();
+  return JSON.parse(clean);
+}
+
+function formatGeminiError(err,fallback){
+  const msg=String(err?.message||err||'');
+  if(msg.includes('NO_EXACT_MATCH')) return '没找到可靠的书名+作者匹配，先留空';
+  if(msg.includes('GEMINI_HTTP_400')) return 'Gemini 请求格式被拒绝，请重试或检查 Key';
+  if(msg.includes('GEMINI_HTTP_403')) return 'Gemini Key 无权限或被限制';
+  if(msg.includes('GEMINI_HTTP_404')) return 'Gemini 模型不可用，已需要更新版本';
+  if(msg.includes('GEMINI_HTTP_429')) return 'Gemini 额度或频率已到上限，稍后再试';
+  return `${fallback}，请稍后再试`;
 }
 
 // ═══════════════════════════════════════
@@ -1956,13 +1980,8 @@ function renderStats(){
     <div class="stat-card"><div class="stat-num">${avgRating?avgRating.toFixed(1):'—'}</div><div class="stat-label">平均评分</div></div>
     <div class="stat-card clickable" onclick="openStatsBooks('二刷以上', getStatsBooksForCurrentPeriod().filter(b=>(b.readLogs||[]).length>1))"><div class="stat-num">${rereadBooks}</div><div class="stat-label">二刷以上</div></div>`;
 
-  // Tag chart
-  const tagFreq={};
   const tagCat=document.getElementById('tag-stats-cat')?.value||'all';
-  logs.forEach(l=>{
-    const tags=tagCat==='all'?Object.values(l.tags||{}).flat():(l.tags?.[tagCat]||[]);
-    tags.forEach(t=>{tagFreq[t]=(tagFreq[t]||0)+1;});
-  });
+  const tagFreq=getTagStatsFromBooks(booksInPeriod,tagCat);
   renderStatPreview('tag-chart',normalizeStats(tagFreq),'tag');
 
   // Author chart
@@ -2051,6 +2070,15 @@ function getStatsBooksForCurrentPeriod(){
   return db.books.filter(b=>ids.has(b.id));
 }
 
+function getTagStatsFromBooks(books,cat='all'){
+  const stats={};
+  books.forEach(b=>{
+    const tags=cat==='all'?Object.values(b.tags||{}).flat():(b.tags?.[cat]||[]);
+    [...new Set(tags.filter(Boolean))].forEach(t=>{stats[t]=(stats[t]||0)+1;});
+  });
+  return stats;
+}
+
 function sortBooksForStats(books){
   const sort=document.getElementById('modal-book-sort')?.value||'date-desc';
   const arr=[...books];
@@ -2088,13 +2116,8 @@ function getStatsIndex(type,tagCategory){
     return normalizeStats(stats);
   }
   if(type==='tag'){
-    const stats={};
     const cat=tagCategory||document.getElementById('tag-stats-cat')?.value||'all';
-    logs.forEach(l=>{
-      const tags=cat==='all'?Object.values(l.tags||{}).flat():(l.tags?.[cat]||[]);
-      tags.forEach(t=>{stats[t]=(stats[t]||0)+1;});
-    });
-    return normalizeStats(stats);
+    return normalizeStats(getTagStatsFromBooks(getStatsBooksForCurrentPeriod(),cat));
   }
   const stats={};
   logs.forEach(l=>{if(l.date){const m=l.date.slice(0,7);stats[m]=(stats[m]||0)+1;}});
@@ -2326,8 +2349,7 @@ async function autoFetchAuthor(author){
 经典语录优先选择该作者小说中适合作为摘录的一句短句；头像只在你能给出可直接访问的公开图片 URL 时返回。
 请只回复 JSON，不要解释或 Markdown：
 {"author":"作者名","quote":"一句经典语录或空字符串","avatarUrl":"公开头像图片 URL 或空字符串","waitingWorks":[{"title":"尚未收录书名","platform":"晋江/长佩/长佩旧站/废文/其他/空字符串","summary":"50到120字简介或空字符串"}],"sourceHint":"信息来源提示或空字符串"}`;
-    const res=await callGemini(prompt);
-    const json=JSON.parse(res.replace(/```json|```/g,'').trim());
+    const json=parseGeminiJson(await callGemini(prompt));
     db.authorProfiles=db.authorProfiles||{};
     const prev=db.authorProfiles[author]||{};
     db.authorProfiles[author]={
@@ -2347,7 +2369,7 @@ async function autoFetchAuthor(author){
     renderStatsModal();
     toast(json.sourceHint?`作者档案已补全：${json.sourceHint}`:'作者档案已补全');
   }catch(e){
-    toast('作者档案补全失败');
+    toast(formatGeminiError(e,'作者档案补全失败'));
     console.error(e);
   }
 }
