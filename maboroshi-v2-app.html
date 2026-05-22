@@ -192,12 +192,12 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
 /* ── READ LOGS ── */
 .read-logs{display:flex;flex-direction:column;gap:10px}
 .read-log-item{background:var(--card);border:1px solid var(--border);border-radius:var(--r2);padding:12px 14px;position:relative}
-.read-log-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.read-log-header{display:flex;align-items:center;justify-content:space-between;gap:6px;margin-bottom:6px;padding-right:4px}
 .read-log-num{font-size:11px;color:var(--pink2);font-weight:500;background:var(--pink3);padding:2px 8px;border-radius:10px}
 .read-log-date{font-size:11px;color:var(--text3)}
 .read-log-rating{font-weight:700;color:var(--yellow2);font-size:13px}
-.read-log-review{font-size:13px;color:var(--text2);line-height:1.6;margin-top:4px}
-.read-log-edit{position:absolute;top:10px;right:10px;background:none;border:none;color:var(--text3);font-size:14px;cursor:pointer;padding:4px}
+.read-log-review{font-size:13px;color:var(--text2);line-height:1.6;margin-top:4px;padding-right:22px}
+.read-log-edit{position:absolute;right:10px;bottom:8px;background:none;border:none;color:var(--text3);font-size:14px;cursor:pointer;padding:4px}
 .add-log-btn{display:flex;align-items:center;justify-content:center;gap:6px;padding:12px;border:1.5px dashed var(--border2);border-radius:var(--r2);color:var(--text3);font-size:13px;cursor:pointer;background:none;width:100%;font-family:'Noto Sans SC',sans-serif}
 
 /* ── DETAIL PAGE ── */
@@ -206,6 +206,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
 .detail-cover{width:80px;height:108px;border-radius:12px;margin-bottom:14px;box-shadow:0 4px 16px rgba(0,0,0,0.15);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#fff;text-align:center;padding:6px}
 .detail-title{font-family:'Noto Serif SC',serif;font-size:22px;font-weight:700;color:var(--text);margin-bottom:4px}
 .detail-author{font-size:13px;color:var(--text2);margin-bottom:10px}
+.detail-author-link{cursor:pointer;text-decoration:underline;text-decoration-color:rgba(196,96,126,.35);text-underline-offset:3px}
 .detail-badges{display:flex;flex-wrap:wrap;gap:6px}
 .badge{font-size:11px;padding:3px 10px;border-radius:20px;font-weight:500}
 .badge-pink{background:var(--pink3);color:var(--pink2)}
@@ -350,8 +351,10 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
       <div class="filter-sort-row" id="filter-sort-row">
         <select class="form-select" id="shelf-sort" onchange="renderShelf()">
           <option value="updated-desc">最近更新</option>
+          <option value="date-desc">最新阅读时间</option>
           <option value="rating-desc">评分高到低</option>
           <option value="rating-asc">评分低到高</option>
+          <option value="reads-desc">阅读次数多到少</option>
           <option value="year-desc">作品年代新到旧</option>
           <option value="year-asc">作品年代旧到新</option>
           <option value="title-asc">书名 A-Z</option>
@@ -519,7 +522,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
           <div class="settings-item-left">
             <div class="settings-item-icon" style="background:#e8f0fe">ℹ️</div>
             <div>
-              <div class="settings-item-title">幻 maboroshi v2.8</div>
+              <div class="settings-item-title">幻 maboroshi v2.9</div>
               <div class="settings-item-sub">数据和密码均存储于本地</div>
             </div>
           </div>
@@ -653,6 +656,16 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
     </div>
     <div class="form-row">
       <div class="form-group">
+        <label class="form-label">攻的名字</label>
+        <input class="form-input" id="f-gong-name" placeholder="攻名">
+      </div>
+      <div class="form-group">
+        <label class="form-label">受的名字</label>
+        <input class="form-input" id="f-shou-name" placeholder="受名">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
         <label class="form-label">阅读状态</label>
         <select class="form-select" id="f-status">
           <option value="done">已读</option>
@@ -672,20 +685,12 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
       <input class="form-input" id="f-finish-year" inputmode="numeric" pattern="[0-9]*" placeholder="例如 2024">
     </div>
     <div class="form-group">
-      <label class="form-label">作品阅读时间</label>
-      <select class="form-select" id="f-read-period">
-        <option value="">不确定 / 未填写</option>
-        <option value="初中">初中</option>
-        <option value="高中">高中</option>
-        <option value="大学">大学</option>
-        <option value="研究生">研究生</option>
-        <option value="工作后">工作后</option>
-        <option value="其他">其他</option>
-      </select>
-    </div>
-    <div class="form-group">
       <label class="form-label">简介</label>
       <textarea class="form-textarea" id="f-summary" placeholder="作品简介（可自动抓取）" style="min-height:70px"></textarea>
+    </div>
+    <div class="form-group">
+      <label class="form-label">剧情梗概</label>
+      <textarea class="form-textarea" id="f-synopsis" placeholder="核心剧情梗概；后续可交给 AI 补全" style="min-height:90px"></textarea>
     </div>
 
     <!-- TAG SYSTEM -->
@@ -713,6 +718,18 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
   <div class="form-group">
     <label class="form-label">读完日期</label>
     <input class="form-input" id="log-date" type="date">
+  </div>
+  <div class="form-group">
+    <label class="form-label">阅读阶段</label>
+    <select class="form-select" id="log-period">
+      <option value="">不确定 / 未填写</option>
+      <option value="初中">初中</option>
+      <option value="高中">高中</option>
+      <option value="大学">大学</option>
+      <option value="研究生">研究生</option>
+      <option value="工作后">工作后</option>
+      <option value="其他">其他</option>
+    </select>
   </div>
   <div class="form-group">
     <label class="form-label">评分</label>
@@ -822,7 +839,7 @@ function getLatestRating(book){
 }
 function getLatestDate(book){
   const logs=book.readLogs||[];
-  return logs.length?(logs[logs.length-1].date||''):'';
+  return logs.map(l=>l.date||'').filter(Boolean).sort().pop()||'';
 }
 function getBookLogText(log){
   if(!log) return '';
@@ -995,7 +1012,7 @@ function renderBookCard(b,opts={}){
         <div class="book-title">${escapeHtml(b.title)}</div>
         ${rating!==null?`<span class="book-rating-badge">★ ${rating.toFixed(1)}</span>`:''}
       </div>
-      <div class="book-author">${escapeHtml(b.author||'未知作者')} · ${escapeHtml(b.platform||'')}${b.finishYear?` · ${escapeHtml(b.finishYear)}完结`:''}${b.readPeriod?` · ${escapeHtml(b.readPeriod)}读`:''}</div>
+      <div class="book-author">${escapeHtml(b.author||'未知作者')} · ${escapeHtml(b.platform||'')}${b.finishYear?` · ${escapeHtml(b.finishYear)}完结`:''}</div>
       ${opts.excerpt&&excerpt?`<div class="book-quote">“${escapeHtml(excerpt)}”</div>`:''}
       <div class="book-tags-row">${tagsHtml}</div>
       <div class="book-meta">
@@ -1013,6 +1030,8 @@ function sortShelfBooks(books){
   const arr=[...books];
   if(sort==='rating-desc') arr.sort((a,b)=>(getLatestRating(b)??-1)-(getLatestRating(a)??-1));
   else if(sort==='rating-asc') arr.sort((a,b)=>(getLatestRating(a)??99)-(getLatestRating(b)??99));
+  else if(sort==='date-desc') arr.sort((a,b)=>(getLatestDate(b)||'').localeCompare(getLatestDate(a)||''));
+  else if(sort==='reads-desc') arr.sort((a,b)=>(b.readLogs||[]).length-(a.readLogs||[]).length||(getLatestDate(b)||'').localeCompare(getLatestDate(a)||''));
   else if(sort==='year-desc') arr.sort((a,b)=>(parseInt(b.finishYear)||0)-(parseInt(a.finishYear)||0));
   else if(sort==='year-asc') arr.sort((a,b)=>(parseInt(a.finishYear)||9999)-(parseInt(b.finishYear)||9999));
   else if(sort==='title-asc') arr.sort((a,b)=>a.title.localeCompare(b.title,'zh-CN'));
@@ -1147,7 +1166,7 @@ function openDetail(id){
     <div class="read-log-item">
       <div class="read-log-header">
         <span class="read-log-num">第 ${i+1} 刷</span>
-        <span class="read-log-date">${l.date||''}</span>
+        <span class="read-log-date">${[l.period,l.date].filter(Boolean).join(' · ')}</span>
         <span class="read-log-rating">★ ${(l.rating||0).toFixed(1)}</span>
       </div>
       <div class="read-log-review" style="white-space:pre-line">${escapeHtml(getBookLogText(l)||'无感想记录')}</div>
@@ -1159,7 +1178,7 @@ function openDetail(id){
       <button class="detail-back" onclick="showPage('shelf')">←</button>
       <div class="detail-cover" style="background:${coverColor(b.title)}">${coverText(b.title)}</div>
       <div class="detail-title">${b.title}</div>
-      <div class="detail-author">${b.author||'未知作者'}</div>
+      <div class="detail-author ${b.author?'detail-author-link':''}" ${b.author?`onclick="openAuthorDetail(decodeURIComponent('${encodeURIComponent(b.author)}'))"`:''}>${b.author||'未知作者'}</div>
       <div class="detail-badges">
         <span class="badge badge-pink">${STATUS_MAP[b.status]||''}</span>
         <span class="badge badge-green">${b.platform||''}</span>
@@ -1168,10 +1187,11 @@ function openDetail(id){
     </div>
     <div class="detail-body">
       ${progress>0&&progress<100?`<div class="detail-section"><div class="detail-section-title">阅读进度</div><div class="status-row"><div class="status-bar-big"><div class="status-fill-big" style="width:${progress}%"></div></div><div class="status-pct">${progress}%</div></div></div>`:''}
+      ${(b.gongName||b.shouName)?`<div class="detail-section"><div class="detail-section-title">主角</div><div style="font-size:13px;color:var(--text2);line-height:1.8">${b.gongName?`攻：${escapeHtml(b.gongName)}`:''}${b.gongName&&b.shouName?'<br>':''}${b.shouName?`受：${escapeHtml(b.shouName)}`:''}</div></div>`:''}
       ${tagGroups.length?`<div class="detail-section"><div class="detail-section-title">标签</div>${tagsHtml}</div>`:''}
       ${b.finishYear?`<div class="detail-section"><div class="detail-section-title">完结年份</div><div style="font-size:13px;color:var(--text2);line-height:1.7">${escapeHtml(b.finishYear)} 年</div></div>`:''}
-      ${b.readPeriod?`<div class="detail-section"><div class="detail-section-title">作品阅读时间</div><div style="font-size:13px;color:var(--text2);line-height:1.7">${escapeHtml(b.readPeriod)}</div></div>`:''}
       ${b.summary?`<div class="detail-section"><div class="detail-section-title">简介</div><div style="font-size:13px;color:var(--text2);line-height:1.7">${escapeHtml(b.summary)}</div></div>`:''}
+      ${b.synopsis?`<div class="detail-section"><div class="detail-section-title">剧情梗概</div><div style="font-size:13px;color:var(--text2);line-height:1.7;white-space:pre-line">${escapeHtml(b.synopsis)}</div></div>`:''}
       <div class="detail-section">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
           <div class="detail-section-title" style="margin-bottom:0">阅读记录</div>
@@ -1204,11 +1224,13 @@ function openAddSheet(){
   document.getElementById('f-title').value='';
   document.getElementById('f-author').value='';
   document.getElementById('f-platform').value='晋江';
+  document.getElementById('f-gong-name').value='';
+  document.getElementById('f-shou-name').value='';
   document.getElementById('f-status').value='done';
   document.getElementById('f-progress').innerHTML=progressOptions(100);
   document.getElementById('f-finish-year').value='';
-  document.getElementById('f-read-period').value='';
   document.getElementById('f-summary').value='';
+  document.getElementById('f-synopsis').value='';
   renderTagCategories({});
   renderReadLogs([]);
   openSheet('sheet-book');
@@ -1244,11 +1266,13 @@ function importBatchBooks(){
       title:row.title,
       author:row.author,
       platform:'其他',
+      gongName:'',
+      shouName:'',
       status:'unfiled',
       progress:0,
       summary:'',
+      synopsis:'',
       finishYear:'',
-      readPeriod:'',
       tags:{shou:[],gong:[],era:[],plot:[],vibe:[],warn:[]},
       readLogs:[],
       updatedAt:Date.now()
@@ -1269,11 +1293,13 @@ function openEditSheet(id){
   document.getElementById('f-title').value=b.title||'';
   document.getElementById('f-author').value=b.author||'';
   document.getElementById('f-platform').value=b.platform||'晋江';
+  document.getElementById('f-gong-name').value=b.gongName||'';
+  document.getElementById('f-shou-name').value=b.shouName||'';
   document.getElementById('f-status').value=b.status||'done';
   document.getElementById('f-progress').innerHTML=progressOptions(b.progress??100);
   document.getElementById('f-finish-year').value=b.finishYear||'';
-  document.getElementById('f-read-period').value=b.readPeriod||'';
   document.getElementById('f-summary').value=b.summary||'';
+  document.getElementById('f-synopsis').value=b.synopsis||'';
   renderTagCategories(b.tags||{});
   renderReadLogs(b.readLogs||[]);
   closeAllSheets();
@@ -1398,7 +1424,7 @@ function refreshLogsUI(){
     <div class="read-log-item">
       <div class="read-log-header">
         <span class="read-log-num">第 ${i+1} 刷</span>
-      <span class="read-log-date">${l.date||'未填日期'}</span>
+      <span class="read-log-date">${[l.period,l.date||'未填日期'].filter(Boolean).join(' · ')}</span>
         <span class="read-log-rating">★ ${(l.rating||0).toFixed(1)}</span>
       </div>
       <div class="read-log-review" style="font-size:12px;white-space:pre-line">${escapeHtml(getBookLogText(l)||'无感想')}</div>
@@ -1408,7 +1434,7 @@ function refreshLogsUI(){
 
 function addReadLog(){
   editingLogIdx=null;
-  currentLogDraft={date:new Date().toISOString().slice(0,10),rating:3,review:'',parts:{overall:'',character:'',plot:'',author:''}};
+  currentLogDraft={date:new Date().toISOString().slice(0,10),period:'',rating:3,review:'',parts:{overall:'',character:'',plot:'',author:''}};
   openMiniLog();
 }
 
@@ -1433,7 +1459,7 @@ function quickAddLog(bookId){
   editingLogIdx=null;
   const b=db.books.find(x=>x.id===bookId);
   formLogs=[...(b.readLogs||[])];
-  currentLogDraft={date:new Date().toISOString().slice(0,10),rating:3,review:'',parts:{overall:'',character:'',plot:'',author:''}};
+  currentLogDraft={date:new Date().toISOString().slice(0,10),period:'',rating:3,review:'',parts:{overall:'',character:'',plot:'',author:''}};
   openMiniLog(true);
 }
 
@@ -1441,6 +1467,7 @@ let miniLogSaveToBook=false;
 function openMiniLog(saveToBook=false){
   miniLogSaveToBook=saveToBook;
   document.getElementById('log-date').value=currentLogDraft.date||new Date().toISOString().slice(0,10);
+  document.getElementById('log-period').value=currentLogDraft.period||'';
   const sliderVal=Math.round((currentLogDraft.rating||3)*10);
   document.getElementById('log-rating').value=sliderVal;
   document.getElementById('log-rating-num').textContent=(sliderVal/10).toFixed(1);
@@ -1488,6 +1515,7 @@ function saveMiniLog(){
   };
   const log={
     date:document.getElementById('log-date').value,
+    period:document.getElementById('log-period').value,
     rating:r,
     review:parts.overall,
     parts
@@ -1520,11 +1548,13 @@ function saveBook(){
     title,
     author:document.getElementById('f-author').value.trim(),
     platform:document.getElementById('f-platform').value,
+    gongName:document.getElementById('f-gong-name').value.trim(),
+    shouName:document.getElementById('f-shou-name').value.trim(),
     status:document.getElementById('f-status').value,
     progress:parseInt(document.getElementById('f-progress').value),
     finishYear:document.getElementById('f-finish-year').value.trim(),
-    readPeriod:document.getElementById('f-read-period').value,
     summary:document.getElementById('f-summary').value.trim(),
+    synopsis:document.getElementById('f-synopsis').value.trim(),
     tags:{...formTags},
     readLogs:[...formLogs],
     updatedAt:Date.now()
@@ -1681,7 +1711,7 @@ function renderStatPreview(id,items,type){
   if(type==='month'){
     el.innerHTML=`<div class="month-garden">${top.map(item=>`
       <button class="month-card" onclick="openStatsBooksBy('month',decodeURIComponent('${encodeURIComponent(item.name)}'))">
-        <div class="month-name">${escapeHtml(item.name.slice(5)||item.name)}</div>
+        <div class="month-name">${escapeHtml(monthStatLabel(item.name))}</div>
         <div class="month-count">${item.count} 次阅读</div>
       </button>`).join('')}</div>`+
       `<div class="stat-list-item" style="margin-top:8px" onclick="openStatsIndex('month')"><div class="stat-list-main"><div class="stat-list-name">${allTitle}</div><div class="stat-list-meta">查看完整列表与排序</div></div><div class="stat-list-num">›</div></div>`;
@@ -1689,6 +1719,14 @@ function renderStatPreview(id,items,type){
   }
   el.innerHTML=top.map(item=>statListItem(item,type)).join('')+
     `<div class="stat-list-item" onclick="openStatsIndex('${type}')"><div class="stat-list-main"><div class="stat-list-name">${allTitle}</div><div class="stat-list-meta">查看完整列表与排序</div></div><div class="stat-list-num">›</div></div>`;
+}
+
+function monthStatLabel(value){
+  if(!value) return '';
+  const year=document.getElementById('stats-year')?.value||'全部';
+  const parts=value.split('-');
+  if(parts.length<2) return value;
+  return year==='全部'?`${parts[0]} 年 ${parseInt(parts[1])} 月`:`${parseInt(parts[1])} 月`;
 }
 
 function statListItem(item,type){
@@ -1734,7 +1772,7 @@ function renderStatsBookCard(b){
   return renderBookCard(b,{excerpt:false});
 }
 
-function getStatsIndex(type){
+function getStatsIndex(type,tagCategory){
   const logs=getStatsLogsForCurrentPeriod();
   if(type==='author'){
     const stats={};
@@ -1748,7 +1786,7 @@ function getStatsIndex(type){
   }
   if(type==='tag'){
     const stats={};
-    const cat=document.getElementById('tag-stats-cat')?.value||'all';
+    const cat=tagCategory||document.getElementById('tag-stats-cat')?.value||'all';
     logs.forEach(l=>{
       const tags=cat==='all'?Object.values(l.tags||{}).flat():(l.tags?.[cat]||[]);
       tags.forEach(t=>{stats[t]=(stats[t]||0)+1;});
@@ -1788,7 +1826,7 @@ function openStatsIndex(type){
   const tagCat=document.getElementById('tag-stats-cat')?.value||'all';
   const tagName=tagCat==='all'?'全部标签':(TAG_CATS.find(c=>c.key===tagCat)?.label||'标签');
   const title=type==='author'?'按作者统计':type==='tag'?`按标签统计 · ${tagName}`:'按月份统计';
-  statsModal={mode:type,title,items:getStatsIndex(type),books:[]};
+  statsModal={mode:type,title,items:getStatsIndex(type,tagCat),books:[],tagCat};
   openStatsModal(title,'点击条目查看对应书籍');
   renderStatsModal();
 }
@@ -1800,8 +1838,8 @@ function openStatsBooksBy(type,value){
 }
 
 function openAuthorDetail(author){
-  const books=getStatsBooksForCurrentPeriod().filter(b=>b.author===author);
-  statsModal={mode:'author',title:`作者：${author}`,books,items:[],author};
+  const books=db.books.filter(b=>b.author===author);
+  statsModal={mode:'author-detail',title:`作者：${author}`,books,items:[],author};
   openStatsModal(`作者：${author}`,`${books.length} 本书 · 可记录你对这位作者的评价`);
   renderStatsModal();
 }
@@ -1857,7 +1895,7 @@ function avgBooksRating(books){
 function renderStatsModal(){
   const controls=document.getElementById('stats-modal-controls');
   const content=document.getElementById('stats-modal-content');
-  if(statsModal.mode==='books'||statsModal.mode==='author'){
+  if(statsModal.mode==='books'||statsModal.mode==='author-detail'){
     const prev=document.getElementById('modal-book-sort')?.value||'date-desc';
     controls.innerHTML=`<select id="modal-book-sort" class="form-select" onchange="renderStatsModal()">
       <option value="date-desc">最近阅读</option>
@@ -1867,20 +1905,33 @@ function renderStatsModal(){
     </select>`;
     document.getElementById('modal-book-sort').value=prev;
     const books=sortBooksForStats(statsModal.books);
-    const authorBox=statsModal.mode==='author'?renderAuthorNoteBox(statsModal.author):'';
+    const authorBox=statsModal.mode==='author-detail'?`${renderAuthorInsights(statsModal.author)}${renderAuthorNoteBox(statsModal.author)}`:'';
     content.innerHTML=`${authorBox}<div class="book-list compact">${books.length?books.map(renderStatsBookCard).join(''):'<div style="color:var(--text3);font-size:12px;text-align:center;padding:16px">暂无书籍</div>'}</div>`;
     return;
   }
   const prev=document.getElementById('modal-index-sort')?.value||'count-desc';
-  controls.innerHTML=`<select id="modal-index-sort" class="form-select" onchange="renderStatsModal()">
+  const tagCategoryControl=statsModal.mode==='tag'?`<select id="modal-tag-cat" class="form-select" onchange="setStatsModalTagCategory(this.value)">
+    <option value="all">全部标签</option>
+    ${TAG_CATS.map(c=>`<option value="${c.key}">${c.label}</option>`).join('')}
+  </select>`:'';
+  controls.innerHTML=`${tagCategoryControl}<select id="modal-index-sort" class="form-select" onchange="renderStatsModal()">
     <option value="count-desc">数量多到少</option>
     <option value="rating-desc">评分高到低</option>
     <option value="rating-asc">评分低到高</option>
     <option value="name-asc">名称 A-Z</option>
   </select>`;
+  if(statsModal.mode==='tag') document.getElementById('modal-tag-cat').value=statsModal.tagCat||'all';
   document.getElementById('modal-index-sort').value=prev;
   const items=sortIndexItems(statsModal.items);
   content.innerHTML=`<div class="stat-list">${items.length?items.map(item=>statListItem(item,statsModal.mode)).join(''):'<div style="color:var(--text3);font-size:12px;text-align:center;padding:16px">暂无数据</div>'}</div>`;
+}
+
+function setStatsModalTagCategory(cat){
+  statsModal.tagCat=cat||'all';
+  statsModal.items=getStatsIndex('tag',statsModal.tagCat);
+  const label=statsModal.tagCat==='all'?'全部标签':(TAG_CATS.find(c=>c.key===statsModal.tagCat)?.label||'标签');
+  document.getElementById('stats-modal-title').textContent=`按标签统计 · ${label}`;
+  renderStatsModal();
 }
 
 function renderAuthorNoteBox(author){
@@ -1890,6 +1941,30 @@ function renderAuthorNoteBox(author){
     <textarea class="form-textarea" id="author-note-input" style="min-height:110px" placeholder="写下你对这位作者的评价、文风、雷点、偏好…">${escapeHtml(note)}</textarea>
     <button class="btn btn-primary" style="margin-top:8px;width:100%" onclick="saveAuthorNote(decodeURIComponent('${encodeURIComponent(author)}'))">保存作者评价</button>
     ${note?`<div class="author-note-text">${escapeHtml(note)}</div>`:''}
+  </div>`;
+}
+
+function renderAuthorInsights(author){
+  const books=db.books.filter(b=>b.author===author);
+  const freq={};
+  books.forEach(b=>TAG_CATS.forEach(c=>(b.tags?.[c.key]||[]).forEach(t=>{
+    const key=`${c.key}::${t}`;
+    if(!freq[key]) freq[key]={tag:t,cat:c,count:0};
+    freq[key].count++;
+  })));
+  const topTags=Object.values(freq).sort((a,b)=>b.count-a.count||a.tag.localeCompare(b.tag,'zh-CN')).slice(0,8);
+  const signature=new Set(topTags.map(x=>x.tag));
+  const related=uniqueList(db.books.map(b=>b.author).filter(a=>a&&a!==author)).map(name=>{
+    const otherBooks=db.books.filter(b=>b.author===name);
+    const otherTags=new Set(otherBooks.flatMap(b=>Object.values(b.tags||{}).flat()));
+    const overlap=[...signature].filter(t=>otherTags.has(t));
+    return {name,count:otherBooks.length,overlap};
+  }).filter(x=>x.overlap.length).sort((a,b)=>b.overlap.length-a.overlap.length||b.count-a.count||a.name.localeCompare(b.name,'zh-CN')).slice(0,5);
+  return `<div class="author-note-box">
+    <div class="author-note-title">高频标签</div>
+    <div class="tag-chips-wrap">${topTags.length?topTags.map(x=>`<span class="tag-chip tag-${TAG_CATS.findIndex(c=>c.key===x.cat.key)}" style="font-size:12px;padding:5px 11px">${escapeHtml(x.cat.label)} · ${escapeHtml(x.tag)} ${x.count}</span>`).join(''):'<span class="tag-selected-empty">这个作者还没有可统计的标签</span>'}</div>
+    <div class="author-note-title" style="margin-top:14px">关联推荐作者</div>
+    <div class="stat-list">${related.length?related.map(x=>`<div class="stat-list-item" onclick="openAuthorDetail(decodeURIComponent('${encodeURIComponent(x.name)}'))"><div class="stat-list-main"><div class="stat-list-name">${escapeHtml(x.name)}</div><div class="stat-list-meta">相似标签：${escapeHtml(x.overlap.slice(0,4).join('、'))}</div></div><div class="stat-list-num">›</div></div>`).join(''):'<div class="tag-selected-empty">标签积累多一点后，这里会出现常写类似口味的作者</div>'}</div>
   </div>`;
 }
 
