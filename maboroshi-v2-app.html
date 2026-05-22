@@ -268,6 +268,8 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
 .tag-category-label{font-size:11px;font-weight:500;color:var(--text3);margin-bottom:8px;display:flex;align-items:center;justify-content:space-between}
 .tag-selected-row{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px;min-height:24px}
 .tag-selected-empty{font-size:12px;color:var(--text3);padding:4px 0}
+.tag-selected-remove{display:inline-flex;align-items:center;gap:5px;border:none;cursor:pointer}
+.tag-selected-remove b{font-size:13px;line-height:1;font-weight:700;opacity:.72}
 .tag-picker{display:none;margin-top:8px;border:1px solid var(--border);border-radius:var(--r2);padding:10px;background:var(--bg2);box-shadow:var(--shadow)}
 .tag-picker.show{display:block}
 .tag-picker-hint{font-size:10px;color:var(--text3);margin-bottom:8px}
@@ -706,7 +708,7 @@ body.magic-theme .author-wait-card{border-color:rgba(116,110,183,.18)}
           <div class="settings-item-left">
             <div class="settings-item-icon" style="background:#e8f0fe">ℹ️</div>
             <div>
-              <div class="settings-item-title">幻 maboroshi v2.22</div>
+              <div class="settings-item-title">幻 maboroshi v2.23</div>
               <div class="settings-item-sub">数据和密码均存储于本地</div>
             </div>
           </div>
@@ -819,7 +821,7 @@ body.magic-theme .author-wait-card{border-color:rgba(116,110,183,.18)}
       <label class="form-label">书名 <span style="color:var(--pink2)">*</span></label>
       <div style="display:flex;gap:8px">
         <input class="form-input" id="f-title" placeholder="输入书名" style="flex:1">
-        <button class="btn btn-ghost" onclick="autoFetch()" style="white-space:nowrap;font-size:12px">🔍 AI补全</button>
+        <button class="btn btn-ghost" id="ai-fetch-btn" onclick="autoFetch()" style="white-space:nowrap;font-size:12px">🔍 AI补全</button>
       </div>
     </div>
     <div class="form-row">
@@ -954,7 +956,7 @@ body.magic-theme .author-wait-card{border-color:rgba(116,110,183,.18)}
 // ═══════════════════════════════════════
 //  DATA LAYER
 // ═══════════════════════════════════════
-const APP_VERSION = '2.12.0';
+const APP_VERSION = '2.13.0';
 const STORE_KEY = 'shuji_v1';
 const LOCK_KEY = 'maboroshi_lock_v2';
 const TAG_CATS = [
@@ -988,6 +990,7 @@ let filterModeOpen = {};
 let navReady = false;
 let suppressNextPop = false;
 let edgeTouch = null;
+let autoFetchBusy = false;
 
 function load(){
   try{const s=localStorage.getItem(STORE_KEY);if(s)db=JSON.parse(s);}catch(e){}
@@ -1610,7 +1613,7 @@ function renderTagCategories(existing){
   wrap.innerHTML=TAG_CATS.map((c,ci)=>{
     const hist=db.tagHistory[c.key]||[];
     const sel=formTags[c.key]||[];
-    const selectedHtml=sel.length?sel.map(t=>`<span class="tag-chip tag-${ci}">${escapeHtml(t)}</span>`).join(''):`<span class="tag-selected-empty">点击输入框选择或新增</span>`;
+    const selectedHtml=selectedTagChips(c.key,ci,sel);
     const chipsHtml=hist.map(t=>tagPickerChip(c.key,t,ci)).join('');
     return `<div class="tag-category">
       <div class="tag-category-label"><span>${c.label}</span><span style="color:var(--text3);font-size:10px">${sel.length} 个已选</span></div>
@@ -1644,9 +1647,26 @@ function rerenderTagCategory(catKey){
   const chips=document.getElementById('chips-'+catKey);
   const selected=document.getElementById('selected-'+catKey);
   if(chips) chips.innerHTML=hist.map(t=>tagPickerChip(catKey,t,ci)).join('')||'<span class="tag-selected-empty">还没有历史标签</span>';
-  if(selected) selected.innerHTML=sel.length?sel.map(t=>`<span class="tag-chip tag-${ci}">${escapeHtml(t)}</span>`).join(''):'<span class="tag-selected-empty">点击输入框选择或新增</span>';
+  if(selected) selected.innerHTML=selectedTagChips(catKey,ci,sel);
   const label=document.querySelector(`#selected-${catKey}`)?.closest('.tag-category')?.querySelector('.tag-category-label span:last-child');
   if(label) label.textContent=`${sel.length} 个已选`;
+}
+
+function selectedTagChips(catKey,ci,tags){
+  return tags.length?tags.map(t=>`<button type="button" class="tag-chip tag-${ci} tag-selected-remove" onclick="removeSelectedTag('${catKey}',decodeURIComponent('${encodeURIComponent(t)}'))" title="从这本书移除"><span>${escapeHtml(t)}</span><b>×</b></button>`).join(''):'<span class="tag-selected-empty">点击输入框选择或新增</span>';
+}
+
+function removeSelectedTag(catKey,tag){
+  formTags[catKey]=(formTags[catKey]||[]).filter(t=>t!==tag);
+  rerenderTagCategory(catKey);
+  toast('已从这本书移除标签');
+}
+
+function rememberTags(tags){
+  TAG_CATS.forEach(c=>{
+    db.tagHistory[c.key]=db.tagHistory[c.key]||[];
+    (tags?.[c.key]||[]).forEach(t=>{if(t&&!db.tagHistory[c.key].includes(t)) db.tagHistory[c.key].push(t);});
+  });
 }
 
 function toggleTag(catKey,tag){
@@ -1860,6 +1880,7 @@ function saveBook(){
   } else {
     db.books.unshift(book);
   }
+  rememberTags(book.tags);
   pruneAuthorWaitingWorks(book.author,book.title);
   save();
   closeSheet('sheet-book');
@@ -1870,13 +1891,67 @@ function saveBook(){
 // ═══════════════════════════════════════
 //  AUTO FETCH
 // ═══════════════════════════════════════
+function captureBookFormDraft(){
+  return {
+    editingBookId,
+    title:document.getElementById('f-title').value,
+    author:document.getElementById('f-author').value,
+    platform:document.getElementById('f-platform').value,
+    gongName:document.getElementById('f-gong-name').value,
+    shouName:document.getElementById('f-shou-name').value,
+    coverUrl:document.getElementById('f-cover-url').value,
+    status:document.getElementById('f-status').value,
+    progress:parseInt(document.getElementById('f-progress').value||'100'),
+    finishYear:document.getElementById('f-finish-year').value,
+    summary:document.getElementById('f-summary').value,
+    synopsis:document.getElementById('f-synopsis').value,
+    tags:JSON.parse(JSON.stringify(formTags||{})),
+    logs:JSON.parse(JSON.stringify(formLogs||[]))
+  };
+}
+
+function restoreBookFormDraft(draft){
+  editingBookId=draft.editingBookId||null;
+  document.getElementById('sheet-book-title').textContent=editingBookId?'编辑书籍':'添加书籍';
+  document.getElementById('f-title').value=draft.title||'';
+  document.getElementById('f-author').value=draft.author||'';
+  document.getElementById('f-platform').value=draft.platform||'晋江';
+  document.getElementById('f-gong-name').value=draft.gongName||'';
+  document.getElementById('f-shou-name').value=draft.shouName||'';
+  document.getElementById('f-cover-url').value=draft.coverUrl||'';
+  document.getElementById('f-status').value=draft.status||'done';
+  document.getElementById('f-progress').innerHTML=progressOptions(draft.progress??100);
+  document.getElementById('f-finish-year').value=draft.finishYear||'';
+  document.getElementById('f-summary').value=draft.summary||'';
+  document.getElementById('f-synopsis').value=draft.synopsis||'';
+  renderTagCategories(draft.tags||{});
+  renderReadLogs(draft.logs||[]);
+}
+
+function showFetchedBookSheet(){
+  closeAllSheets();
+  setTimeout(()=>openSheet('sheet-book'),80);
+}
+
+function setAutoFetchBusy(busy){
+  autoFetchBusy=busy;
+  const btn=document.getElementById('ai-fetch-btn');
+  if(btn){
+    btn.disabled=busy;
+    btn.textContent=busy?'补全中…':'🔍 AI补全';
+  }
+}
+
 async function autoFetch(){
+  if(autoFetchBusy){toast('这次补全还在路上');return;}
   const title=document.getElementById('f-title').value.trim();
   const author=document.getElementById('f-author').value.trim();
   const platform=document.getElementById('f-platform').value;
   if(!title||!author){toast('为避免匹配错书，请先填写书名和作者');return;}
   if(!db.apiKey){toast('请先在设置中填写 Gemini API Key');return;}
-  toast('正在补全作品信息…');
+  const draft=captureBookFormDraft();
+  setAutoFetchBusy(true);
+  toast('作品在后台补全中，可以先离开编辑页');
   try{
     const prompt=`请帮我补全 BL/耽美网文《${title}》（作者：${author}）的信息。必须同时匹配书名与作者；优先参考晋江文学城、长佩文学（新站/旧站）的公开作品页与可信公开书评；如果无法确定，不要编造，填空字符串。
 官方简介只能写作品官方简介；剧情梗概可以根据公开长评/书评做 120 到 220 字概括，不要照抄大段原文；封面只在你能给出可直接访问的公开图片 URL 时返回。
@@ -1885,6 +1960,7 @@ async function autoFetch(){
 当前用户选择的平台是：${platform}。`;
     const json=parseGeminiJson(await callGemini(prompt));
     if(json.matched===false||String(json.matched||'').toLowerCase()==='false') throw new Error('NO_EXACT_MATCH');
+    restoreBookFormDraft(draft);
     if(json.author) document.getElementById('f-author').value=json.author;
     if(json.platform&&[...document.getElementById('f-platform').options].some(o=>o.value===json.platform)){
       document.getElementById('f-platform').value=json.platform;
@@ -1900,17 +1976,18 @@ async function autoFetch(){
         if(!v) return;
         const vals=v.split(/[、，,]/g).map(s=>s.trim()).filter(Boolean);
         vals.forEach(t=>{
-          if(t&&!db.tagHistory[k]?.includes(t)){db.tagHistory[k]=(db.tagHistory[k]||[]).concat(t);}
           if(t&&!formTags[k]?.includes(t)){(formTags[k]=formTags[k]||[]).push(t);}
         });
       });
-      save();
       renderTagCategories(formTags);
     }
+    showFetchedBookSheet();
     toast(json.sourceHint?`补全成功：${json.sourceHint}`:'补全成功 ✨');
   }catch(e){
     toast(formatGeminiError(e,'作品补全失败'));
     console.error(e);
+  }finally{
+    setAutoFetchBusy(false);
   }
 }
 
