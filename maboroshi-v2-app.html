@@ -90,6 +90,19 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
 .filter-mode-title{font-size:11px;color:var(--text3);margin:8px 0 6px}
 .filter-sort-row{padding:0 16px 8px;display:none}
 .filter-sort-row.show{display:block}
+#sheet-filter{inset:0;max-height:none;border-radius:0}
+#sheet-filter .sheet-handle{display:none}
+#sheet-filter .sheet-body{padding-top:14px}
+.filter-accordion{padding:0;overflow:hidden}
+.filter-accordion-head{width:100%;padding:14px 13px;border:none;background:transparent;color:var(--text);display:flex;align-items:center;justify-content:space-between;font-size:14px;font-weight:600;text-align:left}
+.filter-accordion-head span:last-child{color:var(--text3);font-size:15px;transition:transform .2s}
+.filter-accordion.open .filter-accordion-head span:last-child{transform:rotate(180deg)}
+.filter-accordion-panel{display:none;padding:0 12px 12px;border-top:1px dashed var(--border)}
+.filter-accordion.open .filter-accordion-panel{display:block}
+.filter-picker-input{margin-top:7px}
+.filter-picker-box{display:none;margin-top:8px;padding:9px;border-radius:12px;border:1px solid var(--border);background:var(--bg2);box-shadow:var(--shadow)}
+.filter-picker-box.show{display:block}
+.filter-picked{display:flex;flex-wrap:wrap;gap:6px;min-height:25px;margin:6px 0}
 
 /* ── BOOK CARDS ── */
 .book-list{padding:0 16px;display:flex;flex-direction:column;gap:12px}
@@ -121,22 +134,25 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
 .book-list.view-diary .status-bar{order:6;background:rgba(232,130,159,.16)}
 .book-list.view-diary .book-author+.book-tags-row{margin-top:4px}
 .book-list.view-magic{position:relative;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));align-items:start;gap:12px;padding:190px 21px 34px;min-height:620px;border-radius:0 0 30px 30px;background:radial-gradient(circle at 18% 62px,#fff4bc 0 14px,transparent 15px),radial-gradient(circle at 82% 42px,rgba(255,233,165,.8) 0 2px,transparent 3px),radial-gradient(circle at 70% 78px,rgba(255,255,232,.9) 0 1.5px,transparent 2.5px),radial-gradient(circle at 33% 94px,rgba(255,255,232,.8) 0 2px,transparent 3px),linear-gradient(180deg,#2f355f 0,#343d6f 127px,#f8eed9 128px,#fff5e5 100%)}
-.book-list.view-magic::before{content:'';position:absolute;left:8px;right:8px;top:126px;bottom:8px;border-radius:42% 42% 18px 18px/38px 38px 18px 18px;background:linear-gradient(100deg,rgba(108,81,64,.14),transparent 8%,transparent 52%,rgba(143,111,84,.14) 53%,transparent 58%),linear-gradient(180deg,#fff7e7,#fbedd5 55%,#f5e1bd);border:1px solid rgba(171,137,102,.46);box-shadow:inset 0 0 0 1px rgba(255,255,255,.55),inset 0 0 34px rgba(196,152,104,.2),0 13px 28px rgba(39,37,65,.22);pointer-events:none}
+.book-list.view-magic::before{content:'';position:absolute;left:8px;right:8px;top:126px;bottom:8px;clip-path:polygon(2% 7%,48% 0,98% 7%,100% 100%,0 100%);border-radius:38px 38px 18px 18px;background:linear-gradient(100deg,rgba(108,81,64,.2),transparent 10%,transparent 48%,rgba(143,111,84,.22) 49.5%,rgba(255,255,247,.75) 50.3%,transparent 52%),repeating-linear-gradient(0deg,rgba(255,247,231,.98) 0 31px,rgba(233,208,169,.18) 32px),linear-gradient(180deg,#fff7e7,#fbedd5 55%,#f5e1bd);border:1px solid rgba(171,137,102,.46);box-shadow:inset 0 0 0 1px rgba(255,255,255,.55),inset 0 0 34px rgba(196,152,104,.2),0 13px 28px rgba(39,37,65,.22);pointer-events:none}
 .book-list.view-magic::after{content:'☾\A 我的书架\A 每一本书都是通往另一世界的门';white-space:pre;position:absolute;z-index:1;left:0;right:0;top:31px;text-align:center;color:#fff8e7;font-family:'Noto Serif SC',serif;font-size:12px;line-height:1.9;text-shadow:0 2px 8px rgba(16,17,44,.42)}
 .book-list.view-magic .book-card{z-index:1;display:flex;flex-direction:column;align-items:stretch;gap:7px;min-width:0;min-height:274px;padding:9px 8px 18px;background:linear-gradient(180deg,rgba(71,89,134,.95),rgba(87,105,145,.92));border:1px solid rgba(255,226,173,.48);border-radius:12px 12px 8px 8px;clip-path:polygon(0 0,100% 0,100% 100%,50% 92%,0 100%);box-shadow:inset 0 0 0 1px rgba(255,255,255,.18),0 7px 14px rgba(54,50,79,.24);overflow:hidden}
 .book-list.view-magic .book-card:nth-child(3n+2){margin-top:8px;background:linear-gradient(180deg,rgba(96,126,112,.95),rgba(119,145,120,.92))}
 .book-list.view-magic .book-card:nth-child(3n){background:linear-gradient(180deg,rgba(124,101,163,.95),rgba(151,123,179,.92))}
-.book-list.view-magic .book-card::before{content:'';position:absolute;left:50%;top:-1px;width:22px;height:17px;transform:translateX(-50%);border-radius:0 0 9px 9px;background:linear-gradient(180deg,#f0d08d,#b7925b);box-shadow:0 2px 4px rgba(48,38,50,.2)}
-.book-list.view-magic .book-card::after{content:'✦';position:absolute;right:10px;bottom:28px;color:rgba(255,237,183,.82);font-size:11px}
+.book-list.view-magic .book-card::before{content:'';position:absolute;left:50%;top:8px;width:13px;height:13px;transform:translateX(-50%);border-radius:50%;background:#26304f;border:3px solid #d8bb7c;box-shadow:inset 0 1px 2px rgba(0,0,0,.45),0 1px 3px rgba(48,38,50,.25)}
+.book-list.view-magic .book-card::after{content:'';position:absolute;left:50%;top:-43px;width:23px;height:55px;transform:translateX(-50%);border-left:2px solid rgba(235,200,126,.95);border-right:2px solid rgba(189,151,91,.9);border-radius:50% 50% 0 0;filter:drop-shadow(0 1px 1px rgba(32,27,48,.24))}
 .book-list.view-magic .book-cover,.book-list.view-magic .book-cover-art{order:0;width:100%;height:132px;margin:7px 0 2px;border-radius:9px;border:1px solid rgba(255,255,255,.42);clip-path:none;box-shadow:inset 0 0 0 1px rgba(255,255,255,.18),0 4px 9px rgba(31,27,50,.24);transform:none}
 .book-list.view-magic .book-cover-art::after{top:10px;right:9px}
 .book-list.view-magic .book-info{display:flex;flex:1;flex-direction:column;align-items:center;min-width:0;min-height:0;padding:0;text-align:center;color:#fff9ea}
 .book-list.view-magic .book-title-row{order:0;display:block;width:100%;margin:0;padding:0}
 .book-list.view-magic .book-title{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-size:13px;line-height:1.45;color:#fff9ea}
 .book-list.view-magic .book-rating-badge{display:inline-flex;margin-top:4px;background:transparent;color:#ffe9a7;border:none;padding:0;font-size:11px}
-.book-list.view-magic .book-author{order:1;display:none}
-.book-list.view-magic .book-quote,.book-list.view-magic .book-tags-row,.book-list.view-magic .book-shelf-rule,.book-list.view-magic .status-bar{display:none}
-.book-list.view-magic .book-meta{order:2;display:flex;flex-direction:column;align-items:center;gap:3px;margin-top:auto;color:rgba(255,246,218,.9);font-size:10px}
+.book-list.view-magic .book-author{order:1;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden;width:100%;margin:2px 0 4px;color:rgba(255,246,218,.88);font-size:10px}
+.book-list.view-magic .book-quote,.book-list.view-magic .book-shelf-rule,.book-list.view-magic .status-bar{display:none}
+.book-list.view-magic .book-tags-row{order:2;display:flex;justify-content:center;max-height:20px;margin:0 0 4px;overflow:hidden}
+.book-list.view-magic .book-tags-row .tag-chip{max-width:48%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:2px 5px;background:rgba(255,246,218,.14);border:1px solid rgba(255,230,170,.2);color:#fff2cc;font-size:9px}
+.book-list.view-magic .book-tags-row .tag-chip:nth-child(n+3){display:none}
+.book-list.view-magic .book-meta{order:3;display:flex;flex-direction:column;align-items:center;gap:3px;margin-top:auto;color:rgba(255,246,218,.9);font-size:10px}
 .book-list.view-magic .book-meta .badge{display:none}
 .book-list.view-magic .read-count-badge{background:rgba(255,246,218,.16);color:#fff1c7;border:1px solid rgba(255,230,170,.22)}
 .book-list.view-magic .book-memory-mark{display:none}
@@ -259,6 +275,10 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
 .detail-body{padding:16px 20px}
 .detail-section{margin-bottom:20px}
 .detail-section-title{font-size:12px;font-weight:500;color:var(--text3);margin-bottom:10px;text-transform:uppercase;letter-spacing:0.05em}
+.detail-couple{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.detail-role-card{padding:11px 12px;border:1px solid var(--border);border-radius:12px;background:linear-gradient(145deg,rgba(255,255,255,.85),rgba(252,232,240,.58))}
+.detail-role-label{font-size:11px;color:var(--text3);margin-bottom:4px}
+.detail-role-name{font-family:'Noto Serif SC',serif;font-size:15px;font-weight:600;color:var(--text)}
 .status-row{display:flex;align-items:center;gap:10px}
 .status-pct{font-size:13px;font-weight:500;color:var(--pink2)}
 .status-bar-big{flex:1;height:6px;background:var(--border);border-radius:3px;overflow:hidden}
@@ -325,6 +345,16 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
 .author-name{font-size:14px;font-weight:700;color:var(--text)}
 .author-meta{font-size:11px;color:var(--text3);margin-top:2px}
 .author-score{font-family:'Noto Serif SC',serif;color:#e6b84a;font-size:18px;font-weight:700}
+.author-profile{position:relative;margin-bottom:12px;padding:16px;border-radius:20px;background:linear-gradient(145deg,#fff7ea,#fff 48%,#fce8f0);border:1px solid #ead5b8;box-shadow:0 8px 22px rgba(176,120,32,.14);overflow:hidden}
+.author-profile::after{content:'档案';position:absolute;right:-18px;top:14px;width:80px;text-align:center;transform:rotate(35deg);background:rgba(247,217,139,.68);color:#9b6e22;font-size:11px;padding:3px 0}
+.author-profile-head{display:grid;grid-template-columns:66px 1fr;gap:12px;align-items:center}
+.author-avatar{width:66px;height:66px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:3px solid rgba(255,255,255,.82);box-shadow:0 5px 14px rgba(122,92,78,.18);font-family:'Noto Serif SC',serif;font-size:27px;font-weight:700;color:#fff}
+.author-profile-name{font-family:'Noto Serif SC',serif;font-size:22px;font-weight:700;color:var(--text)}
+.author-profile-meta{font-size:12px;color:var(--text3);line-height:1.7;margin-top:3px}
+.author-quote-card{margin-top:12px;padding:11px 12px;border-radius:14px;background:rgba(255,255,255,.68);border:1px dashed rgba(176,120,32,.24);color:var(--text2);font-family:'Noto Serif SC',serif;font-size:13px;line-height:1.7}
+.author-quote-label{font-family:'Noto Sans SC',sans-serif;font-size:11px;color:#b07820;margin-bottom:4px}
+.author-quote-edit{margin-top:10px;display:flex;gap:8px}
+.author-quote-edit .form-input{font-size:12px}
 .month-garden{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
 .month-card{min-height:88px;border:none;border-radius:16px;background:linear-gradient(145deg,#fff,#fff8f3);box-shadow:0 4px 14px rgba(200,130,100,.12);padding:10px;text-align:left;cursor:pointer;color:var(--text2);position:relative;overflow:hidden}
 .month-card::after{content:'✿';position:absolute;right:8px;bottom:4px;font-size:34px;color:#f2a8c4;opacity:.32}
@@ -347,6 +377,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
 .encounter-section{background:rgba(255,255,255,.78);border:1px solid var(--border);border-radius:18px;padding:14px;box-shadow:var(--shadow)}
 .encounter-section-title{font-size:13px;color:var(--text2);font-weight:700;margin-bottom:10px}
 .encounter-note{font-size:12px;color:var(--text3);line-height:1.7;margin-top:8px}
+.encounter-section .book-list.compact.view-magic{grid-template-columns:minmax(0,104px);justify-content:center;min-height:390px;padding-left:34px;padding-right:34px}
 .segmented{display:flex;gap:6px;background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:4px}
 .segmented button{flex:1;border:none;border-radius:9px;padding:8px 6px;background:transparent;color:var(--text2);font-size:12px}
 .segmented button.active{background:var(--pink2);color:white}
@@ -566,7 +597,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
           <div class="settings-item-left">
             <div class="settings-item-icon" style="background:#e8f0fe">ℹ️</div>
             <div>
-              <div class="settings-item-title">幻 maboroshi v2.14</div>
+              <div class="settings-item-title">幻 maboroshi v2.15</div>
               <div class="settings-item-sub">数据和密码均存储于本地</div>
             </div>
           </div>
@@ -831,7 +862,7 @@ const DEFAULT_TAG_HISTORY = {shou:[],gong:[],era:[],plot:[],vibe:[],warn:[]};
 const COVER_COLORS = ['#f2a8c4','#f5c4a1','#a8d5b5','#a8c4d5','#c4a8d5','#d5c4a8','#d5a8a8'];
 const PLATFORMS = ['晋江','长佩','长佩旧站','废文','其他'];
 
-let db = {books:[], tagHistory:{...DEFAULT_TAG_HISTORY}, apiKey:'', lastBackupAt:'', settings:{shelfView:'list'}, authorNotes:{}};
+let db = {books:[], tagHistory:{...DEFAULT_TAG_HISTORY}, apiKey:'', lastBackupAt:'', settings:{shelfView:'list'}, authorNotes:{}, authorQuotes:{}};
 let currentFilter = 'all';
 let editingBookId = null;
 let editingLogIdx = null;
@@ -841,6 +872,9 @@ let statsModal = {mode:'books', title:'统计明细', items:[], books:[]};
 let tagHoldTimer = null;
 let shelfFilters = {authorMust:[],authorAny:[],tagsMust:{},tagsAny:{},warnExclude:[]};
 let draftShelfFilters = null;
+let filterSectionOpen = {author:true,shou:true,gong:false,era:false,plot:false,vibe:false,warn:false};
+let filterPickerOpen = '';
+let filterQueries = {};
 let navReady = false;
 let suppressNextPop = false;
 let edgeTouch = null;
@@ -852,6 +886,7 @@ function load(){
   if(!db.settings) db.settings={shelfView:'list'};
   if(!db.settings.shelfView) db.settings.shelfView='list';
   if(!db.authorNotes) db.authorNotes={};
+  if(!db.authorQuotes) db.authorQuotes={};
   TAG_CATS.forEach(c=>{if(!db.tagHistory[c.key])db.tagHistory[c.key]=[];});
 }
 function save(){localStorage.setItem(STORE_KEY,JSON.stringify(db));}
@@ -1058,7 +1093,7 @@ function renderBookCard(b,opts={}){
   const readCount=logs.length;
   const excerpt=getLatestReviewExcerpt(b);
   return `<div class="book-card fade-in" onclick="openDetail('${b.id}')">
-    <div class="book-memory-mark">${rating!==null?rating.toFixed(1):'记'}</div>
+    ${rating===null?'<div class="book-memory-mark">记</div>':''}
     ${renderCover(b)}
     <div class="book-info">
       <div class="book-title-row">
@@ -1077,6 +1112,10 @@ function renderBookCard(b,opts={}){
       ${progress<100?`<div class="status-bar"><div class="status-fill" style="width:${progress}%"></div></div>`:''}
     </div>
   </div>`;
+}
+
+function currentShelfViewClass(){
+  return `view-${db.settings?.shelfView||'list'}`;
 }
 
 function sortShelfBooks(books){
@@ -1152,6 +1191,48 @@ function filterChip(label,group,value){
   return `<button type="button" class="tag-chip-sel ${selected?'selected':''}" onclick="toggleDraftFilter('${group}',decodeURIComponent('${encodeURIComponent(value)}'))">${escapeHtml(label)}</button>`;
 }
 
+function filterPickedChip(label,group,value){
+  return `<button type="button" class="tag-chip tag-4" style="border:none" onclick="toggleDraftFilter('${group}',decodeURIComponent('${encodeURIComponent(value)}'))">${escapeHtml(label)} ×</button>`;
+}
+
+function safeFilterId(group){return group.replace(/[^a-z0-9]/gi,'-');}
+function setFilterSectionOpen(key){
+  filterSectionOpen[key]=!filterSectionOpen[key];
+  renderShelfFilterBody();
+}
+function openFilterPicker(group){
+  filterPickerOpen=group;
+  renderShelfFilterBody();
+  setTimeout(()=>document.getElementById(`filter-q-${safeFilterId(group)}`)?.focus(),0);
+}
+function setFilterQuery(group,value){
+  filterQueries[group]=value;
+  filterPickerOpen=group;
+  renderShelfFilterBody();
+  setTimeout(()=>{
+    const el=document.getElementById(`filter-q-${safeFilterId(group)}`);
+    if(el){el.focus();el.setSelectionRange(el.value.length,el.value.length);}
+  },0);
+}
+function sortedFilterOptions(values,query=''){
+  const q=query.trim().toLowerCase();
+  return [...values].sort((a,b)=>{
+    const av=String(a).toLowerCase(), bv=String(b).toLowerCase();
+    const ar=q&&av.includes(q)?(av.startsWith(q)?0:1):2;
+    const br=q&&bv.includes(q)?(bv.startsWith(q)?0:1):2;
+    return ar-br||String(a).localeCompare(String(b),'zh-CN');
+  });
+}
+function renderFilterPicker(title,group,values,emptyText){
+  const selected=getDraftFilterArray(group);
+  const q=filterQueries[group]||'';
+  const ordered=sortedFilterOptions(values,q);
+  return `<div class="filter-mode-title">${title}</div>
+    <div class="filter-picked">${selected.length?selected.map(v=>filterPickedChip(v,group,v)).join(''):'<span class="tag-selected-empty">尚未选择</span>'}</div>
+    <input class="form-input filter-picker-input" id="filter-q-${safeFilterId(group)}" value="${escapeAttr(q)}" placeholder="输入或点击选择" onfocus="openFilterPicker('${group}')" oninput="setFilterQuery('${group}',this.value)">
+    <div class="filter-picker-box ${filterPickerOpen===group?'show':''}"><div class="tag-picker-hint">匹配的内容会排在前面，点标签即可勾选</div><div class="tag-chips-wrap">${ordered.length?ordered.map(v=>filterChip(v,group,v)).join(''):`<span class="tag-selected-empty">${emptyText}</span>`}</div></div>`;
+}
+
 function getDraftFilterArray(group){
   const f=draftShelfFilters;
   if(group==='authorMust') return f.authorMust;
@@ -1167,27 +1248,23 @@ function toggleDraftFilter(group,value){
   const arr=getDraftFilterArray(group);
   const idx=arr.indexOf(value);
   if(idx>-1) arr.splice(idx,1); else arr.push(value);
+  filterPickerOpen=group;
   renderShelfFilterBody();
 }
 
 function renderShelfFilterBody(){
   const body=document.getElementById('shelf-filter-body');
   const authors=uniqueList(db.books.map(b=>b.author).filter(Boolean)).sort((a,b)=>a.localeCompare(b,'zh-CN'));
-  const authorHtml=authors.length?`
-    <div class="filter-mode-title">必须是</div><div class="tag-chips-wrap">${authors.map(a=>filterChip(a,'authorMust',a)).join('')}</div>
-    <div class="filter-mode-title">可以是任意一个</div><div class="tag-chips-wrap">${authors.map(a=>filterChip(a,'authorAny',a)).join('')}</div>`:
-    '<div class="tag-selected-empty">还没有作者数据</div>';
+  const accordion=(key,title,inner)=>`<div class="filter-section filter-accordion ${filterSectionOpen[key]?'open':''}"><button type="button" class="filter-accordion-head" onclick="setFilterSectionOpen('${key}')"><span>${title}</span><span>⌄</span></button><div class="filter-accordion-panel">${inner}</div></div>`;
+  const authorHtml=renderFilterPicker('必须是', 'authorMust', authors, '还没有作者数据')+renderFilterPicker('可以是任意一个', 'authorAny', authors, '还没有作者数据');
   const tagHtml=TAG_CATS.map(c=>{
     const tags=db.tagHistory[c.key]||[];
     if(c.key==='warn'){
-      return `<div class="filter-section"><div class="filter-section-title">排雷反选</div><div class="filter-mode-title">排除含有这些排雷的书</div><div class="tag-chips-wrap">${tags.length?tags.map(t=>filterChip(t,'warnExclude',t)).join(''):'<span class="tag-selected-empty">还没有排雷标签</span>'}</div></div>`;
+      return accordion(c.key,'排雷反选',renderFilterPicker('排除含有这些排雷的书','warnExclude',tags,'还没有排雷标签'));
     }
-    return `<div class="filter-section"><div class="filter-section-title">${c.label}</div>
-      <div class="filter-mode-title">必须全部含有</div><div class="tag-chips-wrap">${tags.length?tags.map(t=>filterChip(t,`must:${c.key}`,t)).join(''):'<span class="tag-selected-empty">还没有历史标签</span>'}</div>
-      <div class="filter-mode-title">含有任意一个即可</div><div class="tag-chips-wrap">${tags.length?tags.map(t=>filterChip(t,`any:${c.key}`,t)).join(''):'<span class="tag-selected-empty">还没有历史标签</span>'}</div>
-    </div>`;
+    return accordion(c.key,c.label,renderFilterPicker('必须全部含有',`must:${c.key}`,tags,'还没有历史标签')+renderFilterPicker('含有任意一个即可',`any:${c.key}`,tags,'还没有历史标签'));
   }).join('');
-  body.innerHTML=`<div class="filter-section"><div class="filter-section-title">作者</div>${authorHtml}</div>${tagHtml}`;
+  body.innerHTML=`${accordion('author','作者',authorHtml)}${tagHtml}`;
 }
 
 function applyShelfFilters(){
@@ -1241,7 +1318,7 @@ function openDetail(id){
     </div>
     <div class="detail-body">
       ${progress>0&&progress<100?`<div class="detail-section"><div class="detail-section-title">阅读进度</div><div class="status-row"><div class="status-bar-big"><div class="status-fill-big" style="width:${progress}%"></div></div><div class="status-pct">${progress}%</div></div></div>`:''}
-      ${(b.gongName||b.shouName)?`<div class="detail-section"><div class="detail-section-title">主角</div><div style="font-size:13px;color:var(--text2);line-height:1.8">${b.gongName?`攻：${escapeHtml(b.gongName)}`:''}${b.gongName&&b.shouName?'<br>':''}${b.shouName?`受：${escapeHtml(b.shouName)}`:''}</div></div>`:''}
+      ${(b.gongName||b.shouName)?`<div class="detail-section"><div class="detail-section-title">主角</div><div class="detail-couple"><div class="detail-role-card"><div class="detail-role-label">受</div><div class="detail-role-name">${escapeHtml(b.shouName||'未填写')}</div></div><div class="detail-role-card"><div class="detail-role-label">攻</div><div class="detail-role-name">${escapeHtml(b.gongName||'未填写')}</div></div></div></div>`:''}
       ${tagGroups.length?`<div class="detail-section"><div class="detail-section-title">标签</div>${tagsHtml}</div>`:''}
       ${b.finishYear?`<div class="detail-section"><div class="detail-section-title">完结年份</div><div style="font-size:13px;color:var(--text2);line-height:1.7">${escapeHtml(b.finishYear)} 年</div></div>`:''}
       ${b.summary?`<div class="detail-section"><div class="detail-section-title">简介</div><div style="font-size:13px;color:var(--text2);line-height:1.7">${escapeHtml(b.summary)}</div></div>`:''}
@@ -1914,7 +1991,7 @@ function sampleArray(arr,n,usedIds=new Set()){
 
 function encounterBookCard(b,note=''){
   if(!b) return '';
-  return `<div>${renderStatsBookCard(b)}${note?`<div class="encounter-note">${escapeHtml(note)}</div>`:''}</div>`;
+  return `<div><div class="book-list compact ${currentShelfViewClass()}">${renderStatsBookCard(b)}</div>${note?`<div class="encounter-note">${escapeHtml(note)}</div>`:''}</div>`;
 }
 
 function renderEncounter(){
@@ -1963,8 +2040,8 @@ function renderStatsModal(){
     </select>`;
     document.getElementById('modal-book-sort').value=prev;
     const books=sortBooksForStats(statsModal.books);
-    const authorBox=statsModal.mode==='author-detail'?`${renderAuthorInsights(statsModal.author)}${renderAuthorNoteBox(statsModal.author)}`:'';
-    content.innerHTML=`${authorBox}<div class="book-list compact">${books.length?books.map(renderStatsBookCard).join(''):'<div style="color:var(--text3);font-size:12px;text-align:center;padding:16px">暂无书籍</div>'}</div>`;
+    const authorBox=statsModal.mode==='author-detail'?`${renderAuthorProfile(statsModal.author)}${renderAuthorInsights(statsModal.author)}${renderAuthorNoteBox(statsModal.author)}`:'';
+    content.innerHTML=`${authorBox}<div class="book-list compact ${currentShelfViewClass()}">${books.length?books.map(renderStatsBookCard).join(''):'<div style="color:var(--text3);font-size:12px;text-align:center;padding:16px">暂无书籍</div>'}</div>`;
     return;
   }
   const prev=document.getElementById('modal-index-sort')?.value||'count-desc';
@@ -2026,11 +2103,42 @@ function renderAuthorInsights(author){
   </div>`;
 }
 
+function authorAvatarStyle(author){
+  const styles=[
+    'linear-gradient(145deg,#e8829f,#f5c4a1)',
+    'linear-gradient(145deg,#8e73bd,#a8c4d5)',
+    'linear-gradient(145deg,#70a9a1,#a8d5b5)',
+    'linear-gradient(145deg,#b07820,#f7d98b)'
+  ];
+  return styles[titleSeed(author)%styles.length];
+}
+
+function renderAuthorProfile(author){
+  const books=db.books.filter(b=>b.author===author);
+  const quote=db.authorQuotes?.[author]||'还没有收录这位作者的经典语录。';
+  return `<div class="author-profile">
+    <div class="author-profile-head">
+      <div class="author-avatar" style="background:${authorAvatarStyle(author)}">${escapeHtml(String(author||'作').slice(0,1))}</div>
+      <div><div class="author-profile-name">${escapeHtml(author)}</div><div class="author-profile-meta">收录 ${books.length} 本 · 平均评分 ${avgBooksRating(books)}<br>你书架里的私人作者档案</div></div>
+    </div>
+    <div class="author-quote-card"><div class="author-quote-label">经典语录</div>${escapeHtml(quote)}</div>
+    <div class="author-quote-edit"><input class="form-input" id="author-quote-input" placeholder="手动补一条经典语录" value="${escapeAttr(db.authorQuotes?.[author]||'')}"><button class="btn btn-ghost" onclick="saveAuthorQuote(decodeURIComponent('${encodeURIComponent(author)}'))">保存</button></div>
+  </div>`;
+}
+
 function saveAuthorNote(author){
   db.authorNotes=db.authorNotes||{};
   db.authorNotes[author]=document.getElementById('author-note-input').value.trim();
   save();
   toast('作者评价已保存');
+  renderStatsModal();
+}
+
+function saveAuthorQuote(author){
+  db.authorQuotes=db.authorQuotes||{};
+  db.authorQuotes[author]=document.getElementById('author-quote-input').value.trim();
+  save();
+  toast('经典语录已保存');
   renderStatsModal();
 }
 
@@ -2149,7 +2257,7 @@ function handleImport(e){
 
 function clearData(){
   if(!confirm('确定清空所有数据？此操作不可撤销！')) return;
-  db={books:[],tagHistory:{shou:[],gong:[],era:[],plot:[],vibe:[],warn:[]},apiKey:db.apiKey,lastBackupAt:db.lastBackupAt||''};
+  db={books:[],tagHistory:{shou:[],gong:[],era:[],plot:[],vibe:[],warn:[]},apiKey:db.apiKey,lastBackupAt:db.lastBackupAt||'',settings:{shelfView:db.settings?.shelfView||'list'},authorNotes:{},authorQuotes:{}};
   save();
   renderShelf();
   toast('已清空');
