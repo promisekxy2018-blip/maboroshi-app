@@ -708,7 +708,7 @@ body.magic-theme .author-wait-card{border-color:rgba(116,110,183,.18)}
           <div class="settings-item-left">
             <div class="settings-item-icon" style="background:#e8f0fe">ℹ️</div>
             <div>
-              <div class="settings-item-title">幻 maboroshi v2.23</div>
+              <div class="settings-item-title">幻 maboroshi v2.24</div>
               <div class="settings-item-sub">数据和密码均存储于本地</div>
             </div>
           </div>
@@ -956,7 +956,7 @@ body.magic-theme .author-wait-card{border-color:rgba(116,110,183,.18)}
 // ═══════════════════════════════════════
 //  DATA LAYER
 // ═══════════════════════════════════════
-const APP_VERSION = '2.13.0';
+const APP_VERSION = '2.14.0';
 const STORE_KEY = 'shuji_v1';
 const LOCK_KEY = 'maboroshi_lock_v2';
 const TAG_CATS = [
@@ -1449,6 +1449,7 @@ function clearShelfFilters(){
 function openDetail(id){
   const b=db.books.find(x=>x.id===id);
   if(!b) return;
+  closeStatsModal();
   const logs=b.readLogs||[];
   const tagGroups=TAG_CATS.map((c,ci)=>({c,ci,tags:b.tags?.[c.key]||[]})).filter(g=>g.tags.length);
   const tagsHtml=tagGroups.map(({c,ci,tags})=>`
@@ -1954,9 +1955,9 @@ async function autoFetch(){
   toast('作品在后台补全中，可以先离开编辑页');
   try{
     const prompt=`请帮我补全 BL/耽美网文《${title}》（作者：${author}）的信息。必须同时匹配书名与作者；优先参考晋江文学城、长佩文学（新站/旧站）的公开作品页与可信公开书评；如果无法确定，不要编造，填空字符串。
-官方简介只能写作品官方简介；剧情梗概可以根据公开长评/书评做 120 到 220 字概括，不要照抄大段原文；封面只在你能给出可直接访问的公开图片 URL 时返回。
+官方简介只能写作品官方简介；剧情梗概要写成剧透版完整梗概，不是导读：尽量按开端、关键关系变化、主要冲突升级、重要转折、高潮、结局写出全文关键情节点，明确人物做了什么和事件如何推进；如果公开长评/书评能支持，请写 700 到 1400 字，可以分段，不要照抄大段原文；信息不足时只写能确认的情节，不要用空泛推荐语代替剧情。封面只在你能给出可直接访问的公开图片 URL 时返回。
 请只回复 JSON，不要有任何解释或 Markdown：
-{"matched":"true/false","author":"作者名","platform":"晋江/长佩/长佩旧站/废文/其他/空字符串","finishYear":"完结年份，只填四位数字或空字符串","shouName":"受的名字或空字符串","gongName":"攻的名字或空字符串","coverUrl":"公开封面图片 URL 或空字符串","summary":"官方简介或空字符串","synopsis":"剧情梗概或空字符串","sourceHint":"你判断的信息来源或空字符串","tags":{"gong":"攻的性格特点，2-3个词用顿号分隔","shou":"受的性格特点，2-3个词用顿号分隔","era":"时代背景，如现代、古代、架空等","plot":"突出情节亮点，2-4个词用顿号分隔","vibe":"作品氛围，2-4个词用顿号分隔"}}
+{"matched":"true/false","author":"作者名","platform":"晋江/长佩/长佩旧站/废文/其他/空字符串","finishYear":"完结年份，只填四位数字或空字符串","shouName":"受的名字或空字符串","gongName":"攻的名字或空字符串","coverUrl":"公开封面图片 URL 或空字符串","summary":"官方简介或空字符串","synopsis":"剧透版详细剧情梗概或空字符串","sourceHint":"你判断的信息来源或空字符串","tags":{"gong":"攻的性格特点，2-3个词用顿号分隔","shou":"受的性格特点，2-3个词用顿号分隔","era":"时代背景，如现代、古代、架空等","plot":"突出情节亮点，2-4个词用顿号分隔","vibe":"作品氛围，2-4个词用顿号分隔"}}
 当前用户选择的平台是：${platform}。`;
     const json=parseGeminiJson(await callGemini(prompt));
     if(json.matched===false||String(json.matched||'').toLowerCase()==='false') throw new Error('NO_EXACT_MATCH');
