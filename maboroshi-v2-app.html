@@ -133,7 +133,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
 .filter-accordion-panel{display:none;padding:0 12px 12px;border-top:1px dashed var(--border)}
 .filter-accordion.open .filter-accordion-panel{display:block}
 .filter-head-main{min-width:0}
-.filter-head-summary{display:block;max-width:245px;margin-top:3px;color:var(--text3);font-size:11px;font-weight:400;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.filter-head-summary{display:block;margin-top:3px;color:var(--text3);font-size:11px;font-weight:400;line-height:1.55;white-space:normal;overflow-wrap:anywhere}
 .filter-mode{margin-top:9px;border:1px solid var(--border);border-radius:12px;background:rgba(255,255,255,.56);overflow:hidden}
 .filter-mode-head{width:100%;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:9px 10px;border:none;background:transparent;color:var(--text2);font-size:12px;text-align:left}
 .filter-mode-panel{display:none;padding:0 10px 10px;border-top:1px dashed var(--border)}
@@ -457,23 +457,58 @@ body.magic-theme .stats-modal-sub{color:rgba(238,225,255,.74)}
 body.magic-theme .stats-close{background:rgba(255,246,218,.18);color:#fff2c7}
 body.magic-theme .author-profile{background:linear-gradient(145deg,#e8f2ff,#fff2ca 52%,#e4dcff);border-color:rgba(116,110,183,.18)}
 body.magic-theme .author-note-box{background:linear-gradient(145deg,rgba(235,244,255,.92),rgba(255,242,208,.82));border-color:rgba(116,110,183,.2)}
+.author-avatar.has-avatar{background-size:cover!important;background-position:center;color:transparent}
+.author-waitlist{margin:12px 0;padding:12px;border-radius:16px;background:linear-gradient(145deg,rgba(255,255,255,.76),rgba(252,232,240,.56));border:1px solid var(--border)}
+.author-waitlist-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:9px}
+.author-waitlist-title{font-size:13px;font-weight:700;color:var(--text2)}
+.author-wait-card{padding:10px;border-radius:12px;background:rgba(255,255,255,.72);border:1px dashed var(--border);margin-top:8px}
+.author-wait-name{font-family:'Noto Serif SC',serif;font-size:14px;font-weight:700;color:var(--text)}
+.author-wait-meta{font-size:11px;color:var(--text3);margin-top:2px}
+.author-wait-summary{font-size:12px;color:var(--text2);line-height:1.65;margin-top:6px}
+.lockscreen{position:fixed;inset:0;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 32px;overflow:hidden;transition:background .25s,color .25s}
+.lockscreen::before,.lockscreen::after{content:'';position:absolute;pointer-events:none}
+.lockscreen-card{position:relative;z-index:1;width:100%;max-width:320px;padding:28px 22px;border-radius:28px;text-align:center;box-shadow:0 18px 46px rgba(74,45,70,.18)}
+.lock-mark{font-family:'Noto Serif SC',serif;font-size:52px;font-weight:700;line-height:1;margin-bottom:8px}
+.lock-title{font-family:'Noto Serif SC',serif;font-size:19px;font-weight:700;margin-bottom:7px}
+.lock-copy{font-size:13px;line-height:1.8;margin-bottom:24px}
+.lock-fields{display:flex;flex-direction:column;gap:12px}
+.lockscreen.diary-lock{background:radial-gradient(circle at 14% 10%,rgba(255,236,202,.95),transparent 24%),linear-gradient(180deg,#fff7ed,#f8e3e7)}
+.lockscreen.diary-lock::before{inset:18px;border-radius:30px;border:1px dashed rgba(196,96,126,.2);background:repeating-linear-gradient(180deg,transparent 0 28px,rgba(217,174,164,.16) 29px 30px)}
+.lockscreen.diary-lock::after{width:150px;height:64px;right:-22px;top:52px;background:linear-gradient(145deg,rgba(242,168,196,.48),rgba(247,217,139,.34));transform:rotate(11deg);border-radius:14px}
+.diary-lock .lockscreen-card{background:rgba(255,250,242,.88);border:1px solid rgba(196,96,126,.16)}
+.diary-lock .lock-mark{color:var(--pink2)}
+.diary-lock .lock-title{color:var(--text)}
+.diary-lock .lock-copy{color:var(--text2)}
+.lockscreen.magic-lock{color:#fff6db;background:radial-gradient(circle at 50% 18%,rgba(255,237,162,.38),transparent 11%),radial-gradient(circle at 18% 18%,rgba(174,208,255,.28),transparent 19%),radial-gradient(circle at 82% 16%,rgba(224,186,255,.28),transparent 20%),linear-gradient(180deg,#465d9a,#29365f 62%,#20284e)}
+.lockscreen.magic-lock::before{inset:-10%;background:radial-gradient(circle at 24% 30%,rgba(255,255,234,.9) 0 1px,transparent 2px),radial-gradient(circle at 68% 24%,rgba(255,255,234,.78) 0 1.5px,transparent 2.5px),radial-gradient(circle at 76% 62%,rgba(255,226,173,.72) 0 1px,transparent 2px),radial-gradient(circle at 30% 78%,rgba(210,226,255,.8) 0 1px,transparent 2px)}
+.lockscreen.magic-lock::after{left:50%;bottom:-30px;width:340px;height:180px;transform:translateX(-50%);border-radius:50% 50% 0 0;background:linear-gradient(145deg,rgba(255,248,218,.92),rgba(204,215,255,.82));clip-path:polygon(0 33%,48% 16%,50% 18%,100% 33%,100% 100%,0 100%)}
+.magic-lock .lockscreen-card{background:linear-gradient(145deg,rgba(49,65,118,.88),rgba(76,73,135,.74));border:1px solid rgba(255,226,173,.24);backdrop-filter:blur(8px)}
+.magic-lock .lock-mark{color:#ffe4a2;text-shadow:0 0 22px rgba(255,226,173,.48)}
+.magic-lock .lock-title{color:#fff7dd}
+.magic-lock .lock-copy{color:rgba(239,229,255,.82)}
+.magic-lock .form-input{background:rgba(255,250,235,.92);border-color:rgba(255,226,173,.28)}
+body.magic-theme .author-waitlist{background:linear-gradient(145deg,rgba(235,244,255,.92),rgba(255,242,208,.84));border-color:rgba(116,110,183,.18)}
+body.magic-theme .author-wait-card{border-color:rgba(116,110,183,.18)}
 
 .fade-in{animation:fadeIn 0.3s ease}
 @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 </style>
 </head>
 <body>
-<div id="lockscreen" style="position:fixed;inset:0;background:var(--bg);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 32px">
-  <div style="font-family:'Noto Serif SC',serif;font-size:48px;font-weight:700;color:var(--pink2);margin-bottom:8px">幻</div>
-  <div style="font-size:13px;color:var(--text3);margin-bottom:40px;letter-spacing:0.1em">我的阅读记录</div>
-  <div style="width:100%;max-width:280px;display:flex;flex-direction:column;gap:12px">
-    <div id="lock-hint" style="text-align:center;font-size:13px;color:var(--text2);line-height:1.6">请输入启动密码</div>
+<div id="lockscreen" class="lockscreen diary-lock">
+  <div class="lockscreen-card">
+    <div class="lock-mark">幻</div>
+    <div class="lock-title" id="lock-title">翻开私人手账</div>
+    <div class="lock-copy" id="lock-copy">这是写给阅读时光的小锁，输入日记密码再进来。</div>
+    <div class="lock-fields">
+    <div id="lock-hint" style="text-align:center;font-size:13px;color:inherit;line-height:1.6">请输入启动密码</div>
     <input id="lock-input" type="password" placeholder="请输入密码" class="form-input" style="text-align:center;font-size:16px;letter-spacing:0.15em"
       onkeydown="if(event.key==='Enter')checkPassword()">
     <input id="lock-input-confirm" type="password" placeholder="再次输入密码" class="form-input" style="display:none;text-align:center;font-size:16px;letter-spacing:0.15em"
       onkeydown="if(event.key==='Enter')checkPassword()">
     <button class="btn btn-primary" id="lock-submit" style="width:100%;padding:13px;font-size:15px" onclick="checkPassword()">进入</button>
     <div id="lock-err" style="text-align:center;font-size:12px;color:var(--red2);min-height:18px"></div>
+    </div>
   </div>
 </div>
 <div id="app" style="display:none">
@@ -670,7 +705,7 @@ body.magic-theme .author-note-box{background:linear-gradient(145deg,rgba(235,244
           <div class="settings-item-left">
             <div class="settings-item-icon" style="background:#e8f0fe">ℹ️</div>
             <div>
-              <div class="settings-item-title">幻 maboroshi v2.18</div>
+              <div class="settings-item-title">幻 maboroshi v2.19</div>
               <div class="settings-item-sub">数据和密码均存储于本地</div>
             </div>
           </div>
@@ -918,7 +953,7 @@ body.magic-theme .author-note-box{background:linear-gradient(145deg,rgba(235,244
 // ═══════════════════════════════════════
 //  DATA LAYER
 // ═══════════════════════════════════════
-const APP_VERSION = '2.8.0';
+const APP_VERSION = '2.9.0';
 const STORE_KEY = 'shuji_v1';
 const LOCK_KEY = 'maboroshi_lock_v2';
 const TAG_CATS = [
@@ -935,7 +970,7 @@ const DEFAULT_TAG_HISTORY = {shou:[],gong:[],era:[],plot:[],vibe:[],warn:[]};
 const COVER_COLORS = ['#f2a8c4','#f5c4a1','#a8d5b5','#a8c4d5','#c4a8d5','#d5c4a8','#d5a8a8'];
 const PLATFORMS = ['晋江','长佩','长佩旧站','废文','其他'];
 
-let db = {books:[], tagHistory:{...DEFAULT_TAG_HISTORY}, apiKey:'', lastBackupAt:'', settings:{shelfView:'list'}, authorNotes:{}, authorQuotes:{}};
+let db = {books:[], tagHistory:{...DEFAULT_TAG_HISTORY}, apiKey:'', lastBackupAt:'', settings:{shelfView:'list'}, authorNotes:{}, authorQuotes:{}, authorProfiles:{}};
 let currentFilter = 'all';
 let editingBookId = null;
 let editingLogIdx = null;
@@ -961,6 +996,7 @@ function load(){
   if(!db.settings.shelfView) db.settings.shelfView='list';
   if(!db.authorNotes) db.authorNotes={};
   if(!db.authorQuotes) db.authorQuotes={};
+  if(!db.authorProfiles) db.authorProfiles={};
   TAG_CATS.forEach(c=>{if(!db.tagHistory[c.key])db.tagHistory[c.key]=[];});
   applyAppTheme();
 }
@@ -969,6 +1005,19 @@ function applyAppTheme(){
   const isMagic=(db.settings?.shelfView||'list')==='magic';
   document.getElementById('app')?.classList.toggle('magic-theme',isMagic);
   document.body.classList.toggle('magic-theme',isMagic);
+  applyLockTheme();
+}
+function getStoredShelfView(){
+  try{return JSON.parse(localStorage.getItem(STORE_KEY)||'{}')?.settings?.shelfView||db.settings?.shelfView||'list';}catch(e){return db.settings?.shelfView||'list';}
+}
+function applyLockTheme(){
+  const lock=document.getElementById('lockscreen');
+  if(!lock) return;
+  const isMagic=getStoredShelfView()==='magic';
+  lock.classList.toggle('magic-lock',isMagic);
+  lock.classList.toggle('diary-lock',!isMagic);
+  document.getElementById('lock-title').textContent=isMagic?'星星的家在何方？':'翻开私人手账';
+  document.getElementById('lock-copy').textContent=isMagic?'输入坐标，去书页尽头那片幻想的星空摘一颗星。':'这是写给阅读时光的小锁，输入日记密码再进来。';
 }
 function genId(){return Date.now().toString(36)+Math.random().toString(36).slice(2);}
 function coverColor(title){return COVER_COLORS[(title.charCodeAt(0)||0)%COVER_COLORS.length];}
@@ -1810,6 +1859,7 @@ function saveBook(){
   } else {
     db.books.unshift(book);
   }
+  pruneAuthorWaitingWorks(book.author,book.title);
   save();
   closeSheet('sheet-book');
   renderShelf();
@@ -1821,23 +1871,30 @@ function saveBook(){
 // ═══════════════════════════════════════
 async function autoFetch(){
   const title=document.getElementById('f-title').value.trim();
+  const author=document.getElementById('f-author').value.trim();
   const platform=document.getElementById('f-platform').value;
-  if(!title){toast('请先填写书名');return;}
+  if(!title||!author){toast('为避免匹配错书，请先填写书名和作者');return;}
   if(!db.apiKey){toast('请先在设置中填写 Gemini API Key');return;}
   toast('正在补全作品信息…');
   try{
-    const prompt=`请帮我补全 BL/耽美网文《${title}》的信息。优先参考晋江文学城、长佩文学（新站/旧站）的公开作品信息；如果无法确定，不要编造，填空字符串。
+    const prompt=`请帮我补全 BL/耽美网文《${title}》（作者：${author}）的信息。必须同时匹配书名与作者；优先参考晋江文学城、长佩文学（新站/旧站）的公开作品页与可信公开书评；如果无法确定，不要编造，填空字符串。
+官方简介只能写作品官方简介；剧情梗概可以根据公开长评/书评做 120 到 220 字概括，不要照抄大段原文；封面只在你能给出可直接访问的公开图片 URL 时返回。
 请只回复 JSON，不要有任何解释或 Markdown：
-{"author":"作者名","platform":"晋江/长佩/长佩旧站/废文/其他/空字符串","finishYear":"完结年份，只填四位数字或空字符串","summary":"80到140字作品简介","sourceHint":"你判断的信息来源或空字符串","tags":{"gong":"攻的性格特点，2-3个词用顿号分隔","shou":"受的性格特点，2-3个词用顿号分隔","era":"时代背景，如现代、古代、架空等","plot":"突出情节亮点，2-4个词用顿号分隔","vibe":"作品氛围，2-4个词用顿号分隔"}}
+{"matched":"true/false","author":"作者名","platform":"晋江/长佩/长佩旧站/废文/其他/空字符串","finishYear":"完结年份，只填四位数字或空字符串","shouName":"受的名字或空字符串","gongName":"攻的名字或空字符串","coverUrl":"公开封面图片 URL 或空字符串","summary":"官方简介或空字符串","synopsis":"剧情梗概或空字符串","sourceHint":"你判断的信息来源或空字符串","tags":{"gong":"攻的性格特点，2-3个词用顿号分隔","shou":"受的性格特点，2-3个词用顿号分隔","era":"时代背景，如现代、古代、架空等","plot":"突出情节亮点，2-4个词用顿号分隔","vibe":"作品氛围，2-4个词用顿号分隔"}}
 当前用户选择的平台是：${platform}。`;
     const res=await callGemini(prompt);
     const json=JSON.parse(res.replace(/```json|```/g,'').trim());
+    if(String(json.matched||'').toLowerCase()==='false') throw new Error('No exact book match');
     if(json.author) document.getElementById('f-author').value=json.author;
     if(json.platform&&[...document.getElementById('f-platform').options].some(o=>o.value===json.platform)){
       document.getElementById('f-platform').value=json.platform;
     }
     if(json.finishYear) document.getElementById('f-finish-year').value=String(json.finishYear).replace(/[^\d]/g,'').slice(0,4);
+    if(json.shouName) document.getElementById('f-shou-name').value=json.shouName;
+    if(json.gongName) document.getElementById('f-gong-name').value=json.gongName;
+    if(json.coverUrl) document.getElementById('f-cover-url').value=json.coverUrl;
     if(json.summary) document.getElementById('f-summary').value=json.summary;
+    if(json.synopsis) document.getElementById('f-synopsis').value=json.synopsis;
     if(json.tags){
       Object.entries(json.tags).forEach(([k,v])=>{
         if(!v) return;
@@ -2150,7 +2207,7 @@ function renderStatsModal(){
     </select>`;
     document.getElementById('modal-book-sort').value=prev;
     const books=sortBooksForStats(statsModal.books);
-    const authorBox=statsModal.mode==='author-detail'?`${renderAuthorProfile(statsModal.author)}${renderAuthorInsights(statsModal.author)}${renderAuthorNoteBox(statsModal.author)}`:'';
+    const authorBox=statsModal.mode==='author-detail'?`${renderAuthorProfile(statsModal.author)}${renderAuthorInsights(statsModal.author)}${renderAuthorNoteBox(statsModal.author)}${renderAuthorWaitlist(statsModal.author)}`:'';
     content.innerHTML=`${authorBox}<div class="book-list compact ${currentShelfViewClass()}">${books.length?books.map(renderStatsBookCard).join(''):'<div style="color:var(--text3);font-size:12px;text-align:center;padding:16px">暂无书籍</div>'}</div>`;
     return;
   }
@@ -2225,15 +2282,73 @@ function authorAvatarStyle(author){
 
 function renderAuthorProfile(author){
   const books=db.books.filter(b=>b.author===author);
-  const quote=db.authorQuotes?.[author]||'还没有收录这位作者的经典语录。';
+  const profile=db.authorProfiles?.[author]||{};
+  const quote=db.authorQuotes?.[author]||profile.quote||'还没有收录这位作者的经典语录。';
+  const avatar=profile.avatarUrl?`background-image:url('${escapeAttr(profile.avatarUrl)}')`:authorAvatarStyle(author);
   return `<div class="author-profile">
     <div class="author-profile-head">
-      <div class="author-avatar" style="background:${authorAvatarStyle(author)}">${escapeHtml(String(author||'作').slice(0,1))}</div>
+      <div class="author-avatar ${profile.avatarUrl?'has-avatar':''}" style="${profile.avatarUrl?avatar:`background:${avatar}`}">${escapeHtml(String(author||'作').slice(0,1))}</div>
       <div><div class="author-profile-name">${escapeHtml(author)}</div><div class="author-profile-meta">收录 ${books.length} 本 · 平均评分 ${avgBooksRating(books)}<br>你书架里的私人作者档案</div></div>
     </div>
     <div class="author-quote-card"><div class="author-quote-label">经典语录</div>${escapeHtml(quote)}</div>
     <div class="author-quote-edit"><input class="form-input" id="author-quote-input" placeholder="手动补一条经典语录" value="${escapeAttr(db.authorQuotes?.[author]||'')}"><button class="btn btn-ghost" onclick="saveAuthorQuote(decodeURIComponent('${encodeURIComponent(author)}'))">保存</button></div>
+    <button class="btn btn-ghost" style="width:100%;margin-top:10px" onclick="autoFetchAuthor(decodeURIComponent('${encodeURIComponent(author)}'))">AI 补全作者档案</button>
   </div>`;
+}
+
+function normalizedTitle(v){return String(v||'').replace(/[《》\s]/g,'').toLowerCase();}
+function getAuthorWaitingWorks(author){
+  const recorded=new Set(db.books.filter(b=>b.author===author).map(b=>normalizedTitle(b.title)));
+  return (db.authorProfiles?.[author]?.waitingWorks||[]).filter(w=>w?.title&&!recorded.has(normalizedTitle(w.title)));
+}
+function pruneAuthorWaitingWorks(author,title){
+  if(!author||!title||!db.authorProfiles?.[author]?.waitingWorks) return;
+  const key=normalizedTitle(title);
+  db.authorProfiles[author].waitingWorks=db.authorProfiles[author].waitingWorks.filter(w=>normalizedTitle(w.title)!==key);
+}
+function renderAuthorWaitlist(author){
+  const works=getAuthorWaitingWorks(author);
+  return `<div class="author-waitlist">
+    <div class="author-waitlist-head"><div class="author-waitlist-title">待读作品</div><span class="stat-list-num">${works.length} 本</span></div>
+    ${works.length?works.map(w=>`<div class="author-wait-card"><div class="author-wait-name">${escapeHtml(w.title)}</div><div class="author-wait-meta">${escapeHtml(w.platform||'平台待定')}</div>${w.summary?`<div class="author-wait-summary">${escapeHtml(w.summary)}</div>`:''}</div>`).join(''):'<div class="tag-selected-empty">作者补全后，尚未录入书架的作品会暂存在这里</div>'}
+  </div>`;
+}
+
+async function autoFetchAuthor(author){
+  if(!author){toast('作者名为空');return;}
+  if(!db.apiKey){toast('请先在设置中填写 Gemini API Key');return;}
+  const existing=db.books.filter(b=>b.author===author).map(b=>b.title).filter(Boolean);
+  toast('正在补全作者档案…');
+  try{
+    const prompt=`请补全 BL/耽美作者「${author}」的作者档案。优先参考公开作品页与可信公开资料；无法确定时填空字符串或空数组，不要编造。
+不要返回已经收录在书架里的作品：${existing.join('、')||'暂无'}。
+经典语录优先选择该作者小说中适合作为摘录的一句短句；头像只在你能给出可直接访问的公开图片 URL 时返回。
+请只回复 JSON，不要解释或 Markdown：
+{"author":"作者名","quote":"一句经典语录或空字符串","avatarUrl":"公开头像图片 URL 或空字符串","waitingWorks":[{"title":"尚未收录书名","platform":"晋江/长佩/长佩旧站/废文/其他/空字符串","summary":"50到120字简介或空字符串"}],"sourceHint":"信息来源提示或空字符串"}`;
+    const res=await callGemini(prompt);
+    const json=JSON.parse(res.replace(/```json|```/g,'').trim());
+    db.authorProfiles=db.authorProfiles||{};
+    const prev=db.authorProfiles[author]||{};
+    db.authorProfiles[author]={
+      ...prev,
+      avatarUrl:json.avatarUrl||prev.avatarUrl||'',
+      quote:json.quote||prev.quote||'',
+      waitingWorks:Array.isArray(json.waitingWorks)?json.waitingWorks.filter(w=>w&&w.title).slice(0,24):prev.waitingWorks||[],
+      sourceHint:json.sourceHint||prev.sourceHint||'',
+      updatedAt:Date.now()
+    };
+    if(json.quote&&!db.authorQuotes?.[author]){
+      db.authorQuotes=db.authorQuotes||{};
+      db.authorQuotes[author]=json.quote;
+    }
+    db.authorProfiles[author].waitingWorks=getAuthorWaitingWorks(author);
+    save();
+    renderStatsModal();
+    toast(json.sourceHint?`作者档案已补全：${json.sourceHint}`:'作者档案已补全');
+  }catch(e){
+    toast('作者档案补全失败');
+    console.error(e);
+  }
 }
 
 function saveAuthorNote(author){
@@ -2307,7 +2422,10 @@ async function exportData(){
     exportedAt:new Date().toISOString(),
     data:{
       books:db.books||[],
-      tagHistory:db.tagHistory||{shou:[],gong:[],era:[],plot:[],vibe:[],warn:[]}
+      tagHistory:db.tagHistory||{shou:[],gong:[],era:[],plot:[],vibe:[],warn:[]},
+      authorNotes:db.authorNotes||{},
+      authorQuotes:db.authorQuotes||{},
+      authorProfiles:db.authorProfiles||{}
     }
   };
   const data=JSON.stringify(backup,null,2);
@@ -2354,7 +2472,11 @@ function handleImport(e){
         books:data.books||[],
         tagHistory:data.tagHistory||{shou:[],gong:[],era:[],plot:[],vibe:[],warn:[]},
         apiKey:db.apiKey||'',
-        lastBackupAt:db.lastBackupAt||''
+        lastBackupAt:db.lastBackupAt||'',
+        settings:db.settings||{shelfView:'list'},
+        authorNotes:data.authorNotes||{},
+        authorQuotes:data.authorQuotes||{},
+        authorProfiles:data.authorProfiles||{}
       };
       TAG_CATS.forEach(c=>{if(!db.tagHistory[c.key])db.tagHistory[c.key]=[];});
       save();
@@ -2368,7 +2490,7 @@ function handleImport(e){
 
 function clearData(){
   if(!confirm('确定清空所有数据？此操作不可撤销！')) return;
-  db={books:[],tagHistory:{shou:[],gong:[],era:[],plot:[],vibe:[],warn:[]},apiKey:db.apiKey,lastBackupAt:db.lastBackupAt||'',settings:{shelfView:db.settings?.shelfView||'list'},authorNotes:{},authorQuotes:{}};
+  db={books:[],tagHistory:{shou:[],gong:[],era:[],plot:[],vibe:[],warn:[]},apiKey:db.apiKey,lastBackupAt:db.lastBackupAt||'',settings:{shelfView:db.settings?.shelfView||'list'},authorNotes:{},authorQuotes:{},authorProfiles:{}};
   save();
   renderShelf();
   toast('已清空');
@@ -2470,9 +2592,12 @@ function unlockApp(){
 }
 function prepareLockScreen(){
   const setup=!hasPassword();
+  const magic=getStoredShelfView()==='magic';
+  applyLockTheme();
   document.getElementById('lock-hint').textContent=setup?'第一次使用，请设置启动密码':'请输入启动密码';
   document.getElementById('lock-submit').textContent=setup?'保存并进入':'进入';
-  document.getElementById('lock-input').placeholder=setup?'设置启动密码':'请输入密码';
+  document.getElementById('lock-input').placeholder=setup?(magic?'设置一组星图坐标':'设置日记密码'):(magic?'输入星图坐标':'输入日记密码');
+  document.getElementById('lock-input-confirm').placeholder=magic?'再次确认坐标':'再次输入密码';
   document.getElementById('lock-input').value='';
   document.getElementById('lock-input-confirm').value='';
   document.getElementById('lock-input-confirm').style.display=setup?'block':'none';
