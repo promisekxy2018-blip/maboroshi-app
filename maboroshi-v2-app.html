@@ -65,6 +65,26 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
 .page-header{padding:20px 20px 12px;display:flex;align-items:center;justify-content:space-between}
 .page-title{font-family:'Noto Serif SC',serif;font-size:22px;font-weight:700;color:var(--text)}
 .page-subtitle{font-size:12px;color:var(--text3);margin-top:2px}
+#app.magic-theme{color:#f7efd9}
+#app.magic-theme #main{background:radial-gradient(circle at 18% 7%,rgba(255,239,170,.22),transparent 19%),radial-gradient(circle at 84% 15%,rgba(178,161,240,.18),transparent 23%),linear-gradient(180deg,#232949,#2f355f 36%,#272c4f)}
+#app.magic-theme #nav{background:rgba(25,30,57,.96);border-top-color:rgba(255,225,167,.18);box-shadow:0 -6px 24px rgba(9,11,30,.35)}
+#app.magic-theme .nav-item{color:rgba(230,219,249,.58)}
+#app.magic-theme .nav-item.active{color:#ffe4a2}
+#app.magic-theme #page-shelf>.page-header,#app.magic-theme #page-encounter>.page-header,#app.magic-theme #page-stats>.page-header{margin:12px 16px 12px;padding:18px;border-radius:24px;background:radial-gradient(circle at 22% 32%,rgba(255,235,154,.25),transparent 18%),linear-gradient(145deg,rgba(52,63,111,.94),rgba(33,39,73,.9));border:1px solid rgba(255,226,173,.18);box-shadow:0 12px 30px rgba(9,11,30,.24)}
+#app.magic-theme .page-title{color:#fff7df}
+#app.magic-theme .page-subtitle{color:rgba(238,225,255,.68)}
+#app.magic-theme .btn-icon,#app.magic-theme .search-filter-btn{background:rgba(255,235,184,.14);color:#ffe4a2}
+#app.magic-theme .search-box{background:rgba(255,249,232,.92);border-color:rgba(255,226,173,.2)}
+#app.magic-theme .filter-pill{background:rgba(255,249,232,.12);border-color:rgba(255,226,173,.22);color:#f7e9c4}
+#app.magic-theme .filter-pill.active{background:#ddbb67;border-color:#ddbb67;color:#2a2948}
+#app.magic-theme .stat-card,#app.magic-theme .chart-section,#app.magic-theme .encounter-section{background:linear-gradient(145deg,rgba(48,58,104,.92),rgba(37,43,80,.88));border-color:rgba(255,226,173,.16);box-shadow:0 10px 24px rgba(8,10,28,.22)}
+#app.magic-theme .stat-num,#app.magic-theme .chart-title,#app.magic-theme .encounter-section-title{color:#ffe4a2}
+#app.magic-theme .stat-label,#app.magic-theme .encounter-note{color:rgba(238,225,255,.68)}
+#app.magic-theme .encounter-hero{background:radial-gradient(circle at 18% 20%,rgba(255,240,177,.22),transparent 19%),linear-gradient(145deg,rgba(65,79,139,.94),rgba(35,42,79,.92));border-color:rgba(255,226,173,.18);box-shadow:0 12px 28px rgba(8,10,28,.24)}
+#app.magic-theme .encounter-title{color:#fff7df}
+#app.magic-theme .encounter-sub{color:rgba(238,225,255,.72)}
+#app.magic-theme #stats-year{background-color:rgba(255,249,232,.92);color:#3d3658}
+#app.magic-theme .stat-list-item{background:rgba(255,249,232,.92);border-color:rgba(255,226,173,.18)}
 
 /* ── BUTTONS ── */
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:none;cursor:pointer;font-family:'Noto Sans SC',sans-serif;transition:all 0.15s;border-radius:var(--r3)}
@@ -95,8 +115,8 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
 #sheet-filter .sheet-body{padding-top:14px}
 .filter-accordion{padding:0;overflow:hidden}
 .filter-accordion-head{width:100%;padding:14px 13px;border:none;background:transparent;color:var(--text);display:flex;align-items:center;justify-content:space-between;font-size:14px;font-weight:600;text-align:left}
-.filter-accordion-head span:last-child{color:var(--text3);font-size:15px;transition:transform .2s}
-.filter-accordion.open .filter-accordion-head span:last-child{transform:rotate(180deg)}
+.filter-accordion-arrow{color:var(--text3);font-size:15px;transition:transform .2s}
+.filter-accordion.open .filter-accordion-arrow{transform:rotate(180deg)}
 .filter-accordion-panel{display:none;padding:0 12px 12px;border-top:1px dashed var(--border)}
 .filter-accordion.open .filter-accordion-panel{display:block}
 .filter-head-main{min-width:0}
@@ -335,17 +355,18 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
 .book-list.compact .book-card{box-shadow:none}
 .book-list.compact.view-diary{padding:0;gap:10px;background:none;border-top:none}
 .book-list.compact.view-diary::before,.book-list.compact.view-diary::after{display:none}
-.book-list.compact.view-magic{display:flex;flex-direction:column;gap:11px;min-height:0;padding:0;background:none;border-radius:0}
+.book-list.compact.view-magic{display:flex;flex-direction:column;align-items:center;gap:11px;min-height:0;padding:0;background:none;border-radius:0}
 .book-list.compact.view-magic::before,.book-list.compact.view-magic::after{display:none}
-.book-list.compact.view-magic .book-card{display:grid;grid-template-columns:102px minmax(0,1fr);gap:13px;min-height:178px;padding:12px 13px 14px;background:linear-gradient(145deg,rgba(76,92,138,.98),rgba(127,106,168,.96));border-radius:14px;clip-path:none;overflow:visible}
-.book-list.compact.view-magic .book-card::after{top:-28px;height:39px}
-.book-list.compact.view-magic .book-cover,.book-list.compact.view-magic .book-cover-art{width:96px;height:150px;margin:7px 0 0}
-.book-list.compact.view-magic .book-info{align-items:flex-start;text-align:left;min-height:150px}
+.book-list.compact.view-magic .book-card{width:min(100%,360px);display:grid;grid-template-columns:118px minmax(0,1fr);gap:15px;min-height:202px;padding:14px 15px 16px;background:linear-gradient(145deg,rgba(76,92,138,.98),rgba(127,106,168,.96));border-radius:14px;clip-path:none;overflow:visible}
+.book-list.compact.view-magic .book-card::before{left:15px;top:auto;bottom:50%;transform:translateY(50%);width:15px;height:15px}
+.book-list.compact.view-magic .book-card::after{left:-32px;top:50%;width:47px;height:28px;transform:translateY(-50%) rotate(-90deg)}
+.book-list.compact.view-magic .book-cover,.book-list.compact.view-magic .book-cover-art{width:112px;height:174px;margin:7px 0 0}
+.book-list.compact.view-magic .book-info{align-items:flex-start;text-align:left;min-height:174px}
 .book-list.compact.view-magic .book-title{font-size:16px;-webkit-line-clamp:2}
 .book-list.compact.view-magic .book-author{font-size:11px;text-align:left}
 .book-list.compact.view-magic .book-tags-row{justify-content:flex-start;max-height:none}
 .book-list.compact.view-magic .book-tags-row .tag-chip:nth-child(n+3){display:inline-block}
-.book-list.compact.view-magic .book-quote{order:3;display:-webkit-box;margin:5px 0 7px;padding:7px 8px;border-radius:8px;background:rgba(255,249,234,.16);border-left:2px solid rgba(255,233,165,.52);color:#fff4d2;font-size:11px}
+.book-list.compact.view-magic .book-quote{order:3;display:-webkit-box;-webkit-line-clamp:3;margin:5px 0 7px;padding:8px 9px;border-radius:8px;background:rgba(255,249,234,.16);border-left:2px solid rgba(255,233,165,.52);color:#fff4d2;font-size:12px}
 .book-list.compact.view-magic .book-meta{order:4;flex-direction:row;align-items:center;flex-wrap:wrap;margin-top:auto}
 .book-list.compact.view-magic .book-meta .badge{display:inline-block;background:rgba(255,246,218,.16);color:#fff1c7}
 .stat-card.clickable{cursor:pointer;transition:box-shadow 0.2s}
@@ -618,7 +639,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
           <div class="settings-item-left">
             <div class="settings-item-icon" style="background:#e8f0fe">ℹ️</div>
             <div>
-              <div class="settings-item-title">幻 maboroshi v2.16</div>
+              <div class="settings-item-title">幻 maboroshi v2.17</div>
               <div class="settings-item-sub">数据和密码均存储于本地</div>
             </div>
           </div>
@@ -910,8 +931,12 @@ function load(){
   if(!db.authorNotes) db.authorNotes={};
   if(!db.authorQuotes) db.authorQuotes={};
   TAG_CATS.forEach(c=>{if(!db.tagHistory[c.key])db.tagHistory[c.key]=[];});
+  applyAppTheme();
 }
 function save(){localStorage.setItem(STORE_KEY,JSON.stringify(db));}
+function applyAppTheme(){
+  document.getElementById('app')?.classList.toggle('magic-theme',(db.settings?.shelfView||'list')==='magic');
+}
 function genId(){return Date.now().toString(36)+Math.random().toString(36).slice(2);}
 function coverColor(title){return COVER_COLORS[(title.charCodeAt(0)||0)%COVER_COLORS.length];}
 function coverText(title){return title.slice(0,4);}
@@ -987,6 +1012,7 @@ function filterCount(filters=shelfFilters){
 // ═══════════════════════════════════════
 let pageHistory = ['shelf'];
 function showPage(p, opts={}){
+  applyAppTheme();
   document.querySelectorAll('.page').forEach(el=>el.classList.remove('active'));
   document.getElementById('page-'+p).classList.add('active');
   document.querySelectorAll('.nav-item').forEach(el=>el.classList.remove('active'));
@@ -1298,7 +1324,7 @@ function renderShelfFilterBody(){
   const authors=uniqueList(db.books.map(b=>b.author).filter(Boolean)).sort((a,b)=>a.localeCompare(b,'zh-CN'));
   const accordion=(key,title,inner)=>{
     const selected=filterSelectionSummary(key);
-    return `<div class="filter-section filter-accordion ${filterSectionOpen[key]?'open':''}"><button type="button" class="filter-accordion-head" onclick="setFilterSectionOpen('${key}')"><span class="filter-head-main">${title}${selected.length?`<span class="filter-head-summary">${escapeHtml(selected.join('、'))}</span>`:''}</span><span>⌄</span></button><div class="filter-accordion-panel">${inner}</div></div>`;
+    return `<div class="filter-section filter-accordion ${filterSectionOpen[key]?'open':''}"><button type="button" class="filter-accordion-head" onclick="setFilterSectionOpen('${key}')"><span class="filter-head-main">${title}${selected.length?`<span class="filter-head-summary">${filterSummaryText(key)}</span>`:''}</span><span class="filter-accordion-arrow">⌄</span></button><div class="filter-accordion-panel">${inner}</div></div>`;
   };
   const authorHtml=renderFilterPicker('必须是', 'authorMust', authors, '还没有作者数据')+renderFilterPicker('可以是任意一个', 'authorAny', authors, '还没有作者数据');
   const tagHtml=TAG_CATS.map(c=>{
@@ -1309,6 +1335,13 @@ function renderShelfFilterBody(){
     return accordion(c.key,c.label,renderFilterPicker('必须全部含有',`must:${c.key}`,tags,'还没有历史标签')+renderFilterPicker('含有任意一个即可',`any:${c.key}`,tags,'还没有历史标签'));
   }).join('');
   body.innerHTML=`${accordion('author','作者',authorHtml)}${tagHtml}`;
+}
+
+function filterSummaryText(key){
+  const f=draftShelfFilters||shelfFilters;
+  if(key==='author') return escapeHtml([...(f.authorMust||[]).map(v=>`必须：${v}`),...(f.authorAny||[]).map(v=>`任意：${v}`)].join('、'));
+  if(key==='warn') return escapeHtml((f.warnExclude||[]).map(v=>`排除：${v}`).join('、'));
+  return escapeHtml([...(f.tagsMust?.[key]||[]).map(v=>`必须：${v}`),...(f.tagsAny?.[key]||[]).map(v=>`任意：${v}`)].join('、'));
 }
 
 function applyShelfFilters(){
@@ -2209,6 +2242,7 @@ function setShelfView(view){
   db.settings=db.settings||{};
   db.settings.shelfView=view;
   save();
+  applyAppTheme();
   renderSettings();
   renderShelf();
   toast('书架样式已更新');
