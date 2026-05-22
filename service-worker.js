@@ -1,8 +1,9 @@
-const CACHE_NAME = 'maboroshi-v2-cache-20';
+const CACHE_NAME = 'maboroshi-v2-cache-21';
 const ASSETS = [
   './',
   './maboroshi-v2-app.html',
   './manifest.webmanifest',
+  './maboroshi-icon-v3.png',
   './icon.svg'
 ];
 

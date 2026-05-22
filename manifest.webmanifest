@@ -1,7 +1,7 @@
 {
-  "name": "幻 maboroshi",
-  "short_name": "幻",
-  "description": "私人读书记录、评分、标签和阅读统计 App",
+  "name": "\u5e7b maboroshi",
+  "short_name": "\u5e7b",
+  "description": "\u79c1\u4eba\u8bfb\u4e66\u8bb0\u5f55\u3001\u8bc4\u5206\u3001\u6807\u7b7e\u548c\u9605\u8bfb\u7edf\u8ba1 App",
   "start_url": "./maboroshi-v2-app.html",
   "scope": "./",
   "display": "standalone",
@@ -11,10 +11,16 @@
   "orientation": "portrait",
   "icons": [
     {
+      "src": "./maboroshi-icon-v3.png",
+      "sizes": "1254x1254",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
       "src": "./icon.svg",
       "sizes": "any",
       "type": "image/svg+xml",
-      "purpose": "any maskable"
+      "purpose": "any"
     }
   ]
 }
