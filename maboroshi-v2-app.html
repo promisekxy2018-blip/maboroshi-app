@@ -413,6 +413,16 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
 .author-quote-label{font-family:'Noto Sans SC',sans-serif;font-size:11px;color:#b07820;margin-bottom:4px}
 .author-quote-edit{margin-top:10px;display:flex;gap:8px}
 .author-quote-edit .form-input{font-size:12px}
+.author-inline-editor{margin-top:9px;border:1px dashed rgba(176,120,32,.22);border-radius:12px;background:rgba(255,255,255,.42);overflow:hidden}
+.author-inline-editor summary{list-style:none;cursor:pointer;padding:8px 11px;color:var(--text3);font-size:12px}
+.author-inline-editor summary::-webkit-details-marker{display:none}
+.author-inline-editor[open] summary{border-bottom:1px dashed var(--border);color:var(--pink2)}
+.author-inline-editor-body{padding:10px}
+.author-quote-meta{margin-top:5px;font-family:'Noto Sans SC',sans-serif;font-size:11px;color:var(--text3)}
+.candidate-card{width:100%;margin-bottom:10px;padding:13px;border:1px solid var(--border);border-radius:14px;background:var(--card);color:var(--text);text-align:left;box-shadow:var(--shadow)}
+.candidate-card-title{font-family:'Noto Serif SC',serif;font-weight:600;font-size:15px}
+.candidate-card-meta{margin-top:4px;color:var(--text3);font-size:12px}
+.candidate-card-summary{margin-top:7px;color:var(--text2);font-size:12px;line-height:1.65;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
 .month-garden{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
 .month-card{min-height:88px;border:none;border-radius:16px;background:linear-gradient(145deg,#fff,#fff8f3);box-shadow:0 4px 14px rgba(200,130,100,.12);padding:10px;text-align:left;cursor:pointer;color:var(--text2);position:relative;overflow:hidden}
 .month-card::after{content:'✿';position:absolute;right:8px;bottom:4px;font-size:34px;color:#f2a8c4;opacity:.32}
@@ -708,7 +718,7 @@ body.magic-theme .author-wait-card{border-color:rgba(116,110,183,.18)}
           <div class="settings-item-left">
             <div class="settings-item-icon" style="background:#e8f0fe">ℹ️</div>
             <div>
-              <div class="settings-item-title">幻 maboroshi v2.24</div>
+              <div class="settings-item-title">幻 maboroshi v2.25</div>
               <div class="settings-item-sub">数据和密码均存储于本地</div>
             </div>
           </div>
@@ -809,6 +819,19 @@ body.magic-theme .author-wait-card{border-color:rgba(116,110,183,.18)}
   </div>
 </div>
 
+<!-- ═══ AI TITLE MATCH SHEET ═══ -->
+<div class="sheet" id="sheet-ai-candidates">
+  <div class="sheet-handle"></div>
+  <div class="sheet-header">
+    <span class="sheet-title">先认出是哪一本</span>
+    <button class="sheet-close" onclick="closeSheet('sheet-ai-candidates')">×</button>
+  </div>
+  <div class="sheet-body">
+    <div style="font-size:12px;color:var(--text3);line-height:1.7;margin-bottom:12px">只记得书名也没关系。先选最像的候选，我再用书名和作者做深度补全。</div>
+    <div id="ai-candidate-list"></div>
+  </div>
+</div>
+
 <!-- ═══ ADD/EDIT BOOK SHEET ═══ -->
 <div class="sheet" id="sheet-book">
   <div class="sheet-handle"></div>
@@ -832,6 +855,7 @@ body.magic-theme .author-wait-card{border-color:rgba(116,110,183,.18)}
       <div class="form-group">
         <label class="form-label">平台</label>
         <select class="form-select" id="f-platform">
+          <option value="未知">未知</option>
           <option value="晋江">晋江</option>
           <option value="长佩">长佩</option>
           <option value="长佩旧站">长佩旧站</option>
@@ -956,7 +980,7 @@ body.magic-theme .author-wait-card{border-color:rgba(116,110,183,.18)}
 // ═══════════════════════════════════════
 //  DATA LAYER
 // ═══════════════════════════════════════
-const APP_VERSION = '2.14.0';
+const APP_VERSION = '2.15.0';
 const STORE_KEY = 'shuji_v1';
 const LOCK_KEY = 'maboroshi_lock_v2';
 const TAG_CATS = [
@@ -971,7 +995,7 @@ const STATUS_MAP = {done:'已读',reading:'在读',want:'想读',dropped:'弃坑
 STATUS_MAP.unfiled='未整理';
 const DEFAULT_TAG_HISTORY = {shou:[],gong:[],era:[],plot:[],vibe:[],warn:[]};
 const COVER_COLORS = ['#f2a8c4','#f5c4a1','#a8d5b5','#a8c4d5','#c4a8d5','#d5c4a8','#d5a8a8'];
-const PLATFORMS = ['晋江','长佩','长佩旧站','废文','其他'];
+const PLATFORMS = ['未知','晋江','长佩','长佩旧站','废文','其他'];
 
 let db = {books:[], tagHistory:{...DEFAULT_TAG_HISTORY}, apiKey:'', lastBackupAt:'', settings:{shelfView:'list'}, authorNotes:{}, authorQuotes:{}, authorProfiles:{}};
 let currentFilter = 'all';
@@ -991,6 +1015,7 @@ let navReady = false;
 let suppressNextPop = false;
 let edgeTouch = null;
 let autoFetchBusy = false;
+let aiCandidateState = {draft:null,items:[]};
 
 function load(){
   try{const s=localStorage.getItem(STORE_KEY);if(s)db=JSON.parse(s);}catch(e){}
@@ -1561,7 +1586,7 @@ function importBatchBooks(){
       id:genId(),
       title:row.title,
       author:row.author,
-      platform:'其他',
+      platform:'未知',
       gongName:'',
       shouName:'',
       coverUrl:'',
@@ -1943,14 +1968,75 @@ function setAutoFetchBusy(busy){
   }
 }
 
+function renderBookCandidates(items){
+  const wrap=document.getElementById('ai-candidate-list');
+  if(!wrap) return;
+  wrap.innerHTML=items.length?items.map((item,i)=>`
+    <button type="button" class="candidate-card" onclick="chooseBookCandidate(${i})">
+      <div class="candidate-card-title">《${escapeHtml(item.title||aiCandidateState.draft?.title||'候选作品')}》</div>
+      <div class="candidate-card-meta">${escapeHtml([item.author||'作者待确认',item.platform||'平台待确认'].join(' · '))}</div>
+      ${item.summary?`<div class="candidate-card-summary">${escapeHtml(item.summary)}</div>`:''}
+    </button>`).join(''):'<div class="tag-selected-empty">没有找到足够可靠的候选</div>';
+}
+
+async function searchBookCandidates(draft){
+  if(!db.apiKey){toast('请先在设置中填写 Gemini API Key');return;}
+  setAutoFetchBusy(true);
+  toast('先按书名找几本最像的候选…');
+  try{
+    const title=draft.title.trim();
+    const prompt=`用户只记得一本 BL/耽美小说的书名「${title}」，作者名未知。请先做轻量匹配，不要深度梳理剧情。
+优先找晋江文学城、长佩文学（新站/旧站）、废文的公开作品信息；书名完全一致的候选排在前面，近似书名仅在非常可能时返回。用户表单里的平台可能来自批量导入，当前为「${draft.platform||'未知'}」，如果它是“未知”或“其他”请忽略这个平台提示。
+请只回复 JSON，不要解释或 Markdown；最多返回 5 个候选，拿不准就少返回：
+{"candidates":[{"title":"候选书名","author":"作者名","platform":"晋江/长佩/长佩旧站/废文/其他/空字符串","summary":"便于用户辨认的官方简介或公开简介摘要，80到180字","sourceHint":"候选依据或空字符串"}]}`;
+    const json=parseGeminiJson(await callGemini(prompt));
+    const items=(Array.isArray(json.candidates)?json.candidates:[]).filter(x=>x&&x.title&&x.author).slice(0,5);
+    aiCandidateState={draft,items};
+    renderBookCandidates(items);
+    if(items.length){
+      closeAllSheets();
+      setTimeout(()=>openSheet('sheet-ai-candidates'),80);
+      toast('先选中你认得的那一本');
+    } else {
+      toast('没找到可靠候选，先补一点作者或平台线索会更稳');
+    }
+  }catch(e){
+    toast(formatGeminiError(e,'候选匹配失败'));
+    console.error(e);
+  }finally{
+    setAutoFetchBusy(false);
+  }
+}
+
+function chooseBookCandidate(index){
+  const item=aiCandidateState.items[index];
+  const draft=aiCandidateState.draft;
+  if(!item||!draft) return;
+  restoreBookFormDraft({
+    ...draft,
+    title:item.title||draft.title,
+    author:item.author||draft.author,
+    platform:item.platform||draft.platform||'未知',
+    summary:draft.summary||item.summary||''
+  });
+  closeSheet('sheet-ai-candidates');
+  openSheet('sheet-book');
+  toast(`已选《${item.title}》，继续深度补全`);
+  autoFetch();
+}
+
 async function autoFetch(){
   if(autoFetchBusy){toast('这次补全还在路上');return;}
   const title=document.getElementById('f-title').value.trim();
   const author=document.getElementById('f-author').value.trim();
   const platform=document.getElementById('f-platform').value;
-  if(!title||!author){toast('为避免匹配错书，请先填写书名和作者');return;}
+  if(!title){toast('请先填写书名');return;}
   if(!db.apiKey){toast('请先在设置中填写 Gemini API Key');return;}
   const draft=captureBookFormDraft();
+  if(!author){
+    await searchBookCandidates(draft);
+    return;
+  }
   setAutoFetchBusy(true);
   toast('作品在后台补全中，可以先离开编辑页');
   try{
@@ -1958,7 +2044,7 @@ async function autoFetch(){
 官方简介只能写作品官方简介；剧情梗概要写成剧透版完整梗概，不是导读：尽量按开端、关键关系变化、主要冲突升级、重要转折、高潮、结局写出全文关键情节点，明确人物做了什么和事件如何推进；如果公开长评/书评能支持，请写 700 到 1400 字，可以分段，不要照抄大段原文；信息不足时只写能确认的情节，不要用空泛推荐语代替剧情。封面只在你能给出可直接访问的公开图片 URL 时返回。
 请只回复 JSON，不要有任何解释或 Markdown：
 {"matched":"true/false","author":"作者名","platform":"晋江/长佩/长佩旧站/废文/其他/空字符串","finishYear":"完结年份，只填四位数字或空字符串","shouName":"受的名字或空字符串","gongName":"攻的名字或空字符串","coverUrl":"公开封面图片 URL 或空字符串","summary":"官方简介或空字符串","synopsis":"剧透版详细剧情梗概或空字符串","sourceHint":"你判断的信息来源或空字符串","tags":{"gong":"攻的性格特点，2-3个词用顿号分隔","shou":"受的性格特点，2-3个词用顿号分隔","era":"时代背景，如现代、古代、架空等","plot":"突出情节亮点，2-4个词用顿号分隔","vibe":"作品氛围，2-4个词用顿号分隔"}}
-当前用户选择的平台是：${platform}。`;
+当前用户选择的平台是：${platform}。如果它是“未知”或“其他”，不要把它当作匹配依据。`;
     const json=parseGeminiJson(await callGemini(prompt));
     if(json.matched===false||String(json.matched||'').toLowerCase()==='false') throw new Error('NO_EXACT_MATCH');
     restoreBookFormDraft(draft);
@@ -2342,9 +2428,14 @@ function renderAuthorNoteBox(author){
   const note=db.authorNotes?.[author]||'';
   return `<div class="author-note-box">
     <div class="author-note-title">我的作者评价</div>
-    <textarea class="form-textarea" id="author-note-input" style="min-height:110px" placeholder="写下你对这位作者的评价、文风、雷点、偏好…">${escapeHtml(note)}</textarea>
-    <button class="btn btn-primary" style="margin-top:8px;width:100%" onclick="saveAuthorNote(decodeURIComponent('${encodeURIComponent(author)}'))">保存作者评价</button>
-    ${note?`<div class="author-note-text">${escapeHtml(note)}</div>`:''}
+    ${note?`<div class="author-note-text">${escapeHtml(note)}</div>`:'<div class="tag-selected-empty">还没有写下你的作者评价</div>'}
+    <details class="author-inline-editor">
+      <summary>${note?'修改我的评价':'手动写作者评价'}</summary>
+      <div class="author-inline-editor-body">
+        <textarea class="form-textarea" id="author-note-input" style="min-height:110px" placeholder="写下你对这位作者的评价、文风、雷点、偏好…">${escapeHtml(note)}</textarea>
+        <button class="btn btn-primary" style="margin-top:8px;width:100%" onclick="saveAuthorNote(decodeURIComponent('${encodeURIComponent(author)}'))">保存作者评价</button>
+      </div>
+    </details>
   </div>`;
 }
 
@@ -2385,17 +2476,38 @@ function authorAvatarStyle(author){
 function renderAuthorProfile(author){
   const books=db.books.filter(b=>b.author===author);
   const profile=db.authorProfiles?.[author]||{};
-  const quote=db.authorQuotes?.[author]||profile.quote||'还没有收录这位作者的经典语录。';
+  const quote=getAuthorQuoteRecord(author);
   const avatar=profile.avatarUrl?`background-image:url('${escapeAttr(profile.avatarUrl)}')`:authorAvatarStyle(author);
   return `<div class="author-profile">
     <div class="author-profile-head">
       <div class="author-avatar ${profile.avatarUrl?'has-avatar':''}" style="${profile.avatarUrl?avatar:`background:${avatar}`}">${escapeHtml(String(author||'作').slice(0,1))}</div>
       <div><div class="author-profile-name">${escapeHtml(author)}</div><div class="author-profile-meta">收录 ${books.length} 本 · 平均评分 ${avgBooksRating(books)}<br>你书架里的私人作者档案</div></div>
     </div>
-    <div class="author-quote-card"><div class="author-quote-label">经典语录</div>${escapeHtml(quote)}</div>
-    <div class="author-quote-edit"><input class="form-input" id="author-quote-input" placeholder="手动补一条经典语录" value="${escapeAttr(db.authorQuotes?.[author]||'')}"><button class="btn btn-ghost" onclick="saveAuthorQuote(decodeURIComponent('${encodeURIComponent(author)}'))">保存</button></div>
+    <div class="author-quote-card">
+      <div class="author-quote-label">经典语录</div>
+      ${escapeHtml(quote.text||'还没有收录这位作者的经典语录。')}
+      ${quote.text&&(quote.work||quote.speaker)?`<div class="author-quote-meta">${escapeHtml([quote.work?`《${quote.work}》`:'',quote.speaker?`${quote.speaker}说`:'' ].filter(Boolean).join(' · '))}</div>`:''}
+    </div>
+    <details class="author-inline-editor">
+      <summary>${quote.text?'手动改语录':'手动补语录'}</summary>
+      <div class="author-inline-editor-body">
+        <div class="author-quote-edit"><input class="form-input" id="author-quote-input" placeholder="手动补一条经典语录" value="${escapeAttr(quote.manualText||'')}"><button class="btn btn-ghost" onclick="saveAuthorQuote(decodeURIComponent('${encodeURIComponent(author)}'))">保存</button></div>
+      </div>
+    </details>
     <button class="btn btn-ghost" style="width:100%;margin-top:10px" onclick="autoFetchAuthor(decodeURIComponent('${encodeURIComponent(author)}'))">AI 补全作者档案</button>
   </div>`;
+}
+
+function normalizeAuthorQuote(raw){
+  if(!raw) return {text:'',work:'',speaker:'',manualText:''};
+  if(typeof raw==='string') return {text:raw,work:'',speaker:'',manualText:raw};
+  return {text:raw.text||raw.quote||'',work:raw.work||'',speaker:raw.speaker||'',manualText:raw.manualText||raw.text||raw.quote||''};
+}
+
+function getAuthorQuoteRecord(author){
+  const manual=normalizeAuthorQuote(db.authorQuotes?.[author]);
+  if(manual.text) return manual;
+  return normalizeAuthorQuote(db.authorProfiles?.[author]?.quote);
 }
 
 function normalizedTitle(v){return String(v||'').replace(/[《》\s]/g,'').toLowerCase();}
@@ -2424,24 +2536,20 @@ async function autoFetchAuthor(author){
   try{
     const prompt=`请补全 BL/耽美作者「${author}」的作者档案。优先参考公开作品页与可信公开资料；无法确定时填空字符串或空数组，不要编造。
 不要返回已经收录在书架里的作品：${existing.join('、')||'暂无'}。
-经典语录优先选择该作者小说中适合作为摘录的一句短句；头像只在你能给出可直接访问的公开图片 URL 时返回。
+经典语录优先选择该作者小说中适合作为摘录的一句短句，并同时标明出自哪部作品、由谁说出；头像只在你能给出可直接访问的公开图片 URL 时返回。
 请只回复 JSON，不要解释或 Markdown：
-{"author":"作者名","quote":"一句经典语录或空字符串","avatarUrl":"公开头像图片 URL 或空字符串","waitingWorks":[{"title":"尚未收录书名","platform":"晋江/长佩/长佩旧站/废文/其他/空字符串","summary":"50到120字简介或空字符串"}],"sourceHint":"信息来源提示或空字符串"}`;
+{"author":"作者名","quote":{"text":"一句经典语录或空字符串","work":"语录出自的作品名或空字符串","speaker":"说出这句话的角色名或空字符串"},"avatarUrl":"公开头像图片 URL 或空字符串","waitingWorks":[{"title":"尚未收录书名","platform":"晋江/长佩/长佩旧站/废文/其他/空字符串","summary":"50到120字简介或空字符串"}],"sourceHint":"信息来源提示或空字符串"}`;
     const json=parseGeminiJson(await callGemini(prompt));
     db.authorProfiles=db.authorProfiles||{};
     const prev=db.authorProfiles[author]||{};
     db.authorProfiles[author]={
       ...prev,
       avatarUrl:json.avatarUrl||prev.avatarUrl||'',
-      quote:json.quote||prev.quote||'',
+      quote:normalizeAuthorQuote(json.quote).text?normalizeAuthorQuote(json.quote):prev.quote||'',
       waitingWorks:Array.isArray(json.waitingWorks)?json.waitingWorks.filter(w=>w&&w.title).slice(0,24):prev.waitingWorks||[],
       sourceHint:json.sourceHint||prev.sourceHint||'',
       updatedAt:Date.now()
     };
-    if(json.quote&&!db.authorQuotes?.[author]){
-      db.authorQuotes=db.authorQuotes||{};
-      db.authorQuotes[author]=json.quote;
-    }
     db.authorProfiles[author].waitingWorks=getAuthorWaitingWorks(author);
     save();
     renderStatsModal();
@@ -2462,7 +2570,7 @@ function saveAuthorNote(author){
 
 function saveAuthorQuote(author){
   db.authorQuotes=db.authorQuotes||{};
-  db.authorQuotes[author]=document.getElementById('author-quote-input').value.trim();
+  db.authorQuotes[author]={text:document.getElementById('author-quote-input').value.trim(),work:'',speaker:'',manualText:document.getElementById('author-quote-input').value.trim()};
   save();
   toast('经典语录已保存');
   renderStatsModal();
