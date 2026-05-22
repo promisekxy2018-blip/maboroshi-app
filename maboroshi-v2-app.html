@@ -718,7 +718,7 @@ body.magic-theme .author-wait-card{border-color:rgba(116,110,183,.18)}
           <div class="settings-item-left">
             <div class="settings-item-icon" style="background:#e8f0fe">ℹ️</div>
             <div>
-              <div class="settings-item-title">幻 maboroshi v2.28</div>
+              <div class="settings-item-title">幻 maboroshi v2.29</div>
               <div class="settings-item-sub">数据和密码均存储于本地</div>
             </div>
           </div>
@@ -980,7 +980,7 @@ body.magic-theme .author-wait-card{border-color:rgba(116,110,183,.18)}
 // ═══════════════════════════════════════
 //  DATA LAYER
 // ═══════════════════════════════════════
-const APP_VERSION = '2.18.0';
+const APP_VERSION = '2.19.0';
 const STORE_KEY = 'shuji_v1';
 const LOCK_KEY = 'maboroshi_lock_v2';
 const TAG_CATS = [
@@ -2931,9 +2931,7 @@ async function checkPassword(){
 }
 
 function registerPwa(){
-  if('serviceWorker' in navigator && location.protocol.startsWith('http')){
-    navigator.serviceWorker.register('./service-worker.js').catch(()=>{});
-  }
+  // Install-first build: offline caching stays paused while Android WebAPK install is being stabilized.
 }
 
 // ═══════════════════════════════════════
