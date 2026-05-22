@@ -2,8 +2,8 @@
   "name": "\u5e7b maboroshi",
   "short_name": "\u5e7b",
   "description": "\u79c1\u4eba\u8bfb\u4e66\u8bb0\u5f55\u3001\u8bc4\u5206\u3001\u6807\u7b7e\u548c\u9605\u8bfb\u7edf\u8ba1 App",
-  "id": "./",
-  "start_url": "./maboroshi-v2-app.html",
+  "id": "/maboroshi-pwa-install-20260523",
+  "start_url": "./maboroshi-v2-app.html?source=pwa-20260523",
   "scope": "./",
   "display": "standalone",
   "background_color": "#fdf6f0",
@@ -27,12 +27,6 @@
       "src": "./maboroshi-icon-v3.png",
       "sizes": "1254x1254",
       "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "./icon.svg",
-      "sizes": "any",
-      "type": "image/svg+xml",
       "purpose": "any"
     }
   ]

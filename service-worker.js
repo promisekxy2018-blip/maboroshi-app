@@ -1,4 +1,4 @@
-const CACHE_NAME = 'maboroshi-v2-cache-30';
+const CACHE_NAME = 'maboroshi-v2-cache-31';
 const ASSETS = [
   './',
   './maboroshi-v2-app.html',
@@ -6,8 +6,7 @@ const ASSETS = [
   './manifest.webmanifest',
   './maboroshi-icon-v3-192.png',
   './maboroshi-icon-v3-512.png',
-  './maboroshi-icon-v3.png',
-  './icon.svg'
+  './maboroshi-icon-v3.png'
 ];
 
 self.addEventListener('install', event => {
