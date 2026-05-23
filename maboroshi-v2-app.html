@@ -2241,30 +2241,40 @@ async function callGemini(prompt,options={}){
 
 async function callOpenAI(prompt,options={}){
   const key=activeAIProvider()==='openai'?activeAIKey():(db.aiKeys?.openai||'').trim();
+  const baseBody={
+    model:OPENAI_MODEL,
+    input:prompt,
+    tools:[{type:'web_search',search_context_size:'low'}],
+    tool_choice:'auto',
+    max_output_tokens:options.maxOutputTokens||1800
+  };
+  let data;
+  try{
+    data=await requestOpenAI(key,{...baseBody,text:{format:{type:'json_object'}}});
+  }catch(e){
+    if(!String(e?.message||'').includes('OPENAI_HTTP_400')) throw e;
+    data=await requestOpenAI(key,baseBody);
+  }
+  const text=data.output_text||extractOpenAIOutputText(data);
+  if(!text) throw new Error('OPENAI_EMPTY');
+  return text.trim();
+}
+
+async function requestOpenAI(key,body){
   const res=await fetch('https://api.openai.com/v1/responses',{
     method:'POST',
     headers:{
       'Content-Type':'application/json',
       'Authorization':`Bearer ${key}`
     },
-    body:JSON.stringify({
-      model:OPENAI_MODEL,
-      input:prompt,
-      tools:[{type:'web_search',search_context_size:'low'}],
-      tool_choice:'auto',
-      max_output_tokens:options.maxOutputTokens||1800,
-      text:{format:{type:'json_object'},verbosity:'low'}
-    })
+    body:JSON.stringify(body)
   });
   if(!res.ok){
     let detail='';
     try{detail=(await res.json())?.error?.message||'';}catch(e){}
     throw new Error(`OPENAI_HTTP_${res.status}${detail?`: ${detail}`:''}`);
   }
-  const data=await res.json();
-  const text=data.output_text||extractOpenAIOutputText(data);
-  if(!text) throw new Error('OPENAI_EMPTY');
-  return text.trim();
+  return res.json();
 }
 
 function extractOpenAIOutputText(data){
@@ -2286,7 +2296,7 @@ function parseAIJson(text){
 function formatAIError(err,fallback){
   const msg=String(err?.message||err||'');
   if(msg.includes('NO_EXACT_MATCH')) return '没找到可靠的书名+作者匹配，先留空';
-  if(msg.includes('OPENAI_HTTP_400')) return 'OpenAI 请求格式被拒绝，请稍后重试';
+  if(msg.includes('OPENAI_HTTP_400')) return `OpenAI 请求格式被拒绝：${msg.split(':').slice(1).join(':').trim()||'请稍后重试'}`;
   if(msg.includes('OPENAI_HTTP_401')) return 'OpenAI Key 不正确或已失效';
   if(msg.includes('OPENAI_HTTP_403')) return 'OpenAI Key 无权限或项目未开通';
   if(msg.includes('OPENAI_HTTP_429')) return 'OpenAI 额度或频率已到上限，稍后再试';
