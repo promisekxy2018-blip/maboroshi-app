@@ -354,16 +354,22 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
 /* ── TOAST ── */
 .toast{position:fixed;top:20px;left:50%;transform:translateX(-50%) translateY(-80px);background:var(--text);color:#fff;padding:10px 20px;border-radius:20px;font-size:13px;z-index:999;transition:transform 0.3s;white-space:nowrap}
 .toast.show{transform:translateX(-50%) translateY(0)}
-.ai-task-dock{position:fixed;right:14px;bottom:88px;z-index:198;display:none;flex-direction:column;gap:8px;max-width:min(320px,calc(100vw - 28px))}
+.ai-task-dock{position:fixed;right:14px;bottom:88px;z-index:198;display:none;flex-direction:column;align-items:flex-end;gap:8px;max-width:min(340px,calc(100vw - 28px))}
 .ai-task-dock.show{display:flex}
-.ai-task-card{background:rgba(255,255,255,.94);border:1px solid var(--border);border-radius:16px;padding:10px 12px;box-shadow:0 8px 24px rgba(61,43,31,.13);backdrop-filter:blur(10px)}
+.ai-task-bubble{width:54px;height:54px;border:none;border-radius:50%;background:linear-gradient(145deg,var(--pink2),#f5c4a1);color:#fff;box-shadow:0 10px 26px rgba(196,96,126,.28);font-size:20px;position:relative;display:flex;align-items:center;justify-content:center}
+.ai-task-count{position:absolute;right:-2px;top:-3px;min-width:20px;height:20px;border-radius:999px;background:var(--red2);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;border:2px solid #fff}
+.ai-task-panel{width:min(330px,calc(100vw - 28px));max-height:52vh;overflow-y:auto;border-radius:18px;background:rgba(255,255,255,.96);border:1px solid var(--border);box-shadow:0 14px 34px rgba(61,43,31,.18);padding:10px;backdrop-filter:blur(12px)}
+.ai-task-panel-head{display:flex;align-items:center;justify-content:space-between;padding:3px 4px 9px;font-size:12px;color:var(--text3)}
+.ai-task-card{background:rgba(255,255,255,.9);border:1px solid var(--border);border-radius:14px;padding:10px 12px;box-shadow:0 5px 16px rgba(61,43,31,.09);cursor:pointer}
+.ai-task-card+.ai-task-card{margin-top:8px}
 .ai-task-title{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:12px;font-weight:700;color:var(--text)}
 .ai-task-state{font-size:10px;color:var(--pink2);white-space:nowrap}
 .ai-task-sub{font-size:11px;color:var(--text3);line-height:1.5;margin-top:4px}
 .ai-task-bar{height:3px;background:var(--border);border-radius:99px;overflow:hidden;margin-top:8px}
 .ai-task-bar span{display:block;height:100%;width:42%;background:linear-gradient(90deg,var(--pink2),#f5c4a1);border-radius:99px;animation:taskPulse 1.2s ease-in-out infinite}
 @keyframes taskPulse{0%{transform:translateX(-80%)}100%{transform:translateX(260%)}}
-body.magic-theme .ai-task-card{background:linear-gradient(145deg,rgba(238,244,255,.94),rgba(255,244,210,.9));border-color:rgba(255,226,173,.24)}
+body.magic-theme .ai-task-bubble{background:radial-gradient(circle at 30% 24%,#fff3b0,transparent 26%),linear-gradient(145deg,#657fc7,#d69ac2)}
+body.magic-theme .ai-task-panel,body.magic-theme .ai-task-card{background:linear-gradient(145deg,rgba(238,244,255,.94),rgba(255,244,210,.9));border-color:rgba(255,226,173,.24)}
 
 /* ── FILTER PILLS ── */
 .filter-row{display:flex;gap:8px;padding:0 16px 12px;overflow-x:auto;-webkit-overflow-scrolling:touch}
@@ -734,6 +740,16 @@ body.magic-theme .author-wait-card{border-color:rgba(116,110,183,.18)}
           </div>
           <span class="settings-arrow">›</span>
         </div>
+        <div class="settings-item" onclick="openAIHistory()">
+          <div class="settings-item-left">
+            <div class="settings-item-icon" style="background:#eef4ff">✦</div>
+            <div>
+              <div class="settings-item-title">AI 抓取历史</div>
+              <div class="settings-item-sub">查看近一周成功和失败的任务</div>
+            </div>
+          </div>
+          <span class="settings-arrow">›</span>
+        </div>
         <div class="settings-item" onclick="clearData()">
           <div class="settings-item-left">
             <div class="settings-item-icon" style="background:#fdecea">🗑️</div>
@@ -822,6 +838,15 @@ body.magic-theme .author-wait-card{border-color:rgba(116,110,183,.18)}
     <button class="sheet-close" onclick="closeSheet('sheet-tag-manager')">×</button>
   </div>
   <div class="sheet-body" id="tag-manager-body"></div>
+</div>
+
+<div class="sheet" id="sheet-ai-history">
+  <div class="sheet-handle"></div>
+  <div class="sheet-header">
+    <span class="sheet-title">AI 抓取历史</span>
+    <button class="sheet-close" onclick="closeSheet('sheet-ai-history')">×</button>
+  </div>
+  <div class="sheet-body" id="ai-history-body"></div>
 </div>
 
 <!-- ═══ BATCH IMPORT SHEET ═══ -->
@@ -1053,10 +1078,11 @@ let aiCandidateState = {draft:null,items:[]};
 let skipSourceLocateOnce = false;
 let detailReturnState = null;
 let aiTasks = [];
+let aiTaskPanelOpen = false;
 
 function load(){
   try{const s=localStorage.getItem(STORE_KEY);if(s)db=JSON.parse(s);}catch(e){}
-  try{aiTasks=JSON.parse(localStorage.getItem(AI_TASK_KEY)||'[]').map(t=>t.state==='running'?{...t,state:'interrupted',status:'上次离开 App 时中断',updatedAt:Date.now()}:t).slice(0,4);saveAITasks();}catch(e){aiTasks=[];}
+  try{aiTasks=normalizeAITasks(JSON.parse(localStorage.getItem(AI_TASK_KEY)||'[]')).map(t=>t.state==='running'?{...t,state:'interrupted',status:'上次离开 App 时中断',updatedAt:Date.now()}:t);saveAITasks();}catch(e){aiTasks=[];}
   if(!db.tagHistory){db.tagHistory={shou:[],gong:[],era:[],plot:[],vibe:[],warn:[]};}
   if(!db.lastBackupAt) db.lastBackupAt='';
   if(!db.settings) db.settings={shelfView:'list'};
@@ -2199,24 +2225,6 @@ async function autoFetch(){
       renderTagCategories(formTags);
     }
     showFetchedBookSheet();
-    if(editingBookId){
-      const book=db.books.find(b=>b.id===editingBookId);
-      if(book){
-        Object.assign(book,{
-          author:document.getElementById('f-author').value.trim(),
-          platform:document.getElementById('f-platform').value,
-          finishYear:document.getElementById('f-finish-year').value.trim(),
-          shouName:document.getElementById('f-shou-name').value.trim(),
-          gongName:document.getElementById('f-gong-name').value.trim(),
-          coverUrl:document.getElementById('f-cover-url').value.trim(),
-          summary:document.getElementById('f-summary').value.trim(),
-          tags:JSON.parse(JSON.stringify(formTags||{}))
-        });
-        rememberTags(book.tags);
-        save();
-        renderShelf();
-      }
-    }
     updateAITask(taskId,json.sourceHint?`已补全：${json.sourceHint}`:'作品信息已补全，点这里查看','done');
     if(editingBookId) setTimeout(()=>openEditSheet(editingBookId),250);
     toast(json.sourceHint?`补全成功：${json.sourceHint}`:'补全成功 ✨');
@@ -2258,7 +2266,8 @@ async function autoFetchSynopsis(mode='short'){
 本次需要${isLong?'长版，尽量覆盖全文关键情节点和结局，约 700 到 1400 字':'短版，保留主线、关系变化、关键冲突和结局，约 220 到 420 字'}。
 请只回复 JSON，不要解释或 Markdown：
 {"matched":"true/false","synopsis":"${isLong?'700到1400字':'220到420字'}的剧透版剧情梗概或空字符串","sourceHint":"信息来源提示或空字符串"}`;
-    const json=parseAIJson(await callAI(prompt,{maxOutputTokens:isLong?2600:1200}));
+    const raw=await callAI(prompt,{maxOutputTokens:isLong?2600:1200});
+    const json=parseSynopsisAI(raw);
     if(json.matched===false||String(json.matched||'').toLowerCase()==='false') throw new Error('NO_EXACT_MATCH');
     if(json.synopsis) document.getElementById('f-synopsis').value=json.synopsis;
     if(editingBookId&&json.synopsis){
@@ -2391,6 +2400,31 @@ function parseAIJson(text){
     try{return JSON.parse(clean.slice(start,end+1));}catch(e){}
   }
   throw new Error('AI_PARSE_JSON');
+}
+
+function parseSynopsisAI(text){
+  try{return parseAIJson(text);}catch(e){}
+  const synopsis=extractSynopsisText(text);
+  if(synopsis&&synopsis.length>=40){
+    return {matched:'true',synopsis,sourceHint:'AI 返回了非标准 JSON，已自动保留剧情正文'};
+  }
+  throw new Error('AI_PARSE_JSON');
+}
+
+function extractSynopsisText(text){
+  let clean=String(text||'').replace(/```json|```/g,'').trim();
+  const quoted=clean.match(/["“]?synopsis["”]?\s*[:：]\s*["“]([\s\S]*?)(?:["”]\s*,\s*["“]sourceHint|["”]\s*[,}])/);
+  if(quoted?.[1]) clean=quoted[1];
+  clean=clean
+    .replace(/^\s*[{[]?/, '')
+    .replace(/["“]?matched["”]?\s*[:：]\s*["“]?(true|false)["”]?\s*,?/i,'')
+    .replace(/["“]?synopsis["”]?\s*[:：]\s*/,'')
+    .replace(/["“]?sourceHint["”]?\s*[:：][\s\S]*$/,'')
+    .replace(/[{}"]/g,'')
+    .replace(/\\n/g,'\n')
+    .replace(/\\"/g,'"')
+    .trim();
+  return clean;
 }
 
 function formatAIError(err,fallback){
@@ -2966,6 +3000,34 @@ function mergeTag(catKey,from,to){
   toast(`已把「${from}」合并到「${to}」`);
 }
 
+function openAIHistory(){
+  renderAIHistory();
+  openSheet('sheet-ai-history');
+}
+
+function renderAIHistory(){
+  const body=document.getElementById('ai-history-body');
+  if(!body) return;
+  const weekAgo=Date.now()-7*24*60*60*1000;
+  const tasks=normalizeAITasks(aiTasks).filter(t=>(t.updatedAt||t.startedAt||0)>=weekAgo);
+  body.innerHTML=tasks.length?`<div style="display:flex;flex-direction:column;gap:9px">${tasks.map(t=>`
+    <div class="author-note-box" style="margin-bottom:0">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
+        <div class="author-note-title" style="margin-bottom:0">${escapeHtml(t.title)}</div>
+        <span class="ai-task-state">${aiTaskStateLabel(t.state)}</span>
+      </div>
+      <div class="author-note-text">${escapeHtml(t.status||'无状态记录')}</div>
+      <div class="settings-item-sub">${formatDateTime(t.updatedAt||t.startedAt)}</div>
+      ${t.openAction?`<button class="btn btn-ghost" style="width:100%;margin-top:8px" onclick="openAITask('${t.id}')">打开相关页面</button>`:''}
+    </div>`).join('')}</div>`:'<div class="tag-selected-empty" style="text-align:center;padding:24px">近一周还没有 AI 抓取记录</div>';
+}
+
+function formatDateTime(ts){
+  if(!ts) return '';
+  const d=new Date(ts);
+  return `${d.getMonth()+1}/${d.getDate()} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+}
+
 function editApiKey(provider){
   db.aiKeys=db.aiKeys||{openai:'',gemini:''};
   const label=provider==='openai'?'OpenAI':'Gemini';
@@ -3101,33 +3163,77 @@ function closeAllSheets(){
 //  AI TASKS
 // ═══════════════════════════════════════
 function saveAITasks(){
-  try{localStorage.setItem(AI_TASK_KEY,JSON.stringify(aiTasks.slice(0,6)));}catch(e){}
+  aiTasks=normalizeAITasks(aiTasks);
+  try{localStorage.setItem(AI_TASK_KEY,JSON.stringify(aiTasks));}catch(e){}
+}
+
+function normalizeAITasks(tasks){
+  const weekAgo=Date.now()-7*24*60*60*1000;
+  return (Array.isArray(tasks)?tasks:[])
+    .filter(t=>t&&t.id&&(t.updatedAt||t.startedAt||0)>=weekAgo)
+    .sort((a,b)=>(b.updatedAt||b.startedAt||0)-(a.updatedAt||a.startedAt||0))
+    .slice(0,80);
 }
 
 function renderAITasks(){
   const dock=document.getElementById('ai-task-dock');
   if(!dock) return;
-  const visible=aiTasks.filter(t=>t.state==='running'||Date.now()-(t.updatedAt||0)<9000).slice(0,3);
-  dock.classList.toggle('show',visible.length>0);
-  dock.innerHTML=visible.map(t=>`
-    <div class="ai-task-card" onclick="${t.openAction||''}">
-      <div class="ai-task-title"><span>${escapeHtml(t.title)}</span><span class="ai-task-state">${t.state==='running'?'进行中':t.state==='done'?'已完成':t.state==='interrupted'?'已中断':'失败'}</span></div>
-      <div class="ai-task-sub">${escapeHtml(t.status||'正在向 AI 取星星')}</div>
-      ${t.state==='running'?'<div class="ai-task-bar"><span></span></div>':''}
-    </div>`).join('');
+  const running=aiTasks.filter(t=>t.state==='running');
+  if(!running.length){
+    aiTaskPanelOpen=false;
+    dock.classList.remove('show');
+    dock.innerHTML='';
+    return;
+  }
+  const panelItems=aiTasks.filter(t=>!t.dockHidden).slice(0,8);
+  dock.classList.add('show');
+  dock.innerHTML=`${aiTaskPanelOpen?`<div class="ai-task-panel">
+    <div class="ai-task-panel-head"><span>AI 抓取任务</span><button class="btn btn-ghost" style="padding:3px 8px;font-size:11px" onclick="toggleAITaskPanel(event)">收起</button></div>
+    ${panelItems.map(t=>renderAITaskCard(t)).join('')}
+  </div>`:''}
+  <button class="ai-task-bubble" onclick="toggleAITaskPanel(event)">✦<span class="ai-task-count">${running.length}</span></button>`;
+}
+
+function renderAITaskCard(t){
+  return `<div class="ai-task-card" onclick="openAITask('${t.id}')">
+    <div class="ai-task-title"><span>${escapeHtml(t.title)}</span><span class="ai-task-state">${aiTaskStateLabel(t.state)}</span></div>
+    <div class="ai-task-sub">${escapeHtml(t.status||'正在向 AI 取星星')}</div>
+    ${t.state==='running'?'<div class="ai-task-bar"><span></span></div>':''}
+  </div>`;
+}
+
+function aiTaskStateLabel(state){
+  return state==='running'?'进行中':state==='done'?'已完成':state==='interrupted'?'已中断':'失败';
+}
+
+function toggleAITaskPanel(e){
+  e?.stopPropagation?.();
+  aiTaskPanelOpen=!aiTaskPanelOpen;
+  renderAITasks();
+}
+
+function openAITask(id){
+  const task=aiTasks.find(t=>t.id===id);
+  if(!task) return;
+  if(task.openAction){
+    try{new Function(task.openAction)();}catch(e){console.error(e);}
+  }
+  if(task.state!=='running') task.dockHidden=true;
+  aiTaskPanelOpen=false;
+  saveAITasks();
+  renderAITasks();
 }
 
 function startAITask(title,status,openAction=''){
-  const task={id:'ai_'+Date.now()+'_'+Math.random().toString(16).slice(2),title,status,state:'running',openAction,startedAt:Date.now(),updatedAt:Date.now()};
-  aiTasks=[task,...aiTasks.filter(t=>t.state==='running').slice(0,2),...aiTasks.filter(t=>t.state!=='running').slice(0,3)];
+  const task={id:'ai_'+Date.now()+'_'+Math.random().toString(16).slice(2),title,status,state:'running',openAction,dockHidden:false,startedAt:Date.now(),updatedAt:Date.now()};
+  aiTasks=[task,...aiTasks];
   saveAITasks();renderAITasks();
   return task.id;
 }
 
 function updateAITask(id,status,state='running'){
-  aiTasks=aiTasks.map(t=>t.id===id?{...t,status,state,updatedAt:Date.now()}:t);
+  aiTasks=aiTasks.map(t=>t.id===id?{...t,status,state,dockHidden:false,updatedAt:Date.now()}:t);
   saveAITasks();renderAITasks();
-  if(state!=='running') setTimeout(renderAITasks,9200);
 }
 
 async function runAITask(title,status,worker,opts={}){
