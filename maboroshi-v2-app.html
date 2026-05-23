@@ -354,6 +354,16 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
 /* ── TOAST ── */
 .toast{position:fixed;top:20px;left:50%;transform:translateX(-50%) translateY(-80px);background:var(--text);color:#fff;padding:10px 20px;border-radius:20px;font-size:13px;z-index:999;transition:transform 0.3s;white-space:nowrap}
 .toast.show{transform:translateX(-50%) translateY(0)}
+.ai-task-dock{position:fixed;right:14px;bottom:88px;z-index:198;display:none;flex-direction:column;gap:8px;max-width:min(320px,calc(100vw - 28px))}
+.ai-task-dock.show{display:flex}
+.ai-task-card{background:rgba(255,255,255,.94);border:1px solid var(--border);border-radius:16px;padding:10px 12px;box-shadow:0 8px 24px rgba(61,43,31,.13);backdrop-filter:blur(10px)}
+.ai-task-title{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:12px;font-weight:700;color:var(--text)}
+.ai-task-state{font-size:10px;color:var(--pink2);white-space:nowrap}
+.ai-task-sub{font-size:11px;color:var(--text3);line-height:1.5;margin-top:4px}
+.ai-task-bar{height:3px;background:var(--border);border-radius:99px;overflow:hidden;margin-top:8px}
+.ai-task-bar span{display:block;height:100%;width:42%;background:linear-gradient(90deg,var(--pink2),#f5c4a1);border-radius:99px;animation:taskPulse 1.2s ease-in-out infinite}
+@keyframes taskPulse{0%{transform:translateX(-80%)}100%{transform:translateX(260%)}}
+body.magic-theme .ai-task-card{background:linear-gradient(145deg,rgba(238,244,255,.94),rgba(255,244,210,.9));border-color:rgba(255,226,173,.24)}
 
 /* ── FILTER PILLS ── */
 .filter-row{display:flex;gap:8px;padding:0 16px 12px;overflow-x:auto;-webkit-overflow-scrolling:touch}
@@ -771,6 +781,7 @@ body.magic-theme .author-wait-card{border-color:rgba(116,110,183,.18)}
 <!-- ── OVERLAY ── -->
 <div class="overlay" id="overlay" onclick="closeAllSheets()"></div>
 <div class="toast" id="toast"></div>
+<div class="ai-task-dock" id="ai-task-dock"></div>
 
 <!-- ═══ SHELF FILTER SHEET ═══ -->
 <div class="sheet" id="sheet-filter">
@@ -1003,6 +1014,7 @@ body.magic-theme .author-wait-card{border-color:rgba(116,110,183,.18)}
 const APP_VERSION = '2.20.0';
 const STORE_KEY = 'shuji_v1';
 const LOCK_KEY = 'maboroshi_lock_v2';
+const AI_TASK_KEY = 'maboroshi_ai_tasks_v1';
 const TAG_CATS = [
   {key:'shou', label:'受性格', color:0},
   {key:'gong', label:'攻性格', color:1},
@@ -1039,9 +1051,12 @@ let edgeTouch = null;
 let autoFetchBusy = false;
 let aiCandidateState = {draft:null,items:[]};
 let skipSourceLocateOnce = false;
+let detailReturnState = null;
+let aiTasks = [];
 
 function load(){
   try{const s=localStorage.getItem(STORE_KEY);if(s)db=JSON.parse(s);}catch(e){}
+  try{aiTasks=JSON.parse(localStorage.getItem(AI_TASK_KEY)||'[]').map(t=>t.state==='running'?{...t,state:'interrupted',status:'上次离开 App 时中断',updatedAt:Date.now()}:t).slice(0,4);saveAITasks();}catch(e){aiTasks=[];}
   if(!db.tagHistory){db.tagHistory={shou:[],gong:[],era:[],plot:[],vibe:[],warn:[]};}
   if(!db.lastBackupAt) db.lastBackupAt='';
   if(!db.settings) db.settings={shelfView:'list'};
@@ -1181,10 +1196,27 @@ function appBack(){
   if(document.getElementById('stats-modal')?.classList.contains('show')){closeStatsModal();return true;}
   if(hasOpenOverlay()){closeAllSheets();return true;}
   const active=document.querySelector('.page.active')?.id?.replace('page-','')||'shelf';
-  if(active==='detail'||active==='settings'||active==='stats'||active==='encounter'){showPage('shelf',{pushState:false});return true;}
+  if(active==='detail'){returnDetail();return true;}
+  if(active==='settings'||active==='stats'||active==='encounter'){showPage('shelf',{pushState:false});return true;}
   if(confirm('要退出「幻」吗？')){exitApp();return true;}
   pushAppState({type:'page',page:'shelf'});
   return true;
+}
+
+function returnDetail(){
+  if(detailReturnState?.type==='stats-modal'){
+    const snap=detailReturnState.snapshot;
+    detailReturnState=null;
+    showPage('stats',{pushState:false});
+    if(snap){
+      statsModal=snap;
+      openStatsModal(snap.title||'统计明细',snap.sub||'');
+      renderStatsModal();
+    }
+    return;
+  }
+  detailReturnState=null;
+  showPage('shelf',{pushState:false});
 }
 
 function exitApp(){
@@ -1277,7 +1309,8 @@ function renderBookCard(b,opts={}){
   const progress=b.progress||0;
   const readCount=logs.length;
   const excerpt=getLatestReviewExcerpt(b);
-  return `<div class="book-card fade-in" onclick="openDetail('${b.id}')">
+  const openExpr=opts.fromStats?`openDetail('${b.id}',{returnTo:'stats'})`:`openDetail('${b.id}')`;
+  return `<div class="book-card fade-in" onclick="${openExpr}">
     ${rating===null?'<div class="book-memory-mark">记</div>':''}
     ${renderCover(b)}
     <div class="book-info">
@@ -1497,10 +1530,15 @@ function clearShelfFilters(){
 // ═══════════════════════════════════════
 //  DETAIL
 // ═══════════════════════════════════════
-function openDetail(id){
+function openDetail(id,opts={}){
   const b=db.books.find(x=>x.id===id);
   if(!b) return;
-  closeStatsModal();
+  if(opts.returnTo==='stats'||document.getElementById('stats-modal')?.classList.contains('show')){
+    detailReturnState={type:'stats-modal',snapshot:JSON.parse(JSON.stringify(statsModal))};
+    closeStatsModal();
+  }else{
+    detailReturnState=null;
+  }
   const logs=b.readLogs||[];
   const tagGroups=TAG_CATS.map((c,ci)=>({c,ci,tags:b.tags?.[c.key]||[]})).filter(g=>g.tags.length);
   const tagsHtml=tagGroups.map(({c,ci,tags})=>`
@@ -1521,7 +1559,7 @@ function openDetail(id){
   const progress=b.progress||0;
   document.getElementById('page-detail').innerHTML=`
     <div class="detail-hero">
-      <button class="detail-back" onclick="showPage('shelf')">←</button>
+      <button class="detail-back" onclick="returnDetail()">←</button>
       ${renderCover(b,'detail')}
       <div class="detail-title">${b.title}</div>
       <div class="detail-author ${b.author?'detail-author-link':''}" ${b.author?`onclick="openAuthorDetail(decodeURIComponent('${encodeURIComponent(b.author)}'))"`:''}>${b.author||'未知作者'}</div>
@@ -2008,6 +2046,7 @@ function renderBookCandidates(items){
 async function searchBookCandidates(draft){
   if(!hasActiveAIKey()) return;
   setAutoFetchBusy(true);
+  const taskId=startAITask(`候选匹配 · ${draft.title}`,'正在按书名搜索可能作品',"openSheet('sheet-ai-candidates')");
   toast('先按书名找几本最像的候选…');
   try{
     const title=draft.title.trim();
@@ -2022,11 +2061,14 @@ async function searchBookCandidates(draft){
     if(items.length){
       closeAllSheets();
       setTimeout(()=>openSheet('sheet-ai-candidates'),80);
+      updateAITask(taskId,`找到 ${items.length} 个候选，点这里选择`,'done');
       toast('先选中你认得的那一本');
     } else {
+      updateAITask(taskId,'没有找到可靠候选','failed');
       toast('没找到可靠候选，先补一点作者或平台线索会更稳');
     }
   }catch(e){
+    updateAITask(taskId,formatAIError(e,'候选匹配失败'),'failed');
     toast(formatAIError(e,'候选匹配失败'));
     console.error(e);
   }finally{
@@ -2049,6 +2091,7 @@ async function locateKnownBookSource(draft){
 }
 
 async function prepareUnknownSource(draft){
+  const taskId=startAITask(`平台定位 · ${draft.title}`,'正在确认晋江/长佩/废文来源',"openSheet('sheet-book')");
   try{
     const items=await locateKnownBookSource(draft);
     if(items.length===1){
@@ -2061,6 +2104,7 @@ async function prepareUnknownSource(draft){
         summary:draft.summary||item.summary||''
       });
       toast(`已定位到${item.platform}，继续深度补全`);
+      updateAITask(taskId,`已定位到 ${item.platform}，继续深度补全`,'done');
       skipSourceLocateOnce=true;
       setAutoFetchBusy(false);
       await autoFetch();
@@ -2071,13 +2115,16 @@ async function prepareUnknownSource(draft){
       renderBookCandidates(items);
       closeAllSheets();
       setTimeout(()=>openSheet('sheet-ai-candidates'),80);
+      updateAITask(taskId,`找到 ${items.length} 个可能平台，点这里选择`,'done');
       toast('平台还不够确定，先选中那一本');
       return true;
     }
   }catch(e){
     console.error(e);
+    updateAITask(taskId,formatAIError(e,'平台定位失败'),'failed');
     toast(formatAIError(e,'平台定位失败'));
   }
+  updateAITask(taskId,'没有定位到可靠平台，继续深抓','failed');
   return false;
 }
 
@@ -2120,8 +2167,10 @@ async function autoFetch(){
   }
   skipSourceLocateOnce=false;
   setAutoFetchBusy(true);
+  const taskId=startAITask(`作品补全 · ${title}`,'正在定位作品页与公开资料',editingBookId?`openEditSheet('${editingBookId}')`:"openSheet('sheet-book')");
   toast('作品在后台补全中，可以先离开编辑页');
   try{
+    updateAITask(taskId,'正在抓取作者、平台、简介和基础字段');
     const prompt=`请帮我补全 BL/耽美网文《${title}》（作者：${author}）的信息。必须同时匹配书名与作者；优先参考晋江文学城、长佩文学（新站/旧站）的公开作品页与可信公开书评；如果无法确定，不要编造，填空字符串。
 这是一次省 token 的基础补全：优先定位官方作品页，官方简介只写作品官方简介；不要生成剧情梗概，不要为了剧情长评做额外搜索。封面只在你能给出可直接访问的公开图片 URL 时返回。
 请只回复 JSON，不要有任何解释或 Markdown：
@@ -2150,8 +2199,29 @@ async function autoFetch(){
       renderTagCategories(formTags);
     }
     showFetchedBookSheet();
+    if(editingBookId){
+      const book=db.books.find(b=>b.id===editingBookId);
+      if(book){
+        Object.assign(book,{
+          author:document.getElementById('f-author').value.trim(),
+          platform:document.getElementById('f-platform').value,
+          finishYear:document.getElementById('f-finish-year').value.trim(),
+          shouName:document.getElementById('f-shou-name').value.trim(),
+          gongName:document.getElementById('f-gong-name').value.trim(),
+          coverUrl:document.getElementById('f-cover-url').value.trim(),
+          summary:document.getElementById('f-summary').value.trim(),
+          tags:JSON.parse(JSON.stringify(formTags||{}))
+        });
+        rememberTags(book.tags);
+        save();
+        renderShelf();
+      }
+    }
+    updateAITask(taskId,json.sourceHint?`已补全：${json.sourceHint}`:'作品信息已补全，点这里查看','done');
+    if(editingBookId) setTimeout(()=>openEditSheet(editingBookId),250);
     toast(json.sourceHint?`补全成功：${json.sourceHint}`:'补全成功 ✨');
   }catch(e){
+    updateAITask(taskId,formatAIError(e,'作品补全失败'),'failed');
     toast(formatAIError(e,'作品补全失败'));
     console.error(e);
   }finally{
@@ -2177,8 +2247,11 @@ async function autoFetchSynopsis(mode='short'){
   if(!hasActiveAIKey()) return;
   const isLong=mode==='long';
   setSynopsisBusy(true,mode);
+  const taskTitle=`${isLong?'长版':'短版'}剧情 · ${title}`;
+  const taskId=startAITask(taskTitle,isLong?'正在整理全文关键情节点':'正在整理主线和结局',editingBookId?`openEditSheet('${editingBookId}')`:"openSheet('sheet-edit')");
   toast(isLong?'长版剧情会明显更费时间和 token':'短版剧情正在整理中');
   try{
+    updateAITask(taskId,'正在搜索官方页和公开长评');
     const prompt=`请为 BL/耽美网文《${title}》（作者：${author}）补全剧透版详细剧情梗概。必须同时匹配书名和作者；当前平台线索为「${platform}」，若它是未知或其他则忽略。
 已知官方简介：${summary||'暂无'}。
 请优先参考官方作品页、公开长评和可信公开书评。梗概不是导读：尽量按开端、关键关系变化、主要冲突升级、重要转折、高潮、结局写出关键情节点，明确人物做了什么和事件如何推进；信息不足时只写能确认的情节，不要用空泛推荐语代替剧情，不要照抄大段原文。
@@ -2188,8 +2261,15 @@ async function autoFetchSynopsis(mode='short'){
     const json=parseAIJson(await callAI(prompt,{maxOutputTokens:isLong?2600:1200}));
     if(json.matched===false||String(json.matched||'').toLowerCase()==='false') throw new Error('NO_EXACT_MATCH');
     if(json.synopsis) document.getElementById('f-synopsis').value=json.synopsis;
+    if(editingBookId&&json.synopsis){
+      const book=db.books.find(b=>b.id===editingBookId);
+      if(book){book.synopsis=json.synopsis;save();renderShelf();}
+    }
+    updateAITask(taskId,json.sourceHint?`已补全：${json.sourceHint}`:'剧情已补全，点这里查看','done');
+    if(editingBookId) setTimeout(()=>openEditSheet(editingBookId),250);
     toast(json.sourceHint?`剧情已补：${json.sourceHint}`:'剧情已补全');
   }catch(e){
+    updateAITask(taskId,formatAIError(e,'剧情补全失败'),'failed');
     toast(formatAIError(e,'剧情补全失败'));
     console.error(e);
   }finally{
@@ -2304,12 +2384,19 @@ function extractOpenAIOutputText(data){
 
 function parseAIJson(text){
   const clean=String(text||'').replace(/```json|```/g,'').trim();
-  return JSON.parse(clean);
+  try{return JSON.parse(clean);}catch(e){}
+  const start=clean.indexOf('{');
+  const end=clean.lastIndexOf('}');
+  if(start>=0&&end>start){
+    try{return JSON.parse(clean.slice(start,end+1));}catch(e){}
+  }
+  throw new Error('AI_PARSE_JSON');
 }
 
 function formatAIError(err,fallback){
   const msg=String(err?.message||err||'');
   if(msg.includes('NO_EXACT_MATCH')) return '没找到可靠的书名+作者匹配，先留空';
+  if(msg.includes('AI_PARSE_JSON')) return 'AI 返回内容不是标准 JSON，已保留原数据，请重试一次';
   if(msg.includes('OPENAI_HTTP_400')) return `OpenAI 请求格式被拒绝：${msg.split(':').slice(1).join(':').trim()||'请稍后重试'}`;
   if(msg.includes('OPENAI_HTTP_401')) return 'OpenAI Key 不正确或已失效';
   if(msg.includes('OPENAI_HTTP_403')) return 'OpenAI Key 无权限或项目未开通';
@@ -2471,7 +2558,7 @@ function sortIndexItems(items){
 }
 
 function renderStatsBookCard(b){
-  return renderBookCard(b,{excerpt:true});
+  return renderBookCard(b,{excerpt:true,fromStats:true});
 }
 
 function getStatsIndex(type,tagCategory){
@@ -2503,6 +2590,8 @@ function getStatsLogsForCurrentPeriod(){
 }
 
 function openStatsModal(title,sub){
+  statsModal.title=title;
+  statsModal.sub=sub||'';
   document.getElementById('stats-modal-title').textContent=title;
   document.getElementById('stats-modal-sub').textContent=sub||'';
   document.getElementById('stats-modal').classList.add('show');
@@ -2739,8 +2828,10 @@ async function autoFetchAuthor(author){
   if(!author){toast('作者名为空');return;}
   if(!hasActiveAIKey()) return;
   const existing=db.books.filter(b=>b.author===author).map(b=>b.title).filter(Boolean);
+  const taskId=startAITask(`作者档案 · ${author}`,'正在搜索作者资料与作品摘录',`openAuthorDetail(decodeURIComponent('${encodeURIComponent(author)}'))`);
   toast('正在补全作者档案…');
   try{
+    updateAITask(taskId,'正在整理经典语录、头像和待读作品');
     const prompt=`请补全 BL/耽美作者「${author}」的作者档案。优先参考公开作品页与可信公开资料；无法确定时填空字符串或空数组，不要编造。
 不要返回已经收录在书架里的作品：${existing.join('、')||'暂无'}。
 经典语录优先选择该作者小说中适合作为摘录的一句短句，并同时标明出自哪部作品、由谁说出；头像只在你能给出可直接访问的公开图片 URL 时返回。
@@ -2760,8 +2851,11 @@ async function autoFetchAuthor(author){
     db.authorProfiles[author].waitingWorks=getAuthorWaitingWorks(author);
     save();
     renderStatsModal();
+    updateAITask(taskId,json.sourceHint?`已补全：${json.sourceHint}`:'作者档案已补全，点这里查看','done');
+    setTimeout(()=>openAuthorDetail(author),250);
     toast(json.sourceHint?`作者档案已补全：${json.sourceHint}`:'作者档案已补全');
   }catch(e){
+    updateAITask(taskId,formatAIError(e,'作者档案补全失败'),'failed');
     toast(formatAIError(e,'作者档案补全失败'));
     console.error(e);
   }
@@ -2837,7 +2931,39 @@ function openTagManager(){
 
 function renderTagManager(){
   const body=document.getElementById('tag-manager-body');
-  body.innerHTML=TAG_CATS.map(c=>`<div class="filter-section"><div class="filter-section-title">${c.label}</div><div class="tag-chips-wrap">${(db.tagHistory[c.key]||[]).map(t=>`<button class="tag-chip-sel" onclick="manageTag('${c.key}',decodeURIComponent('${encodeURIComponent(t)}'));renderTagManager()">${escapeHtml(t)}</button>`).join('')||'<span class="tag-selected-empty">暂无标签</span>'}</div></div>`).join('');
+  body.innerHTML=TAG_CATS.map(c=>`<div class="filter-section">
+    <div class="filter-section-title"><span>${c.label}</span><button class="btn btn-ghost" style="padding:5px 10px;font-size:11px" onclick="mergeTagPrompt('${c.key}')">合并</button></div>
+    <div class="tag-chips-wrap">${(db.tagHistory[c.key]||[]).map(t=>`<button class="tag-chip-sel" onclick="manageTag('${c.key}',decodeURIComponent('${encodeURIComponent(t)}'));renderTagManager()">${escapeHtml(t)}</button>`).join('')||'<span class="tag-selected-empty">暂无标签</span>'}</div>
+  </div>`).join('');
+}
+
+function mergeTagPrompt(catKey){
+  const cat=TAG_CATS.find(c=>c.key===catKey);
+  const hist=db.tagHistory?.[catKey]||[];
+  if(hist.length<2){toast('这个分类暂时没有可合并的标签');return;}
+  const from=prompt(`${cat.label}：输入要被合并掉的标签\n现有：${hist.join('、')}`,'');
+  if(!from) return;
+  if(!hist.includes(from)){toast('没有这个历史标签');return;}
+  const to=prompt(`把「${from}」合并到哪个标签？\n可以输入已有标签，也可以输入新标签。`,hist.find(t=>t!==from)||'');
+  if(!to||to===from) return;
+  mergeTag(catKey,from.trim(),to.trim());
+  renderTagManager();
+}
+
+function mergeTag(catKey,from,to){
+  db.tagHistory[catKey]=db.tagHistory[catKey]||[];
+  db.books.forEach(b=>{
+    if(!b.tags?.[catKey]) return;
+    b.tags[catKey]=b.tags[catKey].map(t=>t===from?to:t);
+    b.tags[catKey]=[...new Set(b.tags[catKey])];
+  });
+  formTags[catKey]=(formTags[catKey]||[]).map(t=>t===from?to:t);
+  formTags[catKey]=[...new Set(formTags[catKey])];
+  db.tagHistory[catKey]=[...new Set(db.tagHistory[catKey].map(t=>t===from?to:t).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'zh-CN'));
+  save();
+  renderShelf();
+  renderStats();
+  toast(`已把「${from}」合并到「${to}」`);
 }
 
 function editApiKey(provider){
@@ -2972,6 +3098,52 @@ function closeAllSheets(){
 }
 
 // ═══════════════════════════════════════
+//  AI TASKS
+// ═══════════════════════════════════════
+function saveAITasks(){
+  try{localStorage.setItem(AI_TASK_KEY,JSON.stringify(aiTasks.slice(0,6)));}catch(e){}
+}
+
+function renderAITasks(){
+  const dock=document.getElementById('ai-task-dock');
+  if(!dock) return;
+  const visible=aiTasks.filter(t=>t.state==='running'||Date.now()-(t.updatedAt||0)<9000).slice(0,3);
+  dock.classList.toggle('show',visible.length>0);
+  dock.innerHTML=visible.map(t=>`
+    <div class="ai-task-card" onclick="${t.openAction||''}">
+      <div class="ai-task-title"><span>${escapeHtml(t.title)}</span><span class="ai-task-state">${t.state==='running'?'进行中':t.state==='done'?'已完成':t.state==='interrupted'?'已中断':'失败'}</span></div>
+      <div class="ai-task-sub">${escapeHtml(t.status||'正在向 AI 取星星')}</div>
+      ${t.state==='running'?'<div class="ai-task-bar"><span></span></div>':''}
+    </div>`).join('');
+}
+
+function startAITask(title,status,openAction=''){
+  const task={id:'ai_'+Date.now()+'_'+Math.random().toString(16).slice(2),title,status,state:'running',openAction,startedAt:Date.now(),updatedAt:Date.now()};
+  aiTasks=[task,...aiTasks.filter(t=>t.state==='running').slice(0,2),...aiTasks.filter(t=>t.state!=='running').slice(0,3)];
+  saveAITasks();renderAITasks();
+  return task.id;
+}
+
+function updateAITask(id,status,state='running'){
+  aiTasks=aiTasks.map(t=>t.id===id?{...t,status,state,updatedAt:Date.now()}:t);
+  saveAITasks();renderAITasks();
+  if(state!=='running') setTimeout(renderAITasks,9200);
+}
+
+async function runAITask(title,status,worker,opts={}){
+  const id=startAITask(title,status,opts.openAction||'');
+  try{
+    const result=await worker((s)=>updateAITask(id,s,'running'),id);
+    updateAITask(id,opts.doneStatus||'已补全，点这里查看','done');
+    if(opts.onDone) opts.onDone(result);
+    return result;
+  }catch(e){
+    updateAITask(id,formatAIError(e,opts.failStatus||`${title}失败`),'failed');
+    throw e;
+  }
+}
+
+// ═══════════════════════════════════════
 //  TOAST
 // ═══════════════════════════════════════
 let toastTimer;
@@ -3029,6 +3201,7 @@ function unlockApp(){
   load();
   setupAppNavigation();
   renderShelf();
+  renderAITasks();
 }
 function prepareLockScreen(){
   const setup=!hasPassword();
