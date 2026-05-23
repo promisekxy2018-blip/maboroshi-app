@@ -1017,7 +1017,7 @@ const DEFAULT_TAG_HISTORY = {shou:[],gong:[],era:[],plot:[],vibe:[],warn:[]};
 const COVER_COLORS = ['#f2a8c4','#f5c4a1','#a8d5b5','#a8c4d5','#c4a8d5','#d5c4a8','#d5a8a8'];
 const PLATFORMS = ['未知','晋江','长佩','长佩旧站','废文','其他'];
 const OPENAI_MODEL = 'gpt-4.1-mini';
-const GEMINI_MODEL = 'gemini-2.0-flash';
+const GEMINI_MODELS = ['gemini-2.5-flash','gemini-2.0-flash','gemini-flash-latest','gemini-1.5-flash'];
 
 let db = {books:[], tagHistory:{...DEFAULT_TAG_HISTORY}, apiKey:'', aiKeys:{openai:'',gemini:''}, lastBackupAt:'', settings:{shelfView:'list',aiProvider:'gemini'}, authorNotes:{}, authorQuotes:{}, authorProfiles:{}};
 let currentFilter = 'all';
@@ -2219,7 +2219,21 @@ async function callAI(prompt,options={}){
 
 async function callGemini(prompt,options={}){
   const key=activeAIProvider()==='gemini'?activeAIKey():(db.aiKeys?.gemini||'').trim();
-  const res=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${encodeURIComponent(key)}`,{
+  let lastError=null;
+  for(const model of GEMINI_MODELS){
+    try{
+      return await requestGeminiModel(key,model,prompt,options);
+    }catch(e){
+      lastError=e;
+      const msg=String(e?.message||'');
+      if(!msg.includes('GEMINI_HTTP_404')&&!msg.includes('GEMINI_HTTP_400')) throw e;
+    }
+  }
+  throw lastError||new Error('GEMINI_EMPTY');
+}
+
+async function requestGeminiModel(key,model,prompt,options={}){
+  const res=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${encodeURIComponent(key)}`,{
     method:'POST',
     headers:{'Content-Type':'application/json'},
     body:JSON.stringify({
@@ -2302,7 +2316,7 @@ function formatAIError(err,fallback){
   if(msg.includes('OPENAI_HTTP_429')) return 'OpenAI 额度或频率已到上限，稍后再试';
   if(msg.includes('GEMINI_HTTP_400')) return 'Gemini 请求格式被拒绝，请重试或检查 Key';
   if(msg.includes('GEMINI_HTTP_403')) return 'Gemini Key 无权限或被限制';
-  if(msg.includes('GEMINI_HTTP_404')) return 'Gemini 模型不可用，已需要更新版本';
+  if(msg.includes('GEMINI_HTTP_404')) return `Gemini 可用模型匹配失败：${msg.split(':').slice(1).join(':').trim()||'请稍后重试'}`;
   if(msg.includes('GEMINI_HTTP_429')) return 'Gemini 额度或频率已到上限，稍后再试';
   return `${fallback}，请稍后再试`;
 }
