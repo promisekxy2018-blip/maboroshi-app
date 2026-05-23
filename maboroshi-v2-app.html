@@ -628,12 +628,32 @@ body.magic-theme .author-wait-card{border-color:rgba(116,110,183,.18)}
         <button style="background:none;border:none;font-size:22px;cursor:pointer" onclick="showPage('shelf')">←</button>
       </div>
       <div class="settings-list">
-        <div class="settings-item" onclick="editApiKey()">
+        <div class="settings-item">
           <div class="settings-item-left">
             <div class="settings-item-icon" style="background:#e8f4ee">🤖</div>
             <div>
+              <div class="settings-item-title">AI 抓取服务</div>
+              <div class="settings-item-sub">可在 OpenAI / Gemini 之间切换</div>
+              <div class="segmented" id="ai-provider-control" style="margin-top:8px"></div>
+            </div>
+          </div>
+        </div>
+        <div class="settings-item" onclick="editApiKey('openai')">
+          <div class="settings-item-left">
+            <div class="settings-item-icon" style="background:#e8f4ee">O</div>
+            <div>
+              <div class="settings-item-title">OpenAI API Key</div>
+              <div class="api-key-display" id="openai-key-display">未设置</div>
+            </div>
+          </div>
+          <span class="settings-arrow">›</span>
+        </div>
+        <div class="settings-item" onclick="editApiKey('gemini')">
+          <div class="settings-item-left">
+            <div class="settings-item-icon" style="background:#fef3e2">G</div>
+            <div>
               <div class="settings-item-title">Gemini API Key</div>
-              <div class="api-key-display" id="api-key-display">未设置</div>
+              <div class="api-key-display" id="gemini-key-display">未设置</div>
             </div>
           </div>
           <span class="settings-arrow">›</span>
@@ -718,7 +738,7 @@ body.magic-theme .author-wait-card{border-color:rgba(116,110,183,.18)}
           <div class="settings-item-left">
             <div class="settings-item-icon" style="background:#e8f0fe">ℹ️</div>
             <div>
-              <div class="settings-item-title">幻 maboroshi v2.29</div>
+              <div class="settings-item-title">幻 maboroshi v2.30</div>
               <div class="settings-item-sub">数据和密码均存储于本地</div>
             </div>
           </div>
@@ -980,7 +1000,7 @@ body.magic-theme .author-wait-card{border-color:rgba(116,110,183,.18)}
 // ═══════════════════════════════════════
 //  DATA LAYER
 // ═══════════════════════════════════════
-const APP_VERSION = '2.19.0';
+const APP_VERSION = '2.20.0';
 const STORE_KEY = 'shuji_v1';
 const LOCK_KEY = 'maboroshi_lock_v2';
 const TAG_CATS = [
@@ -996,8 +1016,10 @@ STATUS_MAP.unfiled='未整理';
 const DEFAULT_TAG_HISTORY = {shou:[],gong:[],era:[],plot:[],vibe:[],warn:[]};
 const COVER_COLORS = ['#f2a8c4','#f5c4a1','#a8d5b5','#a8c4d5','#c4a8d5','#d5c4a8','#d5a8a8'];
 const PLATFORMS = ['未知','晋江','长佩','长佩旧站','废文','其他'];
+const OPENAI_MODEL = 'gpt-4.1-mini';
+const GEMINI_MODEL = 'gemini-2.0-flash';
 
-let db = {books:[], tagHistory:{...DEFAULT_TAG_HISTORY}, apiKey:'', lastBackupAt:'', settings:{shelfView:'list'}, authorNotes:{}, authorQuotes:{}, authorProfiles:{}};
+let db = {books:[], tagHistory:{...DEFAULT_TAG_HISTORY}, apiKey:'', aiKeys:{openai:'',gemini:''}, lastBackupAt:'', settings:{shelfView:'list',aiProvider:'gemini'}, authorNotes:{}, authorQuotes:{}, authorProfiles:{}};
 let currentFilter = 'all';
 let editingBookId = null;
 let editingLogIdx = null;
@@ -1024,6 +1046,9 @@ function load(){
   if(!db.lastBackupAt) db.lastBackupAt='';
   if(!db.settings) db.settings={shelfView:'list'};
   if(!db.settings.shelfView) db.settings.shelfView='list';
+  if(!db.aiKeys) db.aiKeys={openai:'',gemini:''};
+  if(db.apiKey&&!db.aiKeys.gemini) db.aiKeys.gemini=db.apiKey;
+  if(!db.settings.aiProvider) db.settings.aiProvider=db.aiKeys.gemini?'gemini':'openai';
   if(!db.authorNotes) db.authorNotes={};
   if(!db.authorQuotes) db.authorQuotes={};
   if(!db.authorProfiles) db.authorProfiles={};
@@ -1981,7 +2006,7 @@ function renderBookCandidates(items){
 }
 
 async function searchBookCandidates(draft){
-  if(!db.apiKey){toast('请先在设置中填写 Gemini API Key');return;}
+  if(!hasActiveAIKey()) return;
   setAutoFetchBusy(true);
   toast('先按书名找几本最像的候选…');
   try{
@@ -1990,7 +2015,7 @@ async function searchBookCandidates(draft){
 优先找晋江文学城、长佩文学（新站/旧站）、废文的公开作品信息；书名完全一致的候选排在前面，近似书名仅在非常可能时返回。用户表单里的平台可能来自批量导入，当前为「${draft.platform||'未知'}」，如果它是“未知”或“其他”请忽略这个平台提示。
 请只回复 JSON，不要解释或 Markdown；最多返回 5 个候选，拿不准就少返回：
 {"candidates":[{"title":"候选书名","author":"作者名","platform":"晋江/长佩/长佩旧站/废文/其他/空字符串","summary":"便于用户辨认的官方简介或公开简介摘要，80到180字","sourceHint":"候选依据或空字符串"}]}`;
-    const json=parseGeminiJson(await callGemini(prompt));
+    const json=parseAIJson(await callAI(prompt));
     const items=(Array.isArray(json.candidates)?json.candidates:[]).filter(x=>x&&x.title&&x.author).slice(0,5);
     aiCandidateState={draft,items};
     renderBookCandidates(items);
@@ -2002,7 +2027,7 @@ async function searchBookCandidates(draft){
       toast('没找到可靠候选，先补一点作者或平台线索会更稳');
     }
   }catch(e){
-    toast(formatGeminiError(e,'候选匹配失败'));
+    toast(formatAIError(e,'候选匹配失败'));
     console.error(e);
   }finally{
     setAutoFetchBusy(false);
@@ -2019,7 +2044,7 @@ async function locateKnownBookSource(draft){
 请优先查晋江文学城、长佩文学新站、长佩旧站；只有书名和作者同时匹配时才返回。废文如果能可靠确认也可以返回；不要因为用户当前平台是“未知/其他”扩大到泛搜索。
 请只回复 JSON，不要解释或 Markdown；最多返回 3 个匹配：
 {"candidates":[{"title":"书名","author":"作者名","platform":"晋江/长佩/长佩旧站/废文/其他/空字符串","summary":"官方简介或可帮助辨认的简介摘要，40到120字","sourceHint":"定位依据或空字符串"}]}`;
-  const json=parseGeminiJson(await callGemini(prompt));
+  const json=parseAIJson(await callAI(prompt));
   return (Array.isArray(json.candidates)?json.candidates:[]).filter(x=>x&&x.title&&x.author&&x.platform).slice(0,3);
 }
 
@@ -2051,7 +2076,7 @@ async function prepareUnknownSource(draft){
     }
   }catch(e){
     console.error(e);
-    toast(formatGeminiError(e,'平台定位失败'));
+    toast(formatAIError(e,'平台定位失败'));
   }
   return false;
 }
@@ -2080,7 +2105,7 @@ async function autoFetch(){
   const author=document.getElementById('f-author').value.trim();
   const platform=document.getElementById('f-platform').value;
   if(!title){toast('请先填写书名');return;}
-  if(!db.apiKey){toast('请先在设置中填写 Gemini API Key');return;}
+  if(!hasActiveAIKey()) return;
   const draft=captureBookFormDraft();
   if(!author){
     await searchBookCandidates(draft);
@@ -2102,7 +2127,7 @@ async function autoFetch(){
 请只回复 JSON，不要有任何解释或 Markdown：
 {"matched":"true/false","author":"作者名","platform":"晋江/长佩/长佩旧站/废文/其他/空字符串","finishYear":"完结年份，只填四位数字或空字符串","shouName":"受的名字或空字符串","gongName":"攻的名字或空字符串","coverUrl":"公开封面图片 URL 或空字符串","summary":"尽量保留完整官方简介，不要主动缩短；无可靠官方简介则空字符串","sourceHint":"你判断的信息来源或空字符串","tags":{"gong":"攻的性格特点，最多2个词用顿号分隔","shou":"受的性格特点，最多2个词用顿号分隔","era":"时代背景，最多1个词","plot":"突出情节亮点，最多2个词用顿号分隔","vibe":"作品氛围，最多2个词用顿号分隔"}}
 当前用户选择的平台是：${platform}。如果它是“未知”或“其他”，不要把它当作匹配依据。`;
-    const json=parseGeminiJson(await callGemini(prompt));
+    const json=parseAIJson(await callAI(prompt));
     if(json.matched===false||String(json.matched||'').toLowerCase()==='false') throw new Error('NO_EXACT_MATCH');
     restoreBookFormDraft(draft);
     if(json.author) document.getElementById('f-author').value=json.author;
@@ -2127,7 +2152,7 @@ async function autoFetch(){
     showFetchedBookSheet();
     toast(json.sourceHint?`补全成功：${json.sourceHint}`:'补全成功 ✨');
   }catch(e){
-    toast(formatGeminiError(e,'作品补全失败'));
+    toast(formatAIError(e,'作品补全失败'));
     console.error(e);
   }finally{
     setAutoFetchBusy(false);
@@ -2149,7 +2174,7 @@ async function autoFetchSynopsis(mode='short'){
   const platform=document.getElementById('f-platform').value;
   const summary=document.getElementById('f-summary').value.trim();
   if(!title||!author){toast('补剧情前先确定书名和作者');return;}
-  if(!db.apiKey){toast('请先在设置中填写 Gemini API Key');return;}
+  if(!hasActiveAIKey()) return;
   const isLong=mode==='long';
   setSynopsisBusy(true,mode);
   toast(isLong?'长版剧情会明显更费时间和 token':'短版剧情正在整理中');
@@ -2160,26 +2185,47 @@ async function autoFetchSynopsis(mode='short'){
 本次需要${isLong?'长版，尽量覆盖全文关键情节点和结局，约 700 到 1400 字':'短版，保留主线、关系变化、关键冲突和结局，约 220 到 420 字'}。
 请只回复 JSON，不要解释或 Markdown：
 {"matched":"true/false","synopsis":"${isLong?'700到1400字':'220到420字'}的剧透版剧情梗概或空字符串","sourceHint":"信息来源提示或空字符串"}`;
-    const json=parseGeminiJson(await callGemini(prompt));
+    const json=parseAIJson(await callAI(prompt,{maxOutputTokens:isLong?2600:1200}));
     if(json.matched===false||String(json.matched||'').toLowerCase()==='false') throw new Error('NO_EXACT_MATCH');
     if(json.synopsis) document.getElementById('f-synopsis').value=json.synopsis;
     toast(json.sourceHint?`剧情已补：${json.sourceHint}`:'剧情已补全');
   }catch(e){
-    toast(formatGeminiError(e,'剧情补全失败'));
+    toast(formatAIError(e,'剧情补全失败'));
     console.error(e);
   }finally{
     setSynopsisBusy(false);
   }
 }
 
-async function callGemini(prompt){
-  const res=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent?key=${encodeURIComponent(db.apiKey)}`,{
+function activeAIProvider(){
+  return db.settings?.aiProvider||'gemini';
+}
+
+function activeAIKey(){
+  const provider=activeAIProvider();
+  return (db.aiKeys?.[provider]||'').trim();
+}
+
+function hasActiveAIKey(){
+  const provider=activeAIProvider();
+  if(activeAIKey()) return true;
+  toast(`请先在设置中填写 ${provider==='openai'?'OpenAI':'Gemini'} API Key`);
+  return false;
+}
+
+async function callAI(prompt,options={}){
+  return activeAIProvider()==='openai'?callOpenAI(prompt,options):callGemini(prompt,options);
+}
+
+async function callGemini(prompt,options={}){
+  const key=activeAIProvider()==='gemini'?activeAIKey():(db.aiKeys?.gemini||'').trim();
+  const res=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${encodeURIComponent(key)}`,{
     method:'POST',
     headers:{'Content-Type':'application/json'},
     body:JSON.stringify({
       contents:[{parts:[{text:prompt}]}],
       tools:[{google_search:{}}],
-      generationConfig:{temperature:0.2}
+      generationConfig:{temperature:0.2,maxOutputTokens:options.maxOutputTokens||2048}
     })
   });
   if(!res.ok){
@@ -2193,14 +2239,57 @@ async function callGemini(prompt){
   return text;
 }
 
-function parseGeminiJson(text){
+async function callOpenAI(prompt,options={}){
+  const key=activeAIProvider()==='openai'?activeAIKey():(db.aiKeys?.openai||'').trim();
+  const res=await fetch('https://api.openai.com/v1/responses',{
+    method:'POST',
+    headers:{
+      'Content-Type':'application/json',
+      'Authorization':`Bearer ${key}`
+    },
+    body:JSON.stringify({
+      model:OPENAI_MODEL,
+      input:prompt,
+      tools:[{type:'web_search',search_context_size:'low'}],
+      tool_choice:'auto',
+      max_output_tokens:options.maxOutputTokens||1800,
+      text:{format:{type:'json_object'},verbosity:'low'}
+    })
+  });
+  if(!res.ok){
+    let detail='';
+    try{detail=(await res.json())?.error?.message||'';}catch(e){}
+    throw new Error(`OPENAI_HTTP_${res.status}${detail?`: ${detail}`:''}`);
+  }
+  const data=await res.json();
+  const text=data.output_text||extractOpenAIOutputText(data);
+  if(!text) throw new Error('OPENAI_EMPTY');
+  return text.trim();
+}
+
+function extractOpenAIOutputText(data){
+  const parts=[];
+  (data.output||[]).forEach(item=>{
+    (item.content||[]).forEach(c=>{
+      if(c.type==='output_text'&&c.text) parts.push(c.text);
+      else if(typeof c.text==='string') parts.push(c.text);
+    });
+  });
+  return parts.join('').trim();
+}
+
+function parseAIJson(text){
   const clean=String(text||'').replace(/```json|```/g,'').trim();
   return JSON.parse(clean);
 }
 
-function formatGeminiError(err,fallback){
+function formatAIError(err,fallback){
   const msg=String(err?.message||err||'');
   if(msg.includes('NO_EXACT_MATCH')) return '没找到可靠的书名+作者匹配，先留空';
+  if(msg.includes('OPENAI_HTTP_400')) return 'OpenAI 请求格式被拒绝，请稍后重试';
+  if(msg.includes('OPENAI_HTTP_401')) return 'OpenAI Key 不正确或已失效';
+  if(msg.includes('OPENAI_HTTP_403')) return 'OpenAI Key 无权限或项目未开通';
+  if(msg.includes('OPENAI_HTTP_429')) return 'OpenAI 额度或频率已到上限，稍后再试';
   if(msg.includes('GEMINI_HTTP_400')) return 'Gemini 请求格式被拒绝，请重试或检查 Key';
   if(msg.includes('GEMINI_HTTP_403')) return 'Gemini Key 无权限或被限制';
   if(msg.includes('GEMINI_HTTP_404')) return 'Gemini 模型不可用，已需要更新版本';
@@ -2624,7 +2713,7 @@ function renderAuthorWaitlist(author){
 
 async function autoFetchAuthor(author){
   if(!author){toast('作者名为空');return;}
-  if(!db.apiKey){toast('请先在设置中填写 Gemini API Key');return;}
+  if(!hasActiveAIKey()) return;
   const existing=db.books.filter(b=>b.author===author).map(b=>b.title).filter(Boolean);
   toast('正在补全作者档案…');
   try{
@@ -2633,7 +2722,7 @@ async function autoFetchAuthor(author){
 经典语录优先选择该作者小说中适合作为摘录的一句短句，并同时标明出自哪部作品、由谁说出；头像只在你能给出可直接访问的公开图片 URL 时返回。
 请只回复 JSON，不要解释或 Markdown：
 {"author":"作者名","quote":{"text":"一句经典语录或空字符串","work":"语录出自的作品名或空字符串","speaker":"说出这句话的角色名或空字符串"},"avatarUrl":"公开头像图片 URL 或空字符串","waitingWorks":[{"title":"尚未收录书名","platform":"晋江/长佩/长佩旧站/废文/其他/空字符串","summary":"30到80字简介或空字符串"}],"sourceHint":"信息来源提示或空字符串"}`;
-    const json=parseGeminiJson(await callGemini(prompt));
+    const json=parseAIJson(await callAI(prompt));
     db.authorProfiles=db.authorProfiles||{};
     const prev=db.authorProfiles[author]||{};
     db.authorProfiles[author]={
@@ -2649,7 +2738,7 @@ async function autoFetchAuthor(author){
     renderStatsModal();
     toast(json.sourceHint?`作者档案已补全：${json.sourceHint}`:'作者档案已补全');
   }catch(e){
-    toast(formatGeminiError(e,'作者档案补全失败'));
+    toast(formatAIError(e,'作者档案补全失败'));
     console.error(e);
   }
 }
@@ -2674,10 +2763,20 @@ function saveAuthorQuote(author){
 //  SETTINGS
 // ═══════════════════════════════════════
 function renderSettings(){
-  const keyEl=document.getElementById('api-key-display');
-  keyEl.textContent=db.apiKey?db.apiKey.slice(0,8)+'…（已设置）':'未设置';
+  const openaiEl=document.getElementById('openai-key-display');
+  const geminiEl=document.getElementById('gemini-key-display');
+  if(openaiEl) openaiEl.textContent=db.aiKeys?.openai?db.aiKeys.openai.slice(0,8)+'…（已设置）':'未设置';
+  if(geminiEl) geminiEl.textContent=db.aiKeys?.gemini?db.aiKeys.gemini.slice(0,8)+'…（已设置）':'未设置';
   const backupEl=document.getElementById('backup-display');
   if(backupEl) backupEl.textContent=db.lastBackupAt?`上次备份：${db.lastBackupAt.slice(0,10)}`:'尚未备份';
+  const providerEl=document.getElementById('ai-provider-control');
+  if(providerEl){
+    const p=activeAIProvider();
+    providerEl.innerHTML=[
+      ['gemini','Gemini'],
+      ['openai','OpenAI']
+    ].map(([key,label])=>`<button class="${p===key?'active':''}" onclick="setAIProvider('${key}')">${label}</button>`).join('');
+  }
   const viewEl=document.getElementById('shelf-view-control');
   if(viewEl){
     const v=db.settings?.shelfView||'list';
@@ -2687,6 +2786,14 @@ function renderSettings(){
       ['magic','书页']
     ].map(([key,label])=>`<button class="${v===key?'active':''}" onclick="setShelfView('${key}')">${label}</button>`).join('');
   }
+}
+
+function setAIProvider(provider){
+  db.settings=db.settings||{};
+  db.settings.aiProvider=provider;
+  save();
+  renderSettings();
+  toast(`AI 抓取已切换到 ${provider==='openai'?'OpenAI':'Gemini'}`);
 }
 
 function setShelfView(view){
@@ -2709,13 +2816,17 @@ function renderTagManager(){
   body.innerHTML=TAG_CATS.map(c=>`<div class="filter-section"><div class="filter-section-title">${c.label}</div><div class="tag-chips-wrap">${(db.tagHistory[c.key]||[]).map(t=>`<button class="tag-chip-sel" onclick="manageTag('${c.key}',decodeURIComponent('${encodeURIComponent(t)}'));renderTagManager()">${escapeHtml(t)}</button>`).join('')||'<span class="tag-selected-empty">暂无标签</span>'}</div></div>`).join('');
 }
 
-function editApiKey(){
-  const key=prompt('请输入 Gemini API Key\n（在 aistudio.google.com 获取）',db.apiKey||'');
+function editApiKey(provider){
+  db.aiKeys=db.aiKeys||{openai:'',gemini:''};
+  const label=provider==='openai'?'OpenAI':'Gemini';
+  const hint=provider==='openai'?'在 platform.openai.com 获取':'在 aistudio.google.com 获取';
+  const key=prompt(`请输入 ${label} API Key\n（${hint}）`,db.aiKeys[provider]||'');
   if(key===null) return;
-  db.apiKey=key.trim();
+  db.aiKeys[provider]=key.trim();
+  if(provider==='gemini') db.apiKey=key.trim();
   save();
   renderSettings();
-  toast('API Key 已保存');
+  toast(`${label} API Key 已保存`);
 }
 
 async function exportData(){
@@ -2771,10 +2882,12 @@ function handleImport(e){
       const data=raw.data||raw;
       if(!data.books) throw new Error('格式错误');
       if(!confirm(`确定导入？将覆盖现有 ${db.books.length} 本书的数据。`)) return;
+      const prevKeys=db.aiKeys||{openai:'',gemini:db.apiKey||''};
       db={
         books:data.books||[],
         tagHistory:data.tagHistory||{shou:[],gong:[],era:[],plot:[],vibe:[],warn:[]},
-        apiKey:db.apiKey||'',
+        apiKey:prevKeys.gemini||db.apiKey||'',
+        aiKeys:prevKeys,
         lastBackupAt:db.lastBackupAt||'',
         settings:db.settings||{shelfView:'list'},
         authorNotes:data.authorNotes||{},
@@ -2793,7 +2906,7 @@ function handleImport(e){
 
 function clearData(){
   if(!confirm('确定清空所有数据？此操作不可撤销！')) return;
-  db={books:[],tagHistory:{shou:[],gong:[],era:[],plot:[],vibe:[],warn:[]},apiKey:db.apiKey,lastBackupAt:db.lastBackupAt||'',settings:{shelfView:db.settings?.shelfView||'list'},authorNotes:{},authorQuotes:{},authorProfiles:{}};
+  db={books:[],tagHistory:{shou:[],gong:[],era:[],plot:[],vibe:[],warn:[]},apiKey:db.aiKeys?.gemini||db.apiKey,aiKeys:db.aiKeys||{openai:'',gemini:db.apiKey||''},lastBackupAt:db.lastBackupAt||'',settings:{shelfView:db.settings?.shelfView||'list',aiProvider:db.settings?.aiProvider||'gemini'},authorNotes:{},authorQuotes:{},authorProfiles:{}};
   save();
   renderShelf();
   toast('已清空');
