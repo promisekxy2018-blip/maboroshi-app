@@ -492,10 +492,11 @@ body.magic-theme .ai-task-panel,body.magic-theme .ai-task-card{background:linear
 .path-sub{font-size:12px;color:var(--text3);line-height:1.7;margin-top:6px}
 .path-wrap{padding:0 14px 28px}
 .vine-timeline{position:relative;padding:8px 0 14px 46px}
-.vine-svg{position:absolute;left:0;top:22px;bottom:0;width:58px;height:100%;min-height:900px;pointer-events:none;overflow:visible;z-index:0}
-.vine-path-main{fill:none;stroke:#6fb878;stroke-width:7;stroke-linecap:round;filter:drop-shadow(0 2px 2px rgba(90,130,72,.18))}
-.vine-path-hi{fill:none;stroke:rgba(255,255,255,.46);stroke-width:2;stroke-linecap:round}
-.vine-leaf{fill:#83be75;stroke:rgba(70,124,67,.18);stroke-width:.6;transform-box:fill-box;transform-origin:center}
+.vine-svg{position:absolute;left:-2px;top:18px;bottom:0;width:64px;height:100%;min-height:900px;pointer-events:none;overflow:visible;z-index:0}
+.vine-path-main{fill:none;stroke:#5f9f65;stroke-width:7;stroke-linecap:round;filter:drop-shadow(0 2px 2px rgba(90,130,72,.18))}
+.vine-path-hi{fill:none;stroke:rgba(255,255,255,.48);stroke-width:2;stroke-linecap:round}
+.vine-path-twine{fill:none;stroke:#8fbf6e;stroke-width:2.4;stroke-linecap:round;stroke-dasharray:24 18;opacity:.78}
+.vine-leaf{fill:#83be75;stroke:rgba(70,124,67,.18);stroke-width:.7;transform-box:fill-box;transform-origin:center;filter:drop-shadow(0 1px 1px rgba(81,118,58,.16))}
 .vine-leaf.l2{fill:#a5c86f}.vine-leaf.l3{fill:#69a96f}.vine-leaf.l4{fill:#b2d48c}
 .vine-tip{position:relative;z-index:1;margin-left:-18px;margin-bottom:10px;padding-left:24px;font-family:'Noto Serif SC',serif;color:#6c9b58;font-size:13px}
 .vine-tip::before{content:'';position:absolute;left:2px;top:1px;width:18px;height:24px;border-radius:70% 30% 65% 35%;background:linear-gradient(145deg,#b8d981,#6fb878);transform:rotate(-24deg);box-shadow:10px -6px 0 -5px #91c66f}
@@ -507,16 +508,17 @@ body.magic-theme .ai-task-panel,body.magic-theme .ai-task-card{background:linear
 .vine-item::after{right:-7px;bottom:18px;width:38px;height:58px;transform:rotate(10deg)}
 .vine-item:nth-of-type(3n){--petal-a:#a8d5b5;--petal-b:#f2a8c4;--petal-c:#f7d98b}
 .vine-item:nth-of-type(3n+1){--petal-a:#a8c4d5;--petal-b:#c4a8d5;--petal-c:#f5c4a1}
-.vine-flower{position:absolute;left:-44px;top:13px;width:48px;height:48px;filter:drop-shadow(0 4px 8px rgba(95,150,88,.24))}
+.vine-flower{position:absolute;left:-48px;top:10px;width:54px;height:54px;filter:drop-shadow(0 5px 9px rgba(95,150,88,.25))}
 .vine-flower svg{width:100%;height:100%;overflow:visible}
-.flower-stem{stroke:#6fb878;stroke-width:2.2;stroke-linecap:round}
-.flower-leaf{fill:#86bd77;transform-origin:center}
-.flower-petal{fill:var(--petal-a);stroke:rgba(150,82,112,.12);stroke-width:.8}
-.flower-core{fill:#ffeaa0;stroke:rgba(139,96,38,.18);stroke-width:.8}
-.flower-1 .flower-petal{fill:#b9d7ff}.flower-1 .flower-core{fill:#ffd98b}
-.flower-2 .flower-petal{fill:#f4b8c8}.flower-2 .flower-core{fill:#b9dcaa}
-.flower-3 .flower-petal{fill:#d5b8ff}.flower-3 .flower-core{fill:#fff0a8}
-.flower-4 .flower-petal{fill:#f6d28e}.flower-4 .flower-core{fill:#f2a8c4}
+.flower-stem{stroke:#659c62;stroke-width:2.2;stroke-linecap:round;fill:none}
+.flower-leaf{fill:#86bd77;stroke:rgba(70,124,67,.14);stroke-width:.5;transform-origin:center}
+.flower-petal{fill:var(--petal-a);stroke:rgba(150,82,112,.14);stroke-width:.7}
+.flower-inner{opacity:.9;filter:brightness(1.05)}
+.flower-core{fill:#ffeaa0;stroke:rgba(139,96,38,.2);stroke-width:.8}
+.flower-1{--petal-a:#b9d7ff;--petal-b:#d5b8ff}.flower-1 .flower-core{fill:#ffd98b}
+.flower-2{--petal-a:#f4b8c8;--petal-b:#ffd6a6}.flower-2 .flower-core{fill:#b9dcaa}
+.flower-3{--petal-a:#d5b8ff;--petal-b:#a8d5b5}.flower-3 .flower-core{fill:#fff0a8}
+.flower-4{--petal-a:#f6d28e;--petal-b:#f2a8c4}.flower-4 .flower-core{fill:#f2a8c4}
 .vine-date{font-size:11px;color:var(--text3);margin-bottom:5px}
 .path-book-title{font-family:'Noto Serif SC',serif;font-size:17px;font-weight:700;color:var(--text);cursor:pointer}
 .path-author{font-size:12px;color:var(--text2);margin-top:3px;text-decoration:underline;text-decoration-color:rgba(196,96,126,.25);text-underline-offset:3px;cursor:pointer}
@@ -524,7 +526,7 @@ body.magic-theme .ai-task-panel,body.magic-theme .ai-task-card{background:linear
 .path-tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}
 .path-quote{margin-top:9px;padding:9px 10px;border-left:2px solid rgba(232,130,159,.4);background:rgba(255,244,214,.48);border-radius:4px 12px 12px 4px;font-family:'Noto Serif SC',serif;font-size:12px;color:var(--text2);line-height:1.7}
 .path-feeling{margin-top:8px;font-size:12px;color:var(--text2);line-height:1.7;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
-.path-note{position:relative;margin-top:10px;padding:13px 38px 13px 14px;border-radius:22px 16px 24px 16px;background:radial-gradient(circle at 10% 18%,rgba(255,255,255,.95),transparent 26%),linear-gradient(145deg,rgba(255,250,218,.96),rgba(255,241,207,.92) 48%,rgba(232,244,238,.86));border:1px solid rgba(247,217,139,.48);box-shadow:0 6px 18px rgba(218,173,88,.12),inset 0 0 0 1px rgba(255,255,255,.54);font-family:'Noto Serif SC',serif;font-size:14px;color:#6d5840;line-height:1.9}
+.path-note{position:relative;margin-top:10px;padding:14px 38px 14px 15px;border-radius:24px 15px 25px 17px;background:radial-gradient(circle at 9% 18%,rgba(255,255,255,.98),transparent 26%),radial-gradient(circle at 88% 16%,rgba(255,231,177,.65),transparent 24%),linear-gradient(145deg,rgba(255,253,224,.98),rgba(255,241,205,.94) 48%,rgba(224,244,231,.9));border:1px solid rgba(236,188,90,.58);box-shadow:0 8px 20px rgba(218,173,88,.16),inset 0 0 0 1px rgba(255,255,255,.68);font-family:'STKaiti','KaiTi','Kaiti SC','Noto Serif SC',serif;font-size:15px;color:#675035;line-height:1.95;letter-spacing:.02em}
 .path-note::before{content:'';position:absolute;right:12px;top:-8px;width:22px;height:31px;border-radius:70% 30% 65% 35%;background:linear-gradient(145deg,#fff4b7,#b9dcaa);transform:rotate(28deg);box-shadow:-15px 8px 0 -6px rgba(248,184,200,.78),0 3px 8px rgba(144,170,88,.15)}
 .path-note::after{content:'';position:absolute;left:10px;bottom:-8px;width:34px;height:16px;border-radius:50%;background:rgba(255,255,255,.48);filter:blur(1px)}
 .path-note-empty{font-size:12px;color:#a98f66}
@@ -557,6 +559,7 @@ body.magic-theme .path-title{color:#fff7df}
 body.magic-theme .path-sub{color:rgba(238,225,255,.74)}
 body.magic-theme .vine-path-main{stroke:#9caaff;filter:drop-shadow(0 0 8px rgba(255,226,173,.42))}
 body.magic-theme .vine-path-hi{stroke:rgba(255,236,170,.6)}
+body.magic-theme .vine-path-twine{stroke:#ffe4a2;filter:drop-shadow(0 0 6px rgba(255,226,173,.34))}
 body.magic-theme .vine-leaf{fill:#c4cfff;stroke:rgba(255,226,173,.22)}
 body.magic-theme .vine-leaf.l2{fill:#ffe4a2}
 body.magic-theme .vine-leaf.l3{fill:#b9a7e8}
@@ -572,7 +575,7 @@ body.magic-theme .flower-stem{stroke:#b9c5ff}
 body.magic-theme .flower-leaf{fill:#ffe4a2}
 body.magic-theme .flower-petal{filter:drop-shadow(0 0 5px rgba(255,226,173,.44));stroke:rgba(255,246,218,.22)}
 body.magic-theme .flower-core{filter:drop-shadow(0 0 8px rgba(255,226,173,.72))}
-body.magic-theme .path-note{background:radial-gradient(circle at 12% 18%,rgba(255,255,255,.72),transparent 25%),linear-gradient(145deg,rgba(255,244,197,.94),rgba(225,232,255,.9) 56%,rgba(239,226,255,.82));border-color:rgba(255,226,173,.34);box-shadow:0 0 18px rgba(255,226,173,.18),inset 0 0 0 1px rgba(255,255,255,.42);color:#554f7a}
+body.magic-theme .path-note{background:radial-gradient(circle at 12% 18%,rgba(255,255,255,.76),transparent 25%),radial-gradient(circle at 86% 18%,rgba(255,226,173,.52),transparent 24%),linear-gradient(145deg,rgba(255,244,197,.96),rgba(225,232,255,.92) 56%,rgba(239,226,255,.86));border-color:rgba(255,226,173,.48);box-shadow:0 0 20px rgba(255,226,173,.22),inset 0 0 0 1px rgba(255,255,255,.5);color:#51476f}
 body.magic-theme .path-note::before{background:linear-gradient(145deg,#fff0a8,#c5d0ff);box-shadow:-15px 8px 0 -6px rgba(213,184,255,.78),0 0 12px rgba(255,226,173,.32)}
 body.magic-theme .path-note-edit{background:rgba(255,246,218,.5);color:#7660b2}
 body.magic-theme .path-quote{background:rgba(255,246,218,.42);border-left-color:rgba(116,110,183,.3)}
@@ -3135,32 +3138,39 @@ function renderPathItem(book,log,month,index){
 function renderFlower(index){
   const id=`petalGrad${index}`;
   const petals=[
-    [24,8,0],[34,13,55],[35,25,112],[24,35,180],[13,25,238],[14,13,302]
+    [24,7,0],[36,13,54],[37,27,112],[24,38,180],[11,27,238],[12,13,306]
+  ];
+  const inner=[
+    [24,15,18],[31,21,88],[24,29,168],[17,21,258]
   ];
   const petalShape=index%2===0?'M0,-12 C8,-12 12,-5 8,3 C4,12 -4,12 -8,3 C-12,-5 -8,-12 0,-12Z':'M0,-13 C7,-10 12,-4 9,4 C5,13 -5,13 -9,4 C-12,-4 -7,-10 0,-13Z';
+  const innerShape='M0,-9 C6,-8 9,-3 7,3 C4,9 -4,9 -7,3 C-9,-3 -6,-8 0,-9Z';
   return `<div class="vine-flower flower-${index%5}">
-    <svg viewBox="0 0 48 48" aria-hidden="true">
+    <svg viewBox="0 0 54 54" aria-hidden="true">
       <defs><linearGradient id="${id}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="var(--petal-a)"/><stop offset="1" stop-color="var(--petal-b)"/></linearGradient></defs>
-      <path class="flower-stem" d="M23 43 C20 35 22 30 25 24"/>
-      <path class="flower-leaf" d="M20 36 C11 31 9 24 18 25 C23 26 24 31 20 36Z"/>
-      <path class="flower-leaf" d="M25 33 C34 29 37 22 28 22 C23 23 22 28 25 33Z"/>
+      <path class="flower-stem" d="M24 49 C19 39 21 32 26 25"/>
+      <path class="flower-leaf" d="M20 40 C10 34 8 27 18 28 C24 29 25 35 20 40Z"/>
+      <path class="flower-leaf" d="M27 37 C38 33 41 25 31 25 C25 26 24 32 27 37Z"/>
       ${petals.map(([x,y,r])=>`<path class="flower-petal" fill="url(#${id})" d="${petalShape}" transform="translate(${x} ${y}) rotate(${r})"/>`).join('')}
+      ${inner.map(([x,y,r])=>`<path class="flower-petal flower-inner" fill="url(#${id})" d="${innerShape}" transform="translate(${x} ${y}) rotate(${r})"/>`).join('')}
       <circle class="flower-core" cx="24" cy="22" r="6"/>
     </svg>
   </div>`;
 }
 
 function renderVineSvg(height){
-  const leafYs=[82,148,222,296,374,452,528,608,684,762,838];
+  const leafYs=[];
+  for(let y=74;y<height-34;y+=72) leafYs.push(y);
   const leaves=leafYs.map((y,i)=>{
-    const x=i%2?27:8;
-    const rot=i%2?35:-38;
+    const x=i%2?31:7;
+    const rot=i%2?32:-34;
     const cls=['',' l2',' l3',' l4'][i%4];
-    return `<path class="vine-leaf${cls}" d="M0 0 C12 -9 24 -7 31 3 C17 8 7 9 0 0Z" transform="translate(${x} ${y}) rotate(${rot})"/>`;
+    return `<path class="vine-leaf${cls}" d="M0 0 C9 -10 23 -12 33 -2 C20 5 8 8 0 0Z" transform="translate(${x} ${y}) rotate(${rot})"/>`;
   }).join('');
-  return `<svg class="vine-svg" viewBox="0 0 58 ${height}" preserveAspectRatio="none" aria-hidden="true">
-    <path class="vine-path-main" d="M24 0 C7 75 43 132 24 210 C8 285 42 350 23 430 C4 520 45 590 24 690 C8 765 40 830 24 ${height}"/>
-    <path class="vine-path-hi" d="M21 4 C8 78 38 132 21 210 C9 285 37 350 21 430 C7 520 40 590 21 690 C9 765 36 830 21 ${height}"/>
+  return `<svg class="vine-svg" viewBox="0 0 64 ${height}" preserveAspectRatio="none" aria-hidden="true">
+    <path class="vine-path-main" d="M25 0 C7 74 47 134 25 214 C6 292 47 356 24 438 C4 530 48 600 25 704 C7 788 45 852 25 ${height}"/>
+    <path class="vine-path-hi" d="M21 4 C9 76 39 134 21 214 C9 292 39 356 21 438 C8 530 40 600 21 704 C9 788 37 852 21 ${height}"/>
+    <path class="vine-path-twine" d="M32 8 C48 78 9 145 33 224 C49 295 10 365 33 444 C49 522 11 600 33 708 C48 790 12 854 33 ${height}"/>
     ${leaves}
   </svg>`;
 }
