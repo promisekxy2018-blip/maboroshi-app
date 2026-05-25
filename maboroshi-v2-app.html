@@ -526,7 +526,11 @@ body.magic-theme .ai-task-panel,body.magic-theme .ai-task-card{background:linear
 .path-tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}
 .path-quote{margin-top:9px;padding:9px 10px;border-left:2px solid rgba(232,130,159,.4);background:rgba(255,244,214,.48);border-radius:4px 12px 12px 4px;font-family:'Noto Serif SC',serif;font-size:12px;color:var(--text2);line-height:1.7}
 .path-feeling{margin-top:8px;font-size:12px;color:var(--text2);line-height:1.7;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
-.path-note{position:relative;margin-top:10px;padding:12px 36px 12px 14px;border-radius:24px 15px 25px 17px;background:radial-gradient(circle at 9% 18%,rgba(255,255,255,.98),transparent 26%),radial-gradient(circle at 88% 16%,rgba(255,231,177,.65),transparent 24%),linear-gradient(145deg,rgba(255,253,224,.98),rgba(255,241,205,.94) 48%,rgba(224,244,231,.9));border:1px solid rgba(236,188,90,.58);box-shadow:0 8px 20px rgba(218,173,88,.16),inset 0 0 0 1px rgba(255,255,255,.68);font-family:'Long Cang','STXingkai','华文行楷','Xingkai SC','FZShuTi','FZKai-Z03','STKaiti','KaiTi','Kaiti SC','LXGW WenKai','Noto Serif SC',serif;font-size:13px;color:#675035;line-height:1.62;letter-spacing:.055em}
+.path-note{position:relative;margin-top:10px;padding:12px 36px 12px 14px;border-radius:24px 15px 25px 17px;background:radial-gradient(circle at 9% 18%,rgba(255,255,255,.98),transparent 26%),radial-gradient(circle at 88% 16%,rgba(255,231,177,.65),transparent 24%),linear-gradient(145deg,rgba(255,253,224,.98),rgba(255,241,205,.94) 48%,rgba(224,244,231,.9));border:1px solid rgba(236,188,90,.58);box-shadow:0 8px 20px rgba(218,173,88,.16),inset 0 0 0 1px rgba(255,255,255,.68);font-family:var(--path-note-font,'LXGW WenKai','STKaiti','KaiTi','Kaiti SC','Noto Serif SC',serif);font-size:var(--path-note-size,13px);color:#675035;line-height:var(--path-note-leading,1.62);letter-spacing:var(--path-note-spacing,.045em)}
+body.note-font-serif{--path-note-font:'Noto Serif SC','Songti SC','SimSun',serif;--path-note-size:13px;--path-note-leading:1.68;--path-note-spacing:.02em}
+body.note-font-kai{--path-note-font:'LXGW WenKai','STKaiti','KaiTi','Kaiti SC','FZKai-Z03','Noto Serif SC',serif;--path-note-size:13px;--path-note-leading:1.62;--path-note-spacing:.04em}
+body.note-font-xingkai{--path-note-font:'STXingkai','华文行楷','Xingkai SC','Long Cang','FZShuTi','KaiTi',serif;--path-note-size:14px;--path-note-leading:1.55;--path-note-spacing:.05em}
+body.note-font-brush{--path-note-font:'Ma Shan Zheng','FZShuTi','华文新魏','Long Cang','KaiTi',serif;--path-note-size:14px;--path-note-leading:1.5;--path-note-spacing:.045em}
 .path-note::before{content:'';position:absolute;right:12px;top:-8px;width:22px;height:31px;border-radius:70% 30% 65% 35%;background:linear-gradient(145deg,#fff4b7,#b9dcaa);transform:rotate(28deg);box-shadow:-15px 8px 0 -6px rgba(248,184,200,.78),0 3px 8px rgba(144,170,88,.15)}
 .path-note::after{content:'';position:absolute;left:10px;bottom:-8px;width:34px;height:16px;border-radius:50%;background:rgba(255,255,255,.48);filter:blur(1px)}
 .path-note-empty{font-size:12px;color:#a98f66}
@@ -838,6 +842,14 @@ body.magic-theme .author-wait-card{border-color:rgba(116,110,183,.18)}
           <div class="settings-item-left" style="width:100%;display:block">
             <div class="settings-item-title" style="margin-bottom:8px">书架呈现形式</div>
             <div class="segmented" id="shelf-view-control"></div>
+          </div>
+        </div>
+        <div class="settings-item" style="cursor:default">
+          <div class="settings-item-left" style="width:100%;display:block">
+            <div class="settings-item-title" style="margin-bottom:8px">花开备注字体</div>
+            <div class="settings-item-sub" style="margin-bottom:8px">选一个既有氛围、又看得清的字形</div>
+            <div class="segmented" id="path-note-font-control"></div>
+            <div class="path-note" style="margin-top:10px;pointer-events:none">让这本书从我心里开出一句话。</div>
           </div>
         </div>
         <div class="settings-item" onclick="openTagManager()">
@@ -1182,7 +1194,7 @@ const PLATFORMS = ['未知','晋江','长佩','长佩旧站','废文','其他'];
 const OPENAI_MODEL = 'gpt-4.1-mini';
 const GEMINI_MODELS = ['gemini-2.5-flash','gemini-2.0-flash','gemini-flash-latest','gemini-1.5-flash'];
 
-let db = {books:[], tagHistory:{...DEFAULT_TAG_HISTORY}, apiKey:'', aiKeys:{openai:'',gemini:''}, lastBackupAt:'', settings:{shelfView:'list',aiProvider:'gemini'}, authorNotes:{}, authorQuotes:{}, authorProfiles:{}, flowerNotes:{}};
+let db = {books:[], tagHistory:{...DEFAULT_TAG_HISTORY}, apiKey:'', aiKeys:{openai:'',gemini:''}, lastBackupAt:'', settings:{shelfView:'list',aiProvider:'gemini',pathNoteFont:'kai'}, authorNotes:{}, authorQuotes:{}, authorProfiles:{}, flowerNotes:{}};
 let currentFilter = 'all';
 let editingBookId = null;
 let editingLogIdx = null;
@@ -1217,6 +1229,7 @@ function load(){
   if(!db.lastBackupAt) db.lastBackupAt='';
   if(!db.settings) db.settings={shelfView:'list'};
   if(!db.settings.shelfView) db.settings.shelfView='list';
+  if(!db.settings.pathNoteFont) db.settings.pathNoteFont='kai';
   if(!db.aiKeys) db.aiKeys={openai:'',gemini:''};
   if(db.apiKey&&!db.aiKeys.gemini) db.aiKeys.gemini=db.apiKey;
   if(!db.settings.aiProvider) db.settings.aiProvider=db.aiKeys.gemini?'gemini':'openai';
@@ -1232,6 +1245,7 @@ function applyAppTheme(){
   const isMagic=(db.settings?.shelfView||'list')==='magic';
   document.getElementById('app')?.classList.toggle('magic-theme',isMagic);
   document.body.classList.toggle('magic-theme',isMagic);
+  ['serif','kai','xingkai','brush'].forEach(f=>document.body.classList.toggle(`note-font-${f}`,(db.settings?.pathNoteFont||'kai')===f));
   applyLockTheme();
 }
 function getStoredShelfView(){
@@ -3412,6 +3426,16 @@ function renderSettings(){
       ['magic','书页']
     ].map(([key,label])=>`<button class="${v===key?'active':''}" onclick="setShelfView('${key}')">${label}</button>`).join('');
   }
+  const fontEl=document.getElementById('path-note-font-control');
+  if(fontEl){
+    const f=db.settings?.pathNoteFont||'kai';
+    fontEl.innerHTML=[
+      ['serif','清雅'],
+      ['kai','楷体'],
+      ['xingkai','行楷'],
+      ['brush','手写']
+    ].map(([key,label])=>`<button class="${f===key?'active':''}" onclick="setPathNoteFont('${key}')">${label}</button>`).join('');
+  }
 }
 
 function setAIProvider(provider){
@@ -3430,6 +3454,15 @@ function setShelfView(view){
   renderSettings();
   renderShelf();
   toast('书架样式已更新');
+}
+
+function setPathNoteFont(font){
+  db.settings=db.settings||{};
+  db.settings.pathNoteFont=font;
+  save();
+  applyAppTheme();
+  renderSettings();
+  toast('花开备注字体已更新');
 }
 
 function openTagManager(){
@@ -3594,7 +3627,7 @@ function handleImport(e){
 
 function clearData(){
   if(!confirm('确定清空所有数据？此操作不可撤销！')) return;
-  db={books:[],tagHistory:{shou:[],gong:[],era:[],plot:[],vibe:[],warn:[]},apiKey:db.aiKeys?.gemini||db.apiKey,aiKeys:db.aiKeys||{openai:'',gemini:db.apiKey||''},lastBackupAt:db.lastBackupAt||'',settings:{shelfView:db.settings?.shelfView||'list',aiProvider:db.settings?.aiProvider||'gemini'},authorNotes:{},authorQuotes:{},authorProfiles:{},flowerNotes:{}};
+  db={books:[],tagHistory:{shou:[],gong:[],era:[],plot:[],vibe:[],warn:[]},apiKey:db.aiKeys?.gemini||db.apiKey,aiKeys:db.aiKeys||{openai:'',gemini:db.apiKey||''},lastBackupAt:db.lastBackupAt||'',settings:{shelfView:db.settings?.shelfView||'list',aiProvider:db.settings?.aiProvider||'gemini',pathNoteFont:db.settings?.pathNoteFont||'kai'},authorNotes:{},authorQuotes:{},authorProfiles:{},flowerNotes:{}};
   save();
   renderShelf();
   toast('已清空');
