@@ -323,11 +323,27 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
 .detail-role-name{font-family:'Noto Serif SC',serif;font-size:15px;font-weight:600;color:var(--text)}
 .book-quote-card{padding:12px 13px;border-radius:14px;background:linear-gradient(145deg,rgba(255,255,255,.88),rgba(255,244,214,.66));border:1px dashed rgba(176,120,32,.25);font-family:'Noto Serif SC',serif;color:var(--text2);line-height:1.8;font-size:14px}
 .book-quote-meta{margin-top:6px;font-family:'Noto Sans SC',sans-serif;color:var(--text3);font-size:11px}
+.screenshot-section{border:1px solid var(--border);border-radius:16px;background:rgba(255,255,255,.52);overflow:hidden}
+.screenshot-section summary{list-style:none;display:flex;align-items:center;justify-content:space-between;padding:11px 12px;cursor:pointer;color:var(--text2);font-size:13px}
+.screenshot-section summary::-webkit-details-marker{display:none}
+.screenshot-section-body{padding:0 12px 12px}
+.screenshot-toolbar{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:10px}
 .screenshot-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 .screenshot-card{position:relative;aspect-ratio:9/16;border-radius:12px;overflow:hidden;background:var(--bg);border:1px solid var(--border);box-shadow:0 4px 12px rgba(61,43,31,.08)}
 .screenshot-card img{width:100%;height:100%;object-fit:cover;display:block}
-.screenshot-remove{position:absolute;right:5px;top:5px;width:24px;height:24px;border:none;border-radius:50%;background:rgba(61,43,31,.58);color:#fff;font-size:14px}
+.screenshot-card.pending{outline:2px dashed var(--pink2);outline-offset:-4px}
+.screenshot-badge{position:absolute;left:5px;top:5px;border-radius:999px;background:rgba(255,255,255,.84);color:var(--pink2);font-size:10px;padding:2px 6px}
+.screenshot-tools{position:absolute;inset:auto 4px 4px 4px;display:flex;gap:4px;justify-content:center}
+.screenshot-tool{width:24px;height:24px;border:none;border-radius:50%;background:rgba(61,43,31,.62);color:#fff;font-size:12px}
 .screenshot-add{display:flex;align-items:center;justify-content:center;min-height:112px;border-radius:12px;border:1px dashed var(--border2);background:rgba(255,255,255,.55);color:var(--text3);font-size:12px;text-align:center}
+.screenshot-viewer{position:fixed;inset:0;background:rgba(20,16,28,.92);z-index:260;display:none;align-items:center;justify-content:center;touch-action:pan-y}
+.screenshot-viewer.show{display:flex}
+.screenshot-viewer-img{max-width:100vw;max-height:86vh;object-fit:contain}
+.screenshot-viewer-close,.screenshot-viewer-nav{position:absolute;border:none;border-radius:999px;background:rgba(255,255,255,.18);color:#fff;backdrop-filter:blur(8px)}
+.screenshot-viewer-close{right:16px;top:16px;width:38px;height:38px;font-size:22px}
+.screenshot-viewer-nav{top:50%;transform:translateY(-50%);width:42px;height:42px;font-size:28px}
+.screenshot-viewer-prev{left:12px}.screenshot-viewer-next{right:12px}
+.screenshot-viewer-meta{position:absolute;bottom:20px;left:50%;transform:translateX(-50%);color:rgba(255,255,255,.8);font-size:12px}
 .status-row{display:flex;align-items:center;gap:10px}
 .status-pct{font-size:13px;font-weight:500;color:var(--pink2)}
 .status-bar-big{flex:1;height:6px;background:var(--border);border-radius:3px;overflow:hidden}
@@ -805,6 +821,13 @@ body.magic-theme .author-wait-card{border-color:rgba(116,110,183,.18)}
 <div class="overlay" id="overlay" onclick="closeAllSheets()"></div>
 <div class="toast" id="toast"></div>
 <div class="ai-task-dock" id="ai-task-dock"></div>
+<div class="screenshot-viewer" id="screenshot-viewer" onclick="closeScreenshotViewer()">
+  <button class="screenshot-viewer-close" onclick="event.stopPropagation();closeScreenshotViewer()">×</button>
+  <button class="screenshot-viewer-nav screenshot-viewer-prev" onclick="event.stopPropagation();moveScreenshotViewer(-1)">‹</button>
+  <img class="screenshot-viewer-img" id="screenshot-viewer-img" alt="截图预览">
+  <button class="screenshot-viewer-nav screenshot-viewer-next" onclick="event.stopPropagation();moveScreenshotViewer(1)">›</button>
+  <div class="screenshot-viewer-meta" id="screenshot-viewer-meta"></div>
+</div>
 
 <!-- ═══ SHELF FILTER SHEET ═══ -->
 <div class="sheet" id="sheet-filter">
@@ -1091,6 +1114,10 @@ let skipSourceLocateOnce = false;
 let detailReturnState = null;
 let aiTasks = [];
 let aiTaskPanelOpen = false;
+let screenshotDrafts = {};
+let screenshotEditMode = {};
+let screenshotViewerState = {bookId:null,index:0,items:[]};
+let screenshotTouchStart = null;
 
 function load(){
   try{const s=localStorage.getItem(STORE_KEY);if(s)db=JSON.parse(s);}catch(e){}
@@ -1287,11 +1314,22 @@ function setupAppNavigation(){
     e.returnValue='确定退出「幻」吗？';
   });
   document.addEventListener('touchstart',e=>{
+    if(e.target.closest?.('#screenshot-viewer')){
+      screenshotTouchStart={x:e.touches[0].clientX,y:e.touches[0].clientY};
+      return;
+    }
     const t=e.touches[0];
     if(!t) return;
     if(t.clientX<24||t.clientX>window.innerWidth-24) edgeTouch={x:t.clientX,y:t.clientY,time:Date.now()};
   },{passive:true});
   document.addEventListener('touchend',e=>{
+    if(screenshotTouchStart&&document.getElementById('screenshot-viewer')?.classList.contains('show')){
+      const t=e.changedTouches[0];
+      const dx=t.clientX-screenshotTouchStart.x;
+      const dy=Math.abs(t.clientY-screenshotTouchStart.y);
+      screenshotTouchStart=null;
+      if(Math.abs(dx)>60&&dy<80){moveScreenshotViewer(dx<0?1:-1);return;}
+    }
     if(!edgeTouch) return;
     const t=e.changedTouches[0];
     const dx=t.clientX-edgeTouch.x;
@@ -1617,10 +1655,6 @@ function openDetail(id,opts={}){
       ${b.synopsis?`<div class="detail-section"><div class="detail-section-title">剧情梗概</div><div style="font-size:13px;color:var(--text2);line-height:1.7;white-space:pre-line">${escapeHtml(b.synopsis)}</div></div>`:''}
       ${bookQuote.text?`<div class="detail-section"><div class="detail-section-title">经典语录</div><div class="book-quote-card">${escapeHtml(bookQuote.text)}${bookQuote.speaker?`<div class="book-quote-meta">${escapeHtml(bookQuote.speaker)}说</div>`:''}${bookQuote.sourceHint?`<div class="book-quote-meta">${escapeHtml(bookQuote.sourceHint)}</div>`:''}</div></div>`:''}
       <div class="detail-section">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
-          <div class="detail-section-title" style="margin-bottom:0">截图摘录</div>
-          <label class="btn btn-ghost" style="font-size:12px;padding:5px 12px">＋ 上传截图<input type="file" accept="image/*" multiple style="display:none" onchange="addBookScreenshots('${id}',this.files);this.value=''"></label>
-        </div>
         ${renderBookScreenshots(b)}
       </div>
       <div class="detail-section">
@@ -1654,12 +1688,29 @@ function normalizeBookQuote(raw){
 
 function renderBookScreenshots(book){
   const shots=book.screenshots||[];
-  if(!shots.length) return `<div class="screenshot-add">还没有截图<br>喜欢的片段可以存在这里<br><span style="font-size:10px;color:var(--text3)">图片会压缩后保存在本地</span></div>`;
-  return `<div class="screenshot-grid">${shots.map(s=>`
-    <div class="screenshot-card">
-      <img src="${escapeAttr(s.dataUrl)}" alt="截图摘录">
-      <button class="screenshot-remove" onclick="event.stopPropagation();removeBookScreenshot('${book.id}','${s.id}')">×</button>
-    </div>`).join('')}</div>`;
+  const pending=screenshotDrafts[book.id]||[];
+  const all=[...shots.map((s,i)=>({...s,_type:'saved',_index:i})),...pending.map((s,i)=>({...s,_type:'pending',_index:i}))];
+  const editing=!!screenshotEditMode[book.id];
+  return `<details class="screenshot-section">
+    <summary><span>截图摘录 · ${shots.length}${pending.length?` + ${pending.length} 待保存`:''} 张</span><span>⌄</span></summary>
+    <div class="screenshot-section-body">
+      <div class="screenshot-toolbar">
+        <label class="btn btn-ghost" style="font-size:12px;padding:5px 12px">＋ 上传截图<input type="file" accept="image/*" multiple style="display:none" onchange="addBookScreenshots('${book.id}',this.files);this.value=''"></label>
+        ${pending.length?`<button class="btn btn-primary" style="font-size:12px;padding:5px 12px" onclick="saveBookScreenshots('${book.id}')">保存截图</button>`:''}
+        ${all.length?`<button class="btn btn-ghost" style="font-size:12px;padding:5px 12px" onclick="toggleScreenshotEdit('${book.id}')">${editing?'完成编辑':'编辑截图'}</button>`:''}
+      </div>
+      ${all.length?`<div class="screenshot-grid">${all.map((s,i)=>`
+        <div class="screenshot-card ${s._type==='pending'?'pending':''}" onclick="openScreenshotViewer('${book.id}',${i})">
+          <img src="${escapeAttr(s.dataUrl)}" alt="截图摘录">
+          ${s._type==='pending'?'<span class="screenshot-badge">待保存</span>':''}
+          ${editing?`<div class="screenshot-tools" onclick="event.stopPropagation()">
+            <button class="screenshot-tool" onclick="moveBookScreenshot('${book.id}',${i},-1)">↑</button>
+            <button class="screenshot-tool" onclick="moveBookScreenshot('${book.id}',${i},1)">↓</button>
+            <button class="screenshot-tool" onclick="removeBookScreenshot('${book.id}',${i})">×</button>
+          </div>`:''}
+        </div>`).join('')}</div>`:`<div class="screenshot-add">还没有截图<br>喜欢的片段可以存在这里<br><span style="font-size:10px;color:var(--text3)">上传后点保存，图片会压缩后留在本地</span></div>`}
+    </div>
+  </details>`;
 }
 
 async function addBookScreenshots(bookId,files){
@@ -1668,13 +1719,12 @@ async function addBookScreenshots(bookId,files){
   toast('正在压缩并保存截图…');
   try{
     const imgs=[];
-    for(const file of Array.from(files).slice(0,8)){
+    for(const file of Array.from(files).slice(0,20)){
       imgs.push({id:genId(),dataUrl:await compressImageFile(file),createdAt:Date.now()});
     }
-    book.screenshots=[...(book.screenshots||[]),...imgs].slice(0,30);
-    save();
+    screenshotDrafts[bookId]=[...(screenshotDrafts[bookId]||[]),...imgs].slice(0,20);
     openDetail(bookId,{pushState:false});
-    toast(`已保存 ${imgs.length} 张截图`);
+    toast(`已加入 ${imgs.length} 张待保存截图`);
   }catch(e){
     console.error(e);
     toast('截图保存失败，可能是图片太大');
@@ -1704,14 +1754,83 @@ function compressImageFile(file){
   });
 }
 
-function removeBookScreenshot(bookId,shotId){
+function saveBookScreenshots(bookId){
   const book=db.books.find(b=>b.id===bookId);
   if(!book) return;
-  if(!confirm('删除这张截图吗？')) return;
-  book.screenshots=(book.screenshots||[]).filter(s=>s.id!==shotId);
+  const pending=screenshotDrafts[bookId]||[];
+  if(!pending.length){toast('没有待保存截图');return;}
+  book.screenshots=[...(book.screenshots||[]),...pending].slice(0,80);
+  screenshotDrafts[bookId]=[];
   save();
   openDetail(bookId,{pushState:false});
-  toast('截图已删除');
+  toast(`已保存 ${pending.length} 张截图`);
+}
+
+function getScreenshotItems(bookId){
+  const book=db.books.find(b=>b.id===bookId);
+  if(!book) return [];
+  return [...(book.screenshots||[]).map((s,i)=>({...s,_type:'saved',_index:i})),...(screenshotDrafts[bookId]||[]).map((s,i)=>({...s,_type:'pending',_index:i}))];
+}
+
+function toggleScreenshotEdit(bookId){
+  screenshotEditMode[bookId]=!screenshotEditMode[bookId];
+  openDetail(bookId,{pushState:false});
+}
+
+function removeBookScreenshot(bookId,index){
+  const book=db.books.find(b=>b.id===bookId);
+  if(!book) return;
+  const savedLen=(book.screenshots||[]).length;
+  if(index<savedLen){
+    if(!confirm('删除这张截图吗？')) return;
+    book.screenshots.splice(index,1);
+    save();
+  }else{
+    screenshotDrafts[bookId]=(screenshotDrafts[bookId]||[]).filter((_,i)=>i!==index-savedLen);
+  }
+  openDetail(bookId,{pushState:false});
+}
+
+function moveBookScreenshot(bookId,index,delta){
+  const book=db.books.find(b=>b.id===bookId);
+  if(!book) return;
+  const saved=book.screenshots||[];
+  const pending=screenshotDrafts[bookId]||[];
+  const all=[...saved,...pending];
+  const ni=index+delta;
+  if(ni<0||ni>=all.length) return;
+  [all[index],all[ni]]=[all[ni],all[index]];
+  book.screenshots=all.filter(x=>!pending.includes(x));
+  screenshotDrafts[bookId]=all.filter(x=>pending.includes(x));
+  save();
+  openDetail(bookId,{pushState:false});
+}
+
+function openScreenshotViewer(bookId,index){
+  const items=getScreenshotItems(bookId);
+  if(!items.length) return;
+  screenshotViewerState={bookId,index,items};
+  renderScreenshotViewer();
+  document.getElementById('screenshot-viewer').classList.add('show');
+}
+
+function renderScreenshotViewer(){
+  const {index,items}=screenshotViewerState;
+  const item=items[index];
+  if(!item) return;
+  document.getElementById('screenshot-viewer-img').src=item.dataUrl;
+  document.getElementById('screenshot-viewer-meta').textContent=`${index+1} / ${items.length}${item._type==='pending'?' · 待保存':''}`;
+}
+
+function moveScreenshotViewer(delta){
+  const items=screenshotViewerState.items||[];
+  if(!items.length) return;
+  screenshotViewerState.index=(screenshotViewerState.index+delta+items.length)%items.length;
+  renderScreenshotViewer();
+}
+
+function closeScreenshotViewer(){
+  document.getElementById('screenshot-viewer').classList.remove('show');
 }
 
 // ═══════════════════════════════════════
