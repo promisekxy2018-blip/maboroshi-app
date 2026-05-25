@@ -325,6 +325,16 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
 .detail-role-name{font-family:'Noto Serif SC',serif;font-size:15px;font-weight:600;color:var(--text)}
 .book-quote-card{padding:12px 13px;border-radius:14px;background:linear-gradient(145deg,rgba(255,255,255,.88),rgba(255,244,214,.66));border:1px dashed rgba(176,120,32,.25);font-family:'Noto Serif SC',serif;color:var(--text2);line-height:1.8;font-size:14px}
 .book-quote-meta{margin-top:6px;font-family:'Noto Sans SC',sans-serif;color:var(--text3);font-size:11px}
+.book-quote-stack{display:flex;flex-direction:column;gap:9px}
+.quote-edit-card{padding:10px;border:1px dashed var(--border2);border-radius:14px;background:rgba(255,248,242,.72);margin-bottom:9px}
+.quote-edit-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:7px;font-size:12px;color:var(--text3)}
+.quote-remove{border:none;background:rgba(232,130,159,.12);color:var(--pink2);border-radius:999px;padding:3px 8px;font-size:11px}
+.synopsis-fold{border:1px solid rgba(232,201,184,.52);border-radius:14px;background:rgba(255,255,255,.56);overflow:hidden}
+.synopsis-fold summary{list-style:none;cursor:pointer;padding:10px 12px;font-size:13px;color:var(--text2);display:flex;align-items:center;justify-content:space-between}
+.synopsis-fold summary::-webkit-details-marker{display:none}
+.synopsis-fold summary::after{content:'展开';font-size:11px;color:var(--text3)}
+.synopsis-fold[open] summary::after{content:'收起'}
+.synopsis-body{padding:0 12px 12px;font-size:13px;color:var(--text2);line-height:1.7;white-space:pre-line}
 .screenshot-section{border:1px solid var(--border);border-radius:16px;background:rgba(255,255,255,.52);overflow:hidden}
 .screenshot-section summary{list-style:none;display:flex;align-items:center;justify-content:space-between;padding:11px 12px;cursor:pointer;color:var(--text2);font-size:13px}
 .screenshot-section summary::-webkit-details-marker{display:none}
@@ -499,7 +509,8 @@ body.magic-theme .ai-task-panel,body.magic-theme .ai-task-card{background:linear
 .vine-leaf{fill:#83be75;stroke:rgba(70,124,67,.18);stroke-width:.7;transform-box:fill-box;transform-origin:center;filter:drop-shadow(0 1px 1px rgba(81,118,58,.16))}
 .vine-leaf.l2{fill:#a5c86f}.vine-leaf.l3{fill:#69a96f}.vine-leaf.l4{fill:#b2d48c}
 .vine-tip{position:relative;z-index:1;margin-left:-18px;margin-bottom:10px;padding-left:24px;font-family:'Noto Serif SC',serif;color:#6c9b58;font-size:13px}
-.vine-tip::before{content:'';position:absolute;left:2px;top:1px;width:18px;height:24px;border-radius:70% 30% 65% 35%;background:linear-gradient(145deg,#b8d981,#6fb878);transform:rotate(-24deg);box-shadow:10px -6px 0 -5px #91c66f}
+.vine-tip::before{content:'';position:absolute;left:2px;top:3px;width:18px;height:23px;border-radius:76% 24% 70% 30%;background:linear-gradient(145deg,#c9e68d,#6fb878);transform:rotate(-32deg);box-shadow:13px -5px 0 -5px #91c66f,7px -13px 0 -7px #f5d98b}
+.vine-tip::after{content:'';position:absolute;left:12px;top:-8px;width:12px;height:18px;border-radius:70% 30% 60% 40%;background:linear-gradient(145deg,#fff6b8,#b8d981);transform:rotate(18deg);box-shadow:0 0 10px rgba(183,217,129,.34)}
 .vine-year{position:relative;z-index:1;margin:18px 0 8px -34px;padding-left:0;font-family:'Noto Serif SC',serif;font-size:18px;font-weight:700;color:var(--pink2)}
 .vine-year::before{content:'';position:absolute;left:18px;top:24px;width:28px;height:2px;background:rgba(118,164,90,.38);transform:rotate(-18deg);border-radius:999px}
 .vine-item{--petal-a:#f8b8c8;--petal-b:#f6d28e;--petal-c:#b9dcaa;position:relative;z-index:1;margin:0 0 18px;padding:15px 15px 15px 18px;background:linear-gradient(145deg,rgba(255,255,255,.9),rgba(255,249,236,.82));border:1px solid rgba(226,190,161,.42);border-radius:28px 18px 26px 18px;box-shadow:0 8px 22px rgba(143,98,80,.12)}
@@ -570,6 +581,7 @@ body.magic-theme .vine-leaf.l3{fill:#b9a7e8}
 body.magic-theme .vine-leaf.l4{fill:#9bdcff}
 body.magic-theme .vine-tip{color:#fff0bd}
 body.magic-theme .vine-tip::before{background:linear-gradient(145deg,#d5dfff,#ffe4a2);box-shadow:0 0 16px rgba(255,226,173,.42),10px -6px 0 -5px #b9a7e8}
+body.magic-theme .vine-tip::after{background:linear-gradient(145deg,#fff2b8,#c6d2ff);box-shadow:0 0 14px rgba(255,226,173,.5)}
 body.magic-theme .vine-year{color:#ffe4a2}
 body.magic-theme .vine-year::before{background:rgba(255,226,173,.38)}
 body.magic-theme .vine-item{background:linear-gradient(145deg,rgba(239,245,255,.94),rgba(255,243,207,.9));border-color:rgba(116,110,183,.18);box-shadow:0 10px 26px rgba(18,22,60,.16)}
@@ -1096,9 +1108,8 @@ body.magic-theme .author-wait-card{border-color:rgba(116,110,183,.18)}
       <textarea class="form-textarea" id="f-synopsis" placeholder="核心剧情梗概；后续可交给 AI 补全" style="min-height:90px"></textarea>
     </div>
     <div class="form-group">
-      <label class="form-label" style="justify-content:space-between"><span>经典语录</span><button type="button" class="btn btn-ghost" id="ai-book-quote-btn" onclick="autoFetchBookQuote()" style="padding:5px 9px;font-size:11px">AI补充</button></label>
-      <textarea class="form-textarea" id="f-book-quote" placeholder="你想收进这本书档案的一句摘录" style="min-height:72px"></textarea>
-      <input class="form-input" id="f-book-quote-speaker" placeholder="说话角色，例如：某某说" style="margin-top:8px">
+      <label class="form-label" style="justify-content:space-between"><span>经典语录</span><span style="display:flex;gap:5px"><button type="button" class="btn btn-ghost" onclick="addBookQuoteInput()" style="padding:5px 9px;font-size:11px">添加</button><button type="button" class="btn btn-ghost" id="ai-book-quote-btn" onclick="autoFetchBookQuote()" style="padding:5px 9px;font-size:11px">AI补充</button></span></label>
+      <div id="book-quotes-list"></div>
     </div>
 
     <!-- TAG SYSTEM -->
@@ -1733,7 +1744,7 @@ function openDetail(id,opts={}){
     detailReturnState=null;
   }
   const logs=b.readLogs||[];
-  const bookQuote=normalizeBookQuote(b.bookQuote);
+  const bookQuotes=normalizeBookQuotes(b.bookQuotes||b.bookQuote);
   const tagGroups=TAG_CATS.map((c,ci)=>({c,ci,tags:b.tags?.[c.key]||[]})).filter(g=>g.tags.length);
   const tagsHtml=tagGroups.map(({c,ci,tags})=>`
     <div style="margin-bottom:10px">
@@ -1769,8 +1780,8 @@ function openDetail(id,opts={}){
       ${tagGroups.length?`<div class="detail-section"><div class="detail-section-title">标签</div>${tagsHtml}</div>`:''}
       ${b.finishYear?`<div class="detail-section"><div class="detail-section-title">完结年份</div><div style="font-size:13px;color:var(--text2);line-height:1.7">${escapeHtml(b.finishYear)} 年</div></div>`:''}
       ${b.summary?`<div class="detail-section"><div class="detail-section-title">简介</div><div style="font-size:13px;color:var(--text2);line-height:1.7">${escapeHtml(b.summary)}</div></div>`:''}
-      ${b.synopsis?`<div class="detail-section"><div class="detail-section-title">剧情梗概</div><div style="font-size:13px;color:var(--text2);line-height:1.7;white-space:pre-line">${escapeHtml(b.synopsis)}</div></div>`:''}
-      ${bookQuote.text?`<div class="detail-section"><div class="detail-section-title">经典语录</div><div class="book-quote-card">${escapeHtml(bookQuote.text)}${bookQuote.speaker?`<div class="book-quote-meta">${escapeHtml(bookQuote.speaker)}说</div>`:''}${bookQuote.sourceHint?`<div class="book-quote-meta">${escapeHtml(bookQuote.sourceHint)}</div>`:''}</div></div>`:''}
+      ${b.synopsis?`<div class="detail-section"><div class="detail-section-title">剧情梗概</div><details class="synopsis-fold"><summary>查看剧透版剧情梗概</summary><div class="synopsis-body">${escapeHtml(b.synopsis)}</div></details></div>`:''}
+      ${bookQuotes.length?`<div class="detail-section"><div class="detail-section-title">经典语录</div><div class="book-quote-stack">${bookQuotes.map(q=>`<div class="book-quote-card">${escapeHtml(q.text)}${q.speaker?`<div class="book-quote-meta">${escapeHtml(q.speaker)}说</div>`:''}${q.sourceHint?`<div class="book-quote-meta">${escapeHtml(q.sourceHint)}</div>`:''}</div>`).join('')}</div></div>`:''}
       <div class="detail-section">
         ${renderBookScreenshots(b)}
       </div>
@@ -1799,8 +1810,14 @@ function deleteBook(id){
 
 function normalizeBookQuote(raw){
   if(!raw) return {text:'',speaker:'',sourceHint:''};
+  if(Array.isArray(raw)) return normalizeBookQuote(raw[0]);
   if(typeof raw==='string') return {text:raw,speaker:'',sourceHint:''};
   return {text:raw.text||raw.quote||'',speaker:raw.speaker||raw.role||'',sourceHint:raw.sourceHint||''};
+}
+
+function normalizeBookQuotes(raw){
+  const list=Array.isArray(raw)?raw:(raw?[raw]:[]);
+  return list.map(normalizeBookQuote).filter(q=>q.text);
 }
 
 function renderBookScreenshots(book){
@@ -1967,9 +1984,7 @@ function openAddSheet(){
   document.getElementById('f-finish-year').value='';
   document.getElementById('f-summary').value='';
   document.getElementById('f-synopsis').value='';
-  document.getElementById('f-book-quote').value='';
-  document.getElementById('f-book-quote').dataset.sourceHint='';
-  document.getElementById('f-book-quote-speaker').value='';
+  renderBookQuoteInputs([]);
   renderTagCategories({});
   renderReadLogs([]);
   openSheet('sheet-book');
@@ -2013,6 +2028,7 @@ function importBatchBooks(){
       summary:'',
       synopsis:'',
       bookQuote:{text:'',speaker:'',sourceHint:''},
+      bookQuotes:[],
       screenshots:[],
       finishYear:'',
       tags:{shou:[],gong:[],era:[],plot:[],vibe:[],warn:[]},
@@ -2043,9 +2059,7 @@ function openEditSheet(id){
   document.getElementById('f-finish-year').value=b.finishYear||'';
   document.getElementById('f-summary').value=b.summary||'';
   document.getElementById('f-synopsis').value=b.synopsis||'';
-  document.getElementById('f-book-quote').value=normalizeBookQuote(b.bookQuote).text;
-  document.getElementById('f-book-quote').dataset.sourceHint=normalizeBookQuote(b.bookQuote).sourceHint||'';
-  document.getElementById('f-book-quote-speaker').value=normalizeBookQuote(b.bookQuote).speaker;
+  renderBookQuoteInputs(normalizeBookQuotes(b.bookQuotes||b.bookQuote));
   renderTagCategories(b.tags||{});
   renderReadLogs(b.readLogs||[]);
   closeAllSheets();
@@ -2054,6 +2068,44 @@ function openEditSheet(id){
 
 let formTags={};
 let formLogs=[];
+
+function renderBookQuoteInputs(quotes){
+  const list=document.getElementById('book-quotes-list');
+  if(!list) return;
+  const normalized=normalizeBookQuotes(quotes);
+  list.innerHTML=normalized.map((q,i)=>bookQuoteInputHtml(q,i)).join('')||'<div class="tag-selected-empty" style="padding:8px 0">暂无语录，可手动添加或用 AI 补充</div>';
+}
+
+function bookQuoteInputHtml(q={},i=0){
+  return `<div class="quote-edit-card" data-quote-row>
+    <div class="quote-edit-head"><span>语录 ${i+1}</span><button type="button" class="quote-remove" onclick="removeBookQuoteInput(this)">删除</button></div>
+    <textarea class="form-textarea book-quote-text" placeholder="你想收进这本书档案的一句摘录" style="min-height:64px" data-source-hint="${escapeAttr(q.sourceHint||'')}">${escapeHtml(q.text||'')}</textarea>
+    <input class="form-input book-quote-speaker" placeholder="说话角色，例如：某某" style="margin-top:8px" value="${escapeAttr(q.speaker||'')}">
+  </div>`;
+}
+
+function addBookQuoteInput(q={}){
+  const list=document.getElementById('book-quotes-list');
+  if(!list) return;
+  if(list.querySelector('.tag-selected-empty')) list.innerHTML='';
+  const idx=list.querySelectorAll('[data-quote-row]').length;
+  list.insertAdjacentHTML('beforeend',bookQuoteInputHtml(q,idx));
+}
+
+function removeBookQuoteInput(btn){
+  btn.closest('[data-quote-row]')?.remove();
+  const rows=[...document.querySelectorAll('#book-quotes-list [data-quote-row]')];
+  rows.forEach((row,i)=>{const head=row.querySelector('.quote-edit-head span'); if(head) head.textContent=`语录 ${i+1}`;});
+  if(!rows.length) renderBookQuoteInputs([]);
+}
+
+function collectBookQuotes(){
+  return [...document.querySelectorAll('#book-quotes-list [data-quote-row]')].map(row=>({
+    text:row.querySelector('.book-quote-text')?.value.trim()||'',
+    speaker:row.querySelector('.book-quote-speaker')?.value.trim()||'',
+    sourceHint:row.querySelector('.book-quote-text')?.dataset.sourceHint||''
+  })).filter(q=>q.text);
+}
 
 function renderTagCategories(existing){
   formTags={};
@@ -2307,6 +2359,7 @@ function saveBook(){
   const title=document.getElementById('f-title').value.trim();
   if(!title){toast('请填写书名');return;}
   const existingBook=editingBookId?db.books.find(b=>b.id===editingBookId):null;
+  const bookQuotes=collectBookQuotes();
   const book={
     id: editingBookId||genId(),
     title,
@@ -2320,11 +2373,8 @@ function saveBook(){
     finishYear:document.getElementById('f-finish-year').value.trim(),
     summary:document.getElementById('f-summary').value.trim(),
     synopsis:document.getElementById('f-synopsis').value.trim(),
-    bookQuote:{
-      text:document.getElementById('f-book-quote').value.trim(),
-      speaker:document.getElementById('f-book-quote-speaker').value.trim(),
-      sourceHint:document.getElementById('f-book-quote').dataset.sourceHint||normalizeBookQuote(existingBook?.bookQuote).sourceHint||''
-    },
+    bookQuotes,
+    bookQuote:bookQuotes[0]||{text:'',speaker:'',sourceHint:''},
     screenshots:existingBook?.screenshots||[],
     tags:{...formTags},
     readLogs:[...formLogs],
@@ -2361,7 +2411,8 @@ function captureBookFormDraft(){
     finishYear:document.getElementById('f-finish-year').value,
     summary:document.getElementById('f-summary').value,
     synopsis:document.getElementById('f-synopsis').value,
-    bookQuote:{text:document.getElementById('f-book-quote').value,speaker:document.getElementById('f-book-quote-speaker').value,sourceHint:document.getElementById('f-book-quote').dataset.sourceHint||''},
+    bookQuotes:collectBookQuotes(),
+    bookQuote:collectBookQuotes()[0]||{text:'',speaker:'',sourceHint:''},
     tags:JSON.parse(JSON.stringify(formTags||{})),
     logs:JSON.parse(JSON.stringify(formLogs||[]))
   };
@@ -2381,9 +2432,7 @@ function restoreBookFormDraft(draft){
   document.getElementById('f-finish-year').value=draft.finishYear||'';
   document.getElementById('f-summary').value=draft.summary||'';
   document.getElementById('f-synopsis').value=draft.synopsis||'';
-  document.getElementById('f-book-quote').value=normalizeBookQuote(draft.bookQuote).text;
-  document.getElementById('f-book-quote').dataset.sourceHint=normalizeBookQuote(draft.bookQuote).sourceHint||'';
-  document.getElementById('f-book-quote-speaker').value=normalizeBookQuote(draft.bookQuote).speaker;
+  renderBookQuoteInputs(normalizeBookQuotes(draft.bookQuotes||draft.bookQuote));
   renderTagCategories(draft.tags||{});
   renderReadLogs(draft.logs||[]);
 }
@@ -2615,9 +2664,7 @@ async function autoFetchBookQuote(){
     const json=parseBookQuoteAI(raw);
     if(json.matched===false||String(json.matched||'').toLowerCase()==='false') throw new Error('NO_EXACT_MATCH');
     const quote=normalizeBookQuote(json.quote);
-    if(quote.text) document.getElementById('f-book-quote').value=quote.text;
-    if(quote.speaker) document.getElementById('f-book-quote-speaker').value=quote.speaker;
-    document.getElementById('f-book-quote').dataset.sourceHint=json.sourceHint||'AI 补充';
+    if(quote.text) addBookQuoteInput({...quote,sourceHint:json.sourceHint||'AI 补充'});
     updateAITask(taskId,json.sourceHint?`已补充：${json.sourceHint}`:'经典语录已补充，点这里查看','done');
     toast(json.sourceHint?`语录已补：${json.sourceHint}`:'语录已补充');
   }catch(e){
@@ -2650,7 +2697,7 @@ async function autoFetchSynopsis(mode='short'){
 请优先只回复 JSON，不要解释或 Markdown；如果模型无法稳定输出 JSON，也可以直接输出完整剧情梗概正文：
 {"matched":"true/false","synopsis":"${isLong?'700到1400字':'220到420字'}的剧透版剧情梗概或空字符串","sourceHint":"信息来源提示或空字符串"}`;
     const raw=await callAI(prompt,{maxOutputTokens:isLong?2600:1200});
-    const json=parseSynopsisAI(raw);
+    const json=parseSynopsisAI(raw,{minLength:isLong?80:18});
     if(json.matched===false||String(json.matched||'').toLowerCase()==='false') throw new Error('NO_EXACT_MATCH');
     if(json.synopsis) document.getElementById('f-synopsis').value=json.synopsis;
     if(editingBookId&&json.synopsis){
@@ -2788,10 +2835,11 @@ function parseAIJson(text){
   throw new Error('AI_PARSE_JSON');
 }
 
-function parseSynopsisAI(text){
+function parseSynopsisAI(text,opts={}){
   try{return parseAIJson(text);}catch(e){}
   const synopsis=extractSynopsisText(text);
-  if(synopsis&&synopsis.length>=40){
+  const minLength=opts.minLength??40;
+  if(synopsis&&synopsis.length>=minLength){
     return {matched:'true',synopsis,sourceHint:'AI 返回了非标准 JSON，已自动保留剧情正文'};
   }
   throw new Error('AI_PARSE_JSON');
@@ -2812,10 +2860,14 @@ function extractSynopsisText(text){
   const quoted=clean.match(/["“]?synopsis["”]?\s*[:：]\s*["“]([\s\S]*?)(?:["”]\s*,\s*["“]sourceHint|["”]\s*[,}])/);
   if(quoted?.[1]) clean=quoted[1];
   clean=clean
+    .replace(/^剧情梗概\s*[:：]\s*/,'')
+    .replace(/^短版剧情\s*[:：]\s*/,'')
+    .replace(/^长版剧情\s*[:：]\s*/,'')
     .replace(/^\s*[{[]?/, '')
     .replace(/["“]?matched["”]?\s*[:：]\s*["“]?(true|false)["”]?\s*,?/i,'')
     .replace(/["“]?synopsis["”]?\s*[:：]\s*/,'')
     .replace(/["“]?sourceHint["”]?\s*[:：][\s\S]*$/,'')
+    .replace(/^\s*正文\s*[:：]\s*/,'')
     .replace(/[{}"]/g,'')
     .replace(/\\n/g,'\n')
     .replace(/\\"/g,'"')
@@ -3131,7 +3183,7 @@ function renderPath(){
 }
 
 function renderPathItem(book,log,month,index){
-  const quote=normalizeBookQuote(book.bookQuote);
+  const quote=normalizeBookQuote(book.bookQuotes||book.bookQuote);
   const tags=Object.entries(book.tags||{}).flatMap(([k,arr])=>arr.map(t=>({t,ci:TAG_CATS.findIndex(c=>c.key===k)}))).slice(0,6);
   const feeling=getBookLogText(log);
   const note=db.flowerNotes?.[book.id]||'';
