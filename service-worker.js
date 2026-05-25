@@ -1,4 +1,4 @@
-const CACHE_NAME = 'maboroshi-v2-cache-44';
+const CACHE_NAME = 'maboroshi-v2-cache-45';
 const ASSETS = [
   './',
   './maboroshi-v2-app.html',
