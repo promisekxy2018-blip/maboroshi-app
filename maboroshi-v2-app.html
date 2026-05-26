@@ -424,6 +424,19 @@ body.magic-theme .ai-task-panel,body.magic-theme .ai-task-card{background:linear
 /* ── LOG EDIT MINI SHEET ── */
 .mini-sheet{position:fixed;inset:0;background:var(--bg2);border-radius:0;z-index:202;transform:translateY(100%);transition:transform 0.3s cubic-bezier(0.32,0.72,0,1);padding:20px;padding-bottom:calc(20px + env(safe-area-inset-bottom));overflow-y:auto}
 .mini-sheet.show{transform:translateY(0)}
+.text-editor-sheet{position:fixed;inset:0;background:linear-gradient(180deg,var(--bg2),var(--bg));z-index:203;transform:translateY(100%);transition:transform .3s cubic-bezier(.32,.72,0,1);display:flex;flex-direction:column;padding:18px;padding-bottom:calc(18px + env(safe-area-inset-bottom))}
+.text-editor-sheet.show{transform:translateY(0)}
+.text-editor-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px}
+.text-editor-title{font-family:'Noto Serif SC',serif;font-size:18px;font-weight:700;color:var(--text)}
+.text-editor-close{width:32px;height:32px;border:none;border-radius:50%;background:var(--border);color:var(--text2);font-size:18px}
+.text-editor-sub{font-size:12px;color:var(--text3);line-height:1.7;margin:-8px 2px 12px}
+.text-editor-input{flex:1;width:100%;min-height:62vh;border:1px solid var(--border2);border-radius:18px;background:rgba(255,255,255,.78);padding:15px;font-size:15px;color:var(--text);font-family:'Noto Serif SC',serif;line-height:1.75;resize:none;outline:none}
+.text-editor-actions{display:flex;gap:10px;margin-top:14px}
+.award-entry-editor-body{display:flex;flex-direction:column;gap:12px;flex:1;min-height:0}
+.award-entry-editor-body .form-label{margin-bottom:6px}
+.award-reason-editor-short,.award-reason-editor-long{width:100%;border:1px solid var(--border2);border-radius:16px;background:rgba(255,255,255,.78);padding:13px;font-size:14px;color:var(--text);font-family:'Noto Serif SC',serif;line-height:1.75;resize:none;outline:none}
+.award-reason-editor-short{min-height:18vh}
+.award-reason-editor-long{flex:1;min-height:34vh}
 .log-textarea{min-height:120px}
 .stats-control-row{display:flex;gap:8px;padding:0 16px 12px;overflow-x:auto}
 .stats-control-row .form-select{width:auto;min-width:120px;padding-top:7px;padding-bottom:7px;font-size:12px}
@@ -568,23 +581,29 @@ body.note-font-brush{--path-note-font:'Ma Shan Zheng','FZShuTi','华文新魏','
 .award-sub{font-size:12px;color:var(--text3);line-height:1.7;margin-top:5px;cursor:pointer}
 .award-add-pen{margin:0 18px 14px auto;display:flex;align-items:center;gap:5px;border:1px solid rgba(226,190,132,.42);border-radius:999px;background:linear-gradient(145deg,#fff7d7,#e9f0ff);color:#8a6a2e;padding:6px 10px;font-size:11px;box-shadow:0 6px 14px rgba(176,120,32,.1)}
 .award-section{padding:0 14px 28px}
+#page-path.award-night{background:radial-gradient(circle at 14% 7%,rgba(255,229,168,.22),transparent 18%),radial-gradient(circle at 84% 18%,rgba(166,193,255,.22),transparent 22%),radial-gradient(circle at 46% 42%,rgba(255,255,255,.08),transparent 16%),linear-gradient(180deg,#26385f 0%,#1e2b4f 54%,#293b63 100%);color:#fff5dd}
+#page-path.award-night .page-header{background:linear-gradient(180deg,rgba(38,56,95,.96),rgba(38,56,95,.72));border-bottom-color:rgba(255,226,173,.12)}
+#page-path.award-night .page-title,#page-path.award-night .page-subtitle{color:#fff1c8}
+#page-path.award-night .path-subnav button{background:rgba(255,255,255,.1);border-color:rgba(255,226,173,.16);color:rgba(255,246,218,.8)}
+#page-path.award-night .path-subnav button.active{background:linear-gradient(145deg,#ffe8a5,#d8b05e);color:#3b315f;border-color:rgba(255,226,173,.44)}
+#page-path.award-night .award-section{padding-top:2px}
 .award-index{display:flex;flex-direction:column;gap:10px;margin-bottom:18px}
-.award-index::after{content:'拾花笺';display:flex;align-items:center;gap:10px;margin:12px 2px 2px;font-family:'Noto Serif SC',serif;font-size:15px;font-weight:700;color:var(--text2)}
-.award-index::before{content:'朝花榜';font-family:'Noto Serif SC',serif;font-size:15px;font-weight:700;color:#b07820;margin:0 2px -2px}
-.award-index-card{position:relative;border:1px solid rgba(196,155,93,.45);border-radius:18px;background:linear-gradient(145deg,rgba(255,253,245,.98),rgba(244,235,214,.92) 50%,rgba(235,240,245,.86));padding:15px 14px 13px;box-shadow:0 10px 24px rgba(122,88,42,.13),inset 0 0 0 1px rgba(255,255,255,.72);overflow:hidden;text-align:center}
+.award-index::after{content:'拾花笺';display:flex;align-items:center;gap:10px;margin:14px 2px 2px;font-family:'Noto Serif SC',serif;font-size:15px;font-weight:700;color:rgba(255,241,200,.92)}
+.award-index::before{content:'星章名录';font-family:'Noto Serif SC',serif;font-size:15px;font-weight:700;color:#ffe6a2;margin:0 2px -2px;text-shadow:0 0 12px rgba(255,226,173,.32)}
+.award-index-card{position:relative;border:1px solid rgba(232,194,96,.44);border-radius:18px;background:radial-gradient(circle at 18% 12%,rgba(255,235,176,.25),transparent 18%),linear-gradient(145deg,rgba(255,253,245,.96),rgba(244,235,214,.9) 50%,rgba(235,240,245,.84));padding:15px 12px 12px;box-shadow:0 10px 24px rgba(23,29,62,.16),inset 0 0 0 1px rgba(255,255,255,.72);overflow:hidden;text-align:center}
 .award-index-card::before{content:'';position:absolute;left:12px;right:12px;top:9px;height:3px;border-radius:999px;background:linear-gradient(90deg,transparent,#c49b5d,transparent);opacity:.5}
 .award-index-card::after{content:'✦';position:absolute;right:12px;top:13px;color:rgba(176,120,32,.3);font-size:20px}
-.award-index-name{position:relative;display:inline-block;font-family:'Noto Serif SC',serif;font-size:16px;font-weight:700;color:#6a3d22;margin:0 auto 7px;padding:5px 18px 6px;cursor:pointer;border-radius:999px;background:linear-gradient(145deg,rgba(255,250,230,.9),rgba(255,226,174,.58));box-shadow:inset 0 0 0 1px rgba(255,255,255,.75),0 4px 12px rgba(176,120,32,.12)}
-.award-index-name::before,.award-index-name::after{content:'';position:absolute;top:50%;width:18px;height:1px;background:rgba(176,120,32,.28)}
+.award-index-name{position:relative;display:inline-block;font-family:'Noto Serif SC',serif;font-size:16px;font-weight:700;color:#5e351a;margin:0 auto 7px;padding:6px 22px 7px;cursor:pointer;border-radius:999px;background:radial-gradient(circle at 50% 0%,rgba(255,255,255,.9),transparent 34%),linear-gradient(145deg,#fff8da,#e7bd64 58%,#fff1bd);border:1px solid rgba(143,99,35,.22);box-shadow:inset 0 0 0 1px rgba(255,255,255,.75),0 0 0 3px rgba(255,233,171,.18),0 8px 18px rgba(176,120,32,.18)}
+.award-index-name::before,.award-index-name::after{content:'✦';position:absolute;top:50%;width:auto;height:auto;background:none;color:rgba(154,104,31,.55);font-size:12px;transform:translateY(-50%)}
 .award-index-name::before{right:100%}.award-index-name::after{left:100%}
-.award-index-note{font-size:11px;color:#9a765f;line-height:1.65;margin:0 10px 8px;white-space:pre-line}
+.award-index-note{font-size:11px;color:#8d7565;line-height:1.65;margin:0 8px 8px;white-space:pre-line}
 .award-index-books{font-size:12px;color:var(--text2);line-height:1.65}
 .award-book-link{display:inline-block;color:#6f5344;background:rgba(255,255,255,.32);border:1px solid rgba(196,155,93,.2);border-radius:8px;padding:2px 7px;text-decoration:none;cursor:pointer;box-shadow:none}
-.award-index-entry{position:relative;text-align:left;padding-left:30px;margin:8px 0 2px}
+.award-index-entry{position:relative;text-align:left;padding-left:30px;margin:7px 0 2px}
 .award-rank{position:absolute;left:0;top:1px;width:24px;height:24px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;background:#f3e5d8;color:#9a765f;font-size:11px;font-weight:700}
 .award-rank.top{background:transparent;box-shadow:none;font-size:20px}
 .award-rank.r1{color:#c85f74}.award-rank.r2{color:#8056a8}.award-rank.r3{color:#5f9b68}.award-rank.r4{color:#b07820}
-.award-index-reason{position:relative;display:inline-block;margin:6px 0 8px;padding:5px 12px 5px 24px;border-radius:10px;background:rgba(255,255,255,.3);border:1px solid rgba(196,155,93,.2);color:#7d6559;font-family:'STKaiti','KaiTi','LXGW WenKai','Noto Serif SC',serif;font-size:12px;line-height:1.6;letter-spacing:.01em}
+.award-index-reason{position:relative;display:inline-block;margin:5px 0 6px;padding:4px 10px 4px 24px;border-radius:9px;background:rgba(255,255,255,.26);border:1px solid rgba(196,155,93,.16);color:#7d6559;font-family:'STKaiti','KaiTi','LXGW WenKai','Noto Serif SC',serif;font-size:12px;line-height:1.55;letter-spacing:.01em}
 .award-index-reason::before{content:'“';position:absolute;left:6px;top:0;color:rgba(176,120,32,.4);font-family:'Noto Serif SC',serif;font-size:18px;font-weight:700}
 .award-index-reason::after{content:'”';display:inline-block;margin-left:3px;color:rgba(176,120,32,.36);font-family:'Noto Serif SC',serif;font-size:16px;font-weight:700;vertical-align:-4px}
 .award-detail{margin-bottom:10px;border:1px solid rgba(232,201,184,.56);border-radius:18px;background:linear-gradient(145deg,rgba(255,255,255,.82),rgba(255,246,234,.72));overflow:hidden}
@@ -622,6 +641,8 @@ body.magic-theme .detail-award-chip{background:linear-gradient(145deg,#f4ecff,#b
 body.magic-theme .detail-body{background:linear-gradient(180deg,rgba(255,249,235,.96),rgba(238,242,255,.96));color:#3d3658}
 body.magic-theme .detail-back{background:rgba(255,245,212,.22);color:#fff1be}
 body.magic-theme .sheet,body.magic-theme .mini-sheet{background:linear-gradient(180deg,#f8f1df,#eaf1ff);color:#3d3658}
+body.magic-theme .text-editor-sheet{background:linear-gradient(180deg,#eef3ff,#f8f0df);color:#3d3658}
+body.magic-theme .text-editor-title{color:#3d3658}
 body.magic-theme #sheet-filter .sheet-header{background:radial-gradient(circle at 16% 28%,rgba(255,239,170,.34),transparent 19%),linear-gradient(145deg,#6b84c6,#4a61aa);border-bottom-color:rgba(255,226,173,.24)}
 body.magic-theme #sheet-filter .sheet-title{color:#fff7df}
 body.magic-theme #sheet-filter .sheet-close{background:rgba(255,246,218,.18);color:#fff2c7}
@@ -802,8 +823,8 @@ body.magic-theme .author-wait-card{border-color:rgba(116,110,183,.18)}
         <div class="path-subnav" id="path-subnav"></div>
       </div>
       <div class="path-hero" id="path-log-hero">
-        <div class="path-title">花开日志</div>
-        <div class="path-sub" id="path-log-sub" onclick="editPathBannerText('log')">5.0 分作品会在这里沿着时间藤蔓慢慢开花。先记录它们，后面再把“勇敢、爱、美好”这些分类长出来。</div>
+        <div class="path-title">花信笺</div>
+        <div class="path-sub" id="path-log-sub" onclick="editPathBannerText('log')">5.0 分作品会在这里沿着时间藤蔓慢慢开花。每一朵，都是某段阅读岁月留下的花信。</div>
       </div>
       <div class="path-wrap" id="path-content"></div>
       <div class="award-hero" id="path-award-hero">
@@ -1035,6 +1056,41 @@ body.magic-theme .author-wait-card{border-color:rgba(116,110,183,.18)}
   <img class="screenshot-viewer-img" id="screenshot-viewer-img" alt="截图预览">
   <button class="screenshot-viewer-nav screenshot-viewer-next" onclick="event.stopPropagation();moveScreenshotViewer(1)">›</button>
   <div class="screenshot-viewer-meta" id="screenshot-viewer-meta"></div>
+</div>
+
+<div class="text-editor-sheet" id="text-editor-sheet">
+  <div class="text-editor-head">
+    <div class="text-editor-title" id="text-editor-title">编辑文字</div>
+    <button class="text-editor-close" onclick="closeTextEditor()">×</button>
+  </div>
+  <div class="text-editor-sub" id="text-editor-sub"></div>
+  <textarea class="text-editor-input" id="text-editor-input"></textarea>
+  <div class="text-editor-actions">
+    <button class="btn btn-ghost" style="flex:1" onclick="closeTextEditor()">取消</button>
+    <button class="btn btn-primary" style="flex:2" onclick="saveTextEditor()">保存</button>
+  </div>
+</div>
+
+<div class="text-editor-sheet" id="award-entry-editor-sheet">
+  <div class="text-editor-head">
+    <div class="text-editor-title" id="award-entry-editor-title">编辑上榜理由</div>
+    <button class="text-editor-close" onclick="closeAwardEntryEditor()">×</button>
+  </div>
+  <div class="text-editor-sub" id="award-entry-editor-sub">短版适合放在榜单页，长版会出现在评选详情里。</div>
+  <div class="award-entry-editor-body">
+    <div>
+      <label class="form-label">短版上榜理由</label>
+      <textarea class="award-reason-editor-short" id="award-entry-short" placeholder="一句话写清它为什么上榜"></textarea>
+    </div>
+    <div style="display:flex;flex-direction:column;flex:1;min-height:0">
+      <label class="form-label">长版上榜理由</label>
+      <textarea class="award-reason-editor-long" id="award-entry-long" placeholder="这里可以慢慢写，展开讲讲它为什么值得这个奖"></textarea>
+    </div>
+  </div>
+  <div class="text-editor-actions">
+    <button class="btn btn-ghost" style="flex:1" onclick="closeAwardEntryEditor()">取消</button>
+    <button class="btn btn-primary" style="flex:2" onclick="saveAwardEntryEditor()">保存</button>
+  </div>
 </div>
 
 <!-- ═══ SHELF FILTER SHEET ═══ -->
@@ -1357,6 +1413,8 @@ let screenshotTouchStart = null;
 let editingAwardId = null;
 let awardDraftEntries = {};
 let pathSubView = 'log';
+let textEditorState = null;
+let awardEntryEditorState = null;
 
 function load(){
   try{const s=localStorage.getItem(STORE_KEY);if(s)db=JSON.parse(s);}catch(e){}
@@ -1508,7 +1566,7 @@ function pushAppState(state){
 
 function hasOpenOverlay(){
   return document.getElementById('stats-modal')?.classList.contains('show')||
-    [...document.querySelectorAll('.sheet,.mini-sheet')].some(s=>s.classList.contains('show'));
+    [...document.querySelectorAll('.sheet,.mini-sheet,.text-editor-sheet')].some(s=>s.classList.contains('show'));
 }
 
 function appBack(){
@@ -3347,7 +3405,7 @@ function renderPathSubnav(){
   const nav=document.getElementById('path-subnav');
   if(!nav) return;
   nav.innerHTML=[
-    ['log','花开日志'],
+    ['log','花信笺'],
     ['awards','朝花夕拾']
   ].map(([key,label])=>`<button class="${pathSubView===key?'active':''}" onclick="setPathSubView('${key}')">${label}</button>`).join('');
 }
@@ -3365,12 +3423,13 @@ function applyPathSubView(){
     const el=document.getElementById(id);
     if(el) el.style.display=show?'':'none';
   });
+  document.getElementById('page-path')?.classList.toggle('award-night',!showLog);
 }
 
 function applyPathBannerTexts(){
   const log=document.getElementById('path-log-sub');
   const award=document.getElementById('path-award-sub');
-  if(log) log.textContent=db.settings?.pathLogText||'5.0 分作品会在这里沿着时间藤蔓慢慢开花。先记录它们，后面再把“勇敢、爱、美好”这些分类长出来。';
+  if(log) log.textContent=db.settings?.pathLogText||'5.0 分作品会在这里沿着时间藤蔓慢慢开花。每一朵，都是某段阅读岁月留下的花信。';
   if(award) award.textContent=db.settings?.pathAwardText||'给读过的书颁一些很私人的奖：最佳爹系、最佳温柔攻、最会让人念念不忘的关系。';
 }
 
@@ -3378,11 +3437,11 @@ function editPathBannerText(kind){
   db.settings=db.settings||{};
   const key=kind==='log'?'pathLogText':'pathAwardText';
   const current=db.settings[key]||document.getElementById(kind==='log'?'path-log-sub':'path-award-sub')?.textContent||'';
-  const val=prompt(kind==='log'?'编辑花开日志说明':'编辑朝花夕拾说明',current);
-  if(val===null) return;
-  db.settings[key]=val.trim()||current;
-  save();
-  applyPathBannerTexts();
+  openTextEditor(kind==='log'?'编辑花信笺说明':'编辑朝花夕拾说明',current,(val)=>{
+    db.settings[key]=val.trim()||current;
+    save();
+    applyPathBannerTexts();
+  });
 }
 
 function renderAwards(){
@@ -3517,16 +3576,14 @@ function editAwardEntry(awardId,bookId){
     award.entries.push(entry);
   }
   const book=db.books.find(b=>b.id===bookId);
-  const shortReason=prompt(`《${book?.title||''}》短版上榜理由`,entry.shortReason||'');
-  if(shortReason===null) return;
-  const longReason=prompt(`《${book?.title||''}》长版上榜理由`,entry.longReason||'');
-  if(longReason===null) return;
-  entry.shortReason=shortReason.trim();
-  entry.longReason=longReason.trim();
-  award.updatedAt=Date.now();
-  save();
-  renderAwards();
-  setTimeout(()=>jumpToAward(awardId),40);
+  awardEntryEditorState={awardId,bookId};
+  document.getElementById('award-entry-editor-title').textContent=`《${book?.title||''}》上榜理由`;
+  document.getElementById('award-entry-editor-sub').textContent=`${award.name||'这项评选'} · 短版用于朝花榜，长版用于拾花笺`;
+  document.getElementById('award-entry-short').value=entry.shortReason||'';
+  document.getElementById('award-entry-long').value=entry.longReason||'';
+  document.getElementById('award-entry-editor-sheet').classList.add('show');
+  document.getElementById('overlay').classList.add('show');
+  setTimeout(()=>document.getElementById('award-entry-short')?.focus(),80);
 }
 
 function renderAwardBookPicker(){
@@ -3666,12 +3723,63 @@ function renderVineSvg(height){
 function editFlowerNote(bookId){
   db.flowerNotes=db.flowerNotes||{};
   const book=db.books.find(b=>b.id===bookId);
-  const val=prompt(`写一句《${book?.title||''}》在花径上的备注`,db.flowerNotes[bookId]||'');
-  if(val===null) return;
-  db.flowerNotes[bookId]=val.trim();
+  openTextEditor(`写一句《${book?.title||''}》的花信`,db.flowerNotes[bookId]||'',val=>{
+    db.flowerNotes[bookId]=val.trim();
+    save();
+    renderPath();
+    toast('花径备注已保存');
+  },'这句会放在标签下面，是花径里最显眼的成长感悟。');
+}
+
+function openTextEditor(title,value,onSave,sub=''){
+  textEditorState={onSave};
+  document.getElementById('text-editor-title').textContent=title;
+  document.getElementById('text-editor-sub').textContent=sub;
+  document.getElementById('text-editor-input').value=value||'';
+  document.getElementById('text-editor-sheet').classList.add('show');
+  document.getElementById('overlay').classList.add('show');
+  setTimeout(()=>document.getElementById('text-editor-input')?.focus(),80);
+}
+
+function closeTextEditor(){
+  textEditorState=null;
+  document.getElementById('text-editor-sheet').classList.remove('show');
+  const hasOther=[...document.querySelectorAll('.sheet,.mini-sheet,.text-editor-sheet')].some(s=>s.classList.contains('show'));
+  if(!hasOther) document.getElementById('overlay').classList.remove('show');
+}
+
+function saveTextEditor(){
+  const val=document.getElementById('text-editor-input').value;
+  const cb=textEditorState?.onSave;
+  closeTextEditor();
+  if(cb) cb(val);
+}
+
+function closeAwardEntryEditor(){
+  awardEntryEditorState=null;
+  document.getElementById('award-entry-editor-sheet').classList.remove('show');
+  const hasOther=[...document.querySelectorAll('.sheet,.mini-sheet,.text-editor-sheet')].some(s=>s.classList.contains('show'));
+  if(!hasOther) document.getElementById('overlay').classList.remove('show');
+}
+
+function saveAwardEntryEditor(){
+  const state=awardEntryEditorState;
+  if(!state) return closeAwardEntryEditor();
+  const award=(db.awards||[]).find(a=>a.id===state.awardId);
+  if(!award) return closeAwardEntryEditor();
+  award.entries=award.entries||[];
+  let entry=award.entries.find(e=>e.bookId===state.bookId);
+  if(!entry){
+    entry={bookId:state.bookId,shortReason:'',longReason:''};
+    award.entries.push(entry);
+  }
+  entry.shortReason=document.getElementById('award-entry-short').value.trim();
+  entry.longReason=document.getElementById('award-entry-long').value.trim();
+  award.updatedAt=Date.now();
   save();
-  renderPath();
-  toast('花径备注已保存');
+  closeAwardEntryEditor();
+  renderAwards();
+  setTimeout(()=>jumpToAward(state.awardId),40);
 }
 
 function renderStatsModal(){
@@ -4034,7 +4142,8 @@ async function exportData(){
       authorQuotes:db.authorQuotes||{},
       authorProfiles:db.authorProfiles||{},
       flowerNotes:db.flowerNotes||{},
-      awards:db.awards||[]
+      awards:db.awards||[],
+      settings:db.settings||{}
     }
   };
   const data=JSON.stringify(backup,null,2);
@@ -4084,7 +4193,7 @@ function handleImport(e){
         apiKey:prevKeys.gemini||db.apiKey||'',
         aiKeys:prevKeys,
         lastBackupAt:db.lastBackupAt||'',
-        settings:db.settings||{shelfView:'list'},
+        settings:{...(db.settings||{shelfView:'list'}),...(data.settings||{})},
         authorNotes:data.authorNotes||{},
         authorQuotes:data.authorQuotes||{},
         authorProfiles:data.authorProfiles||{},
@@ -4140,7 +4249,9 @@ function closeSheet(id){
   document.getElementById('overlay').classList.remove('show');
 }
 function closeAllSheets(){
-  document.querySelectorAll('.sheet,.mini-sheet').forEach(s=>s.classList.remove('show'));
+  document.querySelectorAll('.sheet,.mini-sheet,.text-editor-sheet').forEach(s=>s.classList.remove('show'));
+  textEditorState=null;
+  awardEntryEditorState=null;
   document.getElementById('overlay').classList.remove('show');
 }
 
