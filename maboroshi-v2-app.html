@@ -66,6 +66,9 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
 .page-header{padding:20px 20px 12px;display:flex;align-items:center;justify-content:space-between}
 .page-title{font-family:'Noto Serif SC',serif;font-size:22px;font-weight:700;color:var(--text)}
 .page-subtitle{font-size:12px;color:var(--text3);margin-top:2px}
+.path-subnav{display:flex;gap:6px;padding:4px;border-radius:13px;background:rgba(255,255,255,.5);border:1px solid var(--border);box-shadow:0 4px 12px rgba(143,98,80,.08)}
+.path-subnav button{border:none;background:transparent;border-radius:10px;padding:8px 10px;color:var(--text2);font-size:12px;white-space:nowrap}
+.path-subnav button.active{background:var(--pink2);color:white;box-shadow:0 4px 10px rgba(232,130,159,.2)}
 #app.magic-theme{color:#f7efd9}
 #app.magic-theme #main{background:radial-gradient(circle at 18% 7%,rgba(255,239,170,.38),transparent 18%),radial-gradient(circle at 82% 12%,rgba(168,201,255,.24),transparent 18%),radial-gradient(circle at 72% 31%,rgba(222,195,255,.25),transparent 22%),radial-gradient(circle at 32% 24%,rgba(255,255,232,.8) 0 1px,transparent 2px),radial-gradient(circle at 62% 8%,rgba(255,255,232,.9) 0 1.5px,transparent 2.5px),linear-gradient(180deg,#394678 0,#465992 32%,#374c7f 58%,#303c68)}
 #app.magic-theme #nav{background:linear-gradient(90deg,rgba(49,61,105,.98),rgba(39,49,89,.98));border-top-color:rgba(255,225,167,.28);box-shadow:0 -6px 24px rgba(9,11,30,.28)}
@@ -74,6 +77,9 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
 #app.magic-theme #page-shelf>.page-header,#app.magic-theme #page-encounter>.page-header,#app.magic-theme #page-path>.page-header,#app.magic-theme #page-stats>.page-header{margin:12px 16px 12px;padding:18px;border-radius:24px;background:radial-gradient(circle at 22% 32%,rgba(255,235,154,.34),transparent 19%),radial-gradient(circle at 88% 14%,rgba(186,220,255,.22),transparent 18%),linear-gradient(145deg,rgba(86,105,170,.94),rgba(54,69,127,.9));border:1px solid rgba(255,226,173,.26);box-shadow:0 12px 30px rgba(9,11,30,.2)}
 #app.magic-theme .page-title{color:#fff7df}
 #app.magic-theme .page-subtitle{color:rgba(238,225,255,.68)}
+#app.magic-theme .path-subnav{background:rgba(255,246,218,.16);border-color:rgba(255,226,173,.24);box-shadow:0 6px 18px rgba(9,11,30,.14)}
+#app.magic-theme .path-subnav button{color:rgba(238,225,255,.74)}
+#app.magic-theme .path-subnav button.active{background:#ddbb67;color:#28284a}
 #app.magic-theme .btn-icon{background:rgba(255,235,184,.18);color:#ffe4a2}
 #app.magic-theme .search-filter-btn{background:rgba(81,100,166,.92);color:#fff4ce;border:1px solid rgba(255,226,173,.34)}
 #app.magic-theme .search-box{background:rgba(255,249,232,.92);border-color:rgba(255,226,173,.2)}
@@ -503,11 +509,15 @@ body.magic-theme .ai-task-panel,body.magic-theme .ai-task-card{background:linear
 .path-wrap{padding:0 14px 28px}
 .vine-timeline{position:relative;padding:8px 0 14px 46px}
 .vine-svg{position:absolute;left:-2px;top:18px;bottom:0;width:64px;height:100%;min-height:900px;pointer-events:none;overflow:visible;z-index:0}
+.vine-bud-svg{position:absolute;left:-12px;top:-22px;width:66px;height:66px;overflow:visible;pointer-events:none;z-index:2;filter:drop-shadow(0 4px 8px rgba(95,150,88,.22))}
 .vine-path-main{fill:none;stroke:#5f9f65;stroke-width:7;stroke-linecap:round;filter:drop-shadow(0 2px 2px rgba(90,130,72,.18))}
 .vine-path-hi{fill:none;stroke:rgba(255,255,255,.48);stroke-width:2;stroke-linecap:round}
 .vine-path-twine{fill:none;stroke:#8fbf6e;stroke-width:2.4;stroke-linecap:round;stroke-dasharray:24 18;opacity:.78}
 .vine-leaf{fill:#83be75;stroke:rgba(70,124,67,.18);stroke-width:.7;transform-box:fill-box;transform-origin:center;filter:drop-shadow(0 1px 1px rgba(81,118,58,.16))}
 .vine-leaf.l2{fill:#a5c86f}.vine-leaf.l3{fill:#69a96f}.vine-leaf.l4{fill:#b2d48c}
+.vine-bud-stem{fill:none;stroke:#5f9f65;stroke-width:2.2;stroke-linecap:round}
+.vine-bud-leaf{fill:#b8d981;stroke:rgba(70,124,67,.16);stroke-width:.5}
+.vine-bud-tip{fill:#fff2a6;stroke:rgba(130,150,66,.16);stroke-width:.5;filter:drop-shadow(0 0 8px rgba(183,217,129,.32))}
 .vine-tip{position:relative;z-index:1;margin-left:-18px;margin-bottom:10px;padding-left:24px;font-family:'Noto Serif SC',serif;color:#6c9b58;font-size:13px}
 .vine-tip::before{content:'';position:absolute;left:2px;top:3px;width:18px;height:23px;border-radius:76% 24% 70% 30%;background:linear-gradient(145deg,#c9e68d,#6fb878);transform:rotate(-32deg);box-shadow:13px -5px 0 -5px #91c66f,7px -13px 0 -7px #f5d98b}
 .vine-tip::after{content:'';position:absolute;left:12px;top:-8px;width:12px;height:18px;border-radius:70% 30% 60% 40%;background:linear-gradient(145deg,#fff6b8,#b8d981);transform:rotate(18deg);box-shadow:0 0 10px rgba(183,217,129,.34)}
@@ -547,6 +557,34 @@ body.note-font-brush{--path-note-font:'Ma Shan Zheng','FZShuTi','华文新魏','
 .path-note-empty{font-size:12px;color:#a98f66}
 .path-note-edit{position:absolute;right:8px;bottom:7px;border:none;background:rgba(255,255,255,.5);color:#c77a91;border-radius:999px;padding:3px 7px;font-size:10px;font-family:'Noto Sans SC',sans-serif}
 .path-empty{padding:28px 18px;text-align:center;color:var(--text3);line-height:1.8;background:rgba(255,255,255,.7);border:1px dashed var(--border);border-radius:18px}
+.award-hero{margin:16px 16px 12px;padding:17px;border-radius:22px;background:radial-gradient(circle at 18% 20%,rgba(255,231,178,.72),transparent 24%),linear-gradient(145deg,#fff8ed,#fce8f0 56%,#eef7ed);border:1px solid var(--border);box-shadow:var(--shadow2)}
+.award-hero-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.award-title{font-family:'Noto Serif SC',serif;font-size:22px;font-weight:700;color:var(--text)}
+.award-sub{font-size:12px;color:var(--text3);line-height:1.7;margin-top:5px}
+.award-section{padding:0 14px 28px}
+.award-index{display:flex;flex-direction:column;gap:8px;margin-bottom:14px}
+.award-index-card{border:1px solid rgba(232,201,184,.55);border-radius:16px;background:rgba(255,255,255,.74);padding:11px 12px;box-shadow:0 5px 15px rgba(143,98,80,.08)}
+.award-index-name{font-family:'Noto Serif SC',serif;font-size:15px;font-weight:700;color:var(--text);margin-bottom:6px;cursor:pointer}
+.award-index-books{font-size:12px;color:var(--text2);line-height:1.65}
+.award-book-link{color:var(--pink2);text-decoration:underline;text-decoration-color:rgba(232,130,159,.24);text-underline-offset:3px;cursor:pointer}
+.award-index-reason{margin:5px 0 8px;padding:7px 9px;border-radius:10px;background:rgba(255,244,214,.56);color:var(--text2);font-size:12px;line-height:1.65}
+.award-detail{margin-bottom:10px;border:1px solid rgba(232,201,184,.56);border-radius:18px;background:linear-gradient(145deg,rgba(255,255,255,.82),rgba(255,246,234,.72));overflow:hidden}
+.award-detail summary{list-style:none;cursor:pointer;padding:13px 14px;font-family:'Noto Serif SC',serif;font-size:15px;font-weight:700;color:var(--text);display:flex;justify-content:space-between;gap:12px}
+.award-detail summary::-webkit-details-marker{display:none}
+.award-detail summary::after{content:'展开';font-family:'Noto Sans SC',sans-serif;font-size:11px;font-weight:400;color:var(--text3);white-space:nowrap}
+.award-detail[open] summary::after{content:'收起'}
+.award-detail-body{padding:0 14px 14px}
+.award-note{font-size:12px;color:var(--text2);line-height:1.7;background:rgba(255,244,214,.5);border-left:2px solid rgba(232,130,159,.34);border-radius:4px 12px 12px 4px;padding:8px 10px;margin-bottom:10px;white-space:pre-line}
+.award-path-card{margin:0 0 12px 42px}
+.award-reason-short{margin-top:10px;padding:9px 10px;border-radius:14px;background:linear-gradient(145deg,rgba(255,250,218,.94),rgba(232,244,238,.82));border:1px solid rgba(236,188,90,.34);font-size:12px;color:#675035;line-height:1.7;white-space:pre-line}
+.award-reason-long{margin-top:8px;padding:10px 11px;border-radius:14px;background:rgba(255,255,255,.58);border:1px dashed rgba(232,201,184,.68);font-size:12px;color:var(--text2);line-height:1.75;white-space:pre-line}
+.award-actions{display:flex;gap:8px;margin-top:10px}
+.award-book-picker{display:flex;flex-direction:column;gap:7px;max-height:320px;overflow:auto;border:1px solid var(--border);border-radius:14px;padding:8px;background:rgba(255,255,255,.55)}
+.award-book-option{display:flex;gap:8px;align-items:flex-start;padding:8px;border-radius:10px;background:rgba(255,255,255,.64);font-size:12px;color:var(--text2);line-height:1.45}
+.award-book-option input{margin-top:2px}
+.award-book-reasons{display:none;margin-top:7px;gap:6px;flex-direction:column}
+.award-book-option.selected .award-book-reasons{display:flex}
+.award-reason-input{width:100%;border:1px solid var(--border);border-radius:10px;background:rgba(255,255,255,.82);padding:8px;font-size:12px;color:var(--text);font-family:inherit;resize:vertical}
 .segmented{display:flex;gap:6px;background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:4px}
 .segmented button{flex:1;border:none;border-radius:9px;padding:8px 6px;background:transparent;color:var(--text2);font-size:12px}
 .segmented button.active{background:var(--pink2);color:white}
@@ -579,6 +617,10 @@ body.magic-theme .vine-leaf{fill:#c4cfff;stroke:rgba(255,226,173,.22)}
 body.magic-theme .vine-leaf.l2{fill:#ffe4a2}
 body.magic-theme .vine-leaf.l3{fill:#b9a7e8}
 body.magic-theme .vine-leaf.l4{fill:#9bdcff}
+body.magic-theme .vine-bud-stem{stroke:#c7d2ff}
+body.magic-theme .vine-bud-leaf{fill:#d5dfff;stroke:rgba(255,226,173,.22)}
+body.magic-theme .vine-bud-tip{fill:#ffe4a2;filter:drop-shadow(0 0 12px rgba(255,226,173,.58))}
+body.magic-theme .vine-bud-svg{filter:drop-shadow(0 0 12px rgba(255,226,173,.42))}
 body.magic-theme .vine-tip{color:#fff0bd}
 body.magic-theme .vine-tip::before{background:linear-gradient(145deg,#d5dfff,#ffe4a2);box-shadow:0 0 16px rgba(255,226,173,.42),10px -6px 0 -5px #b9a7e8}
 body.magic-theme .vine-tip::after{background:linear-gradient(145deg,#fff2b8,#c6d2ff);box-shadow:0 0 14px rgba(255,226,173,.5)}
@@ -595,6 +637,13 @@ body.magic-theme .path-note{background:radial-gradient(circle at 12% 14%,rgba(25
 body.magic-theme .path-note::before{background:linear-gradient(145deg,#f8efff,#b7c8ff);box-shadow:-15px 8px 0 -6px rgba(255,181,219,.74),0 0 16px rgba(193,171,255,.48)}
 body.magic-theme .path-note-edit{background:rgba(245,237,255,.58);color:#6d58b0}
 body.magic-theme .path-quote{background:rgba(255,246,218,.42);border-left-color:rgba(116,110,183,.3)}
+body.magic-theme .award-hero{background:radial-gradient(circle at 16% 20%,rgba(255,240,177,.34),transparent 21%),radial-gradient(circle at 84% 18%,rgba(185,223,255,.24),transparent 18%),linear-gradient(145deg,rgba(105,129,198,.94),rgba(63,82,149,.92));border-color:rgba(255,226,173,.26);box-shadow:0 12px 28px rgba(8,10,28,.18)}
+body.magic-theme .award-title{color:#fff7df}
+body.magic-theme .award-sub{color:rgba(238,225,255,.74)}
+body.magic-theme .award-index-card,body.magic-theme .award-detail{background:linear-gradient(145deg,rgba(239,245,255,.94),rgba(255,243,207,.88));border-color:rgba(116,110,183,.18);box-shadow:0 8px 20px rgba(18,22,60,.13)}
+body.magic-theme .award-note{background:rgba(230,235,255,.52);border-left-color:rgba(116,110,183,.34)}
+body.magic-theme .award-index-reason,body.magic-theme .award-reason-short{background:linear-gradient(145deg,rgba(243,236,255,.9),rgba(213,225,255,.78));border-color:rgba(207,187,255,.42);color:#51476f}
+body.magic-theme .award-reason-long{background:rgba(239,245,255,.58);border-color:rgba(116,110,183,.22)}
 body.magic-theme .author-profile{background:linear-gradient(145deg,#e8f2ff,#fff2ca 52%,#e4dcff);border-color:rgba(116,110,183,.18)}
 body.magic-theme .author-note-box{background:linear-gradient(145deg,rgba(235,244,255,.92),rgba(255,242,208,.82));border-color:rgba(116,110,183,.2)}
 .author-avatar.has-avatar{background-size:cover!important;background-position:center;color:transparent}
@@ -717,12 +766,23 @@ body.magic-theme .author-wait-card{border-color:rgba(116,110,183,.18)}
           <div class="page-title serif">花　径</div>
           <div class="page-subtitle">那些一路开过来的殿堂级作品</div>
         </div>
+        <div class="path-subnav" id="path-subnav"></div>
       </div>
-      <div class="path-hero">
+      <div class="path-hero" id="path-log-hero">
         <div class="path-title">花开日志</div>
         <div class="path-sub">5.0 分作品会在这里沿着时间藤蔓慢慢开花。先记录它们，后面再把“勇敢、爱、美好”这些分类长出来。</div>
       </div>
       <div class="path-wrap" id="path-content"></div>
+      <div class="award-hero" id="path-award-hero">
+        <div class="award-hero-head">
+          <div>
+            <div class="award-title">朝花夕拾</div>
+            <div class="award-sub">给读过的书颁一些很私人的奖：最佳爹系、最佳温柔攻、最会让人念念不忘的关系。</div>
+          </div>
+          <button class="btn btn-primary" style="padding:8px 12px;font-size:12px;white-space:nowrap" onclick="openAwardSheet()">新增</button>
+        </div>
+      </div>
+      <div class="award-section" id="award-content"></div>
     </div>
 
     <!-- ═══ PAGE: STATS ═══ -->
@@ -1020,6 +1080,35 @@ body.magic-theme .author-wait-card{border-color:rgba(116,110,183,.18)}
   </div>
 </div>
 
+<!-- ═══ AWARD SHEET ═══ -->
+<div class="sheet" id="sheet-award">
+  <div class="sheet-handle"></div>
+  <div class="sheet-header">
+    <span class="sheet-title" id="sheet-award-title">新增评选</span>
+    <button class="sheet-close" onclick="closeSheet('sheet-award')">×</button>
+  </div>
+  <div class="sheet-body">
+    <div class="form-group">
+      <label class="form-label">评选名称</label>
+      <input class="form-input" id="award-name" placeholder="例如：最佳爹系 X 作精">
+    </div>
+    <div class="form-group">
+      <label class="form-label">评选备注</label>
+      <textarea class="form-textarea" id="award-note" style="min-height:90px" placeholder="写下你为什么想设这个奖，或者它在你心里的标准"></textarea>
+    </div>
+    <div class="form-group">
+      <label class="form-label">选择上榜作品</label>
+      <input class="form-input" id="award-book-search" placeholder="搜索书名 / 作者" oninput="renderAwardBookPicker()">
+      <div style="font-size:12px;color:var(--text3);line-height:1.7;margin-top:7px">勾选作品后，可以分别写短版和长版上榜理由。短版会显示在榜单里，长版会放进评选详情。</div>
+      <div class="award-book-picker" id="award-book-picker" style="margin-top:8px"></div>
+    </div>
+  </div>
+  <div class="sheet-footer">
+    <button class="btn btn-ghost" style="flex:1" onclick="closeSheet('sheet-award')">取消</button>
+    <button class="btn btn-primary" style="flex:2" onclick="saveAward()">保存评选</button>
+  </div>
+</div>
+
 <!-- ═══ AI TITLE MATCH SHEET ═══ -->
 <div class="sheet" id="sheet-ai-candidates">
   <div class="sheet-handle"></div>
@@ -1205,7 +1294,7 @@ const PLATFORMS = ['未知','晋江','长佩','长佩旧站','废文','其他'];
 const OPENAI_MODEL = 'gpt-4.1-mini';
 const GEMINI_MODELS = ['gemini-2.5-flash','gemini-2.0-flash','gemini-flash-latest','gemini-1.5-flash'];
 
-let db = {books:[], tagHistory:{...DEFAULT_TAG_HISTORY}, apiKey:'', aiKeys:{openai:'',gemini:''}, lastBackupAt:'', settings:{shelfView:'list',aiProvider:'gemini',pathNoteFont:'kai'}, authorNotes:{}, authorQuotes:{}, authorProfiles:{}, flowerNotes:{}};
+let db = {books:[], tagHistory:{...DEFAULT_TAG_HISTORY}, apiKey:'', aiKeys:{openai:'',gemini:''}, lastBackupAt:'', settings:{shelfView:'list',aiProvider:'gemini',pathNoteFont:'kai'}, authorNotes:{}, authorQuotes:{}, authorProfiles:{}, flowerNotes:{}, awards:[]};
 let currentFilter = 'all';
 let editingBookId = null;
 let editingLogIdx = null;
@@ -1232,6 +1321,9 @@ let screenshotDrafts = {};
 let screenshotEditMode = {};
 let screenshotViewerState = {bookId:null,index:0,items:[]};
 let screenshotTouchStart = null;
+let editingAwardId = null;
+let awardDraftEntries = {};
+let pathSubView = 'log';
 
 function load(){
   try{const s=localStorage.getItem(STORE_KEY);if(s)db=JSON.parse(s);}catch(e){}
@@ -1248,6 +1340,7 @@ function load(){
   if(!db.authorQuotes) db.authorQuotes={};
   if(!db.authorProfiles) db.authorProfiles={};
   if(!db.flowerNotes) db.flowerNotes={};
+  if(!db.awards) db.awards=[];
   TAG_CATS.forEach(c=>{if(!db.tagHistory[c.key])db.tagHistory[c.key]=[];});
   applyAppTheme();
 }
@@ -3164,15 +3257,18 @@ function avgBooksRating(books){
 //  FLOWER PATH
 // ═══════════════════════════════════════
 function renderPath(){
+  renderPathSubnav();
   const wrap=document.getElementById('path-content');
   if(!wrap) return;
   const hall=db.books.filter(isHallBook).map(b=>({book:b,log:hallLog(b)})).sort((a,b)=>(b.log.date||'0000').localeCompare(a.log.date||'0000'));
   if(!hall.length){
     wrap.innerHTML=`<div class="path-empty">还没有 5.0 分殿堂级作品。<br>等某一本书真的在心里开花，它就会长到这条花径上。</div>`;
+    renderAwards();
+    applyPathSubView();
     return;
   }
   let lastYear='';
-  wrap.innerHTML=`<div class="vine-timeline">${renderVineSvg(Math.max(900,hall.length*360))}<div class="vine-tip">藤蔓新梢 · 还会继续开花</div>${hall.map(({book,log},i)=>{
+  wrap.innerHTML=`<div class="vine-timeline">${renderVineSvg(Math.max(900,hall.length*360))}${renderVineBud()}<div class="vine-tip">藤蔓新梢 · 还会继续开花</div>${hall.map(({book,log},i)=>{
     const date=log.date||'未知时间';
     const year=date.slice(0,4)||'未知';
     const month=date.length>=7?`${parseInt(date.slice(5,7),10)}月`:'月份未知';
@@ -3180,6 +3276,184 @@ function renderPath(){
     lastYear=year;
     return `${yearHtml}${renderPathItem(book,log,month,i)}`;
   }).join('')}</div>`;
+  renderAwards();
+  applyPathSubView();
+}
+
+function renderPathSubnav(){
+  const nav=document.getElementById('path-subnav');
+  if(!nav) return;
+  nav.innerHTML=[
+    ['log','花开日志'],
+    ['awards','朝花夕拾']
+  ].map(([key,label])=>`<button class="${pathSubView===key?'active':''}" onclick="setPathSubView('${key}')">${label}</button>`).join('');
+}
+
+function setPathSubView(view){
+  pathSubView=view;
+  renderPathSubnav();
+  applyPathSubView();
+  document.getElementById('main')?.scrollTo({top:0,behavior:'smooth'});
+}
+
+function applyPathSubView(){
+  const showLog=pathSubView==='log';
+  [['path-log-hero',showLog],['path-content',showLog],['path-award-hero',!showLog],['award-content',!showLog]].forEach(([id,show])=>{
+    const el=document.getElementById(id);
+    if(el) el.style.display=show?'':'none';
+  });
+}
+
+function renderAwards(){
+  const wrap=document.getElementById('award-content');
+  if(!wrap) return;
+  const awards=db.awards||[];
+  if(!awards.length){
+    wrap.innerHTML='<div class="path-empty">还没有私人评选。可以先从“最佳爹系 X 作精”“最佳温柔攻”这种只有你懂的奖开始。</div>';
+    return;
+  }
+  const indexHtml=awards.map(a=>{
+    const entries=awardEntries(a);
+    return `<div class="award-index-card">
+      <div class="award-index-name" onclick="jumpToAward('${a.id}')">${escapeHtml(a.name||'未命名评选')}</div>
+      <div class="award-index-books">${entries.length?entries.map(({book,entry})=>`<div><span class="award-book-link" onclick="event.stopPropagation();openDetail('${book.id}')">《${escapeHtml(book.title)}》</span>${book.author?` / ${escapeHtml(book.author)}`:''}${entry.shortReason?`<div class="award-index-reason">${escapeHtml(entry.shortReason)}</div>`:''}</div>`).join(''):'还没有选择上榜作品'}</div>
+    </div>`;
+  }).join('');
+  const detailHtml=awards.map(a=>{
+    const entries=awardEntries(a);
+    return `<details class="award-detail" id="award-${a.id}">
+      <summary>${escapeHtml(a.name||'未命名评选')}</summary>
+      <div class="award-detail-body">
+        ${a.note?`<div class="award-note">${escapeHtml(a.note)}</div>`:''}
+        ${entries.length?entries.map(({book,entry},i)=>renderAwardPathCard(book,entry,i)).join(''):'<div class="tag-selected-empty">还没有选择上榜作品</div>'}
+        <div class="award-actions">
+          <button class="btn btn-ghost" onclick="openAwardSheet('${a.id}')">编辑</button>
+          <button class="btn btn-ghost" onclick="deleteAward('${a.id}')">删除</button>
+        </div>
+      </div>
+    </details>`;
+  }).join('');
+  wrap.innerHTML=`<div class="award-index">${indexHtml}</div>${detailHtml}`;
+}
+
+function awardEntries(award){
+  const entries=(award.entries||[]).length?award.entries:(award.bookIds||[]).map(bookId=>({bookId,shortReason:'',longReason:''}));
+  return entries.map(entry=>({entry,book:db.books.find(b=>b.id===entry.bookId)})).filter(x=>x.book);
+}
+
+function renderAwardPathCard(book,entry,index){
+  const tags=Object.entries(book.tags||{}).flatMap(([k,arr])=>arr.map(t=>({t,ci:TAG_CATS.findIndex(c=>c.key===k)}))).slice(0,6);
+  const names=[book.shouName&&`受：${book.shouName}`,book.gongName&&`攻：${book.gongName}`].filter(Boolean).join(' · ');
+  return `<div class="vine-item award-path-card flower-${index%5}">
+    ${renderFlower(index)}
+    <div class="vine-date">上榜作品</div>
+    <div class="path-book-title" onclick="openDetail('${book.id}')">${escapeHtml(book.title)}</div>
+    <div class="path-author" onclick="openAuthorDetail(decodeURIComponent('${encodeURIComponent(book.author||'')}'))">${escapeHtml(book.author||'未知作者')}</div>
+    <div class="path-meta">${[book.finishYear?`${book.finishYear} 完结`:'',names].filter(Boolean).map(escapeHtml).join(' · ')}</div>
+    ${tags.length?`<div class="path-tags">${tags.map(({t,ci})=>`<span class="tag-chip tag-${ci}">${escapeHtml(t)}</span>`).join('')}</div>`:''}
+    ${entry.shortReason?`<div class="award-reason-short">${escapeHtml(entry.shortReason)}</div>`:''}
+    ${entry.longReason?`<div class="award-reason-long">${escapeHtml(entry.longReason)}</div>`:''}
+  </div>`;
+}
+
+function renderVineBud(){
+  return `<svg class="vine-bud-svg" viewBox="0 0 62 58" aria-hidden="true">
+    <path class="vine-bud-stem" d="M25 58 C22 43 28 34 36 27 C43 21 43 13 35 9"/>
+    <path class="vine-bud-stem" d="M31 30 C20 26 15 17 18 8"/>
+    <path class="vine-bud-leaf" d="M18 9 C7 10 2 17 5 28 C17 26 22 20 18 9Z"/>
+    <path class="vine-bud-leaf" d="M37 28 C49 25 56 15 52 4 C39 7 34 15 37 28Z"/>
+    <path class="vine-bud-leaf" d="M28 39 C16 38 9 45 10 55 C22 54 29 49 28 39Z"/>
+    <path class="vine-bud-tip" d="M34 10 C31 1 38 -4 45 4 C44 13 39 16 34 10Z"/>
+  </svg>`;
+}
+
+function openAwardSheet(id=null){
+  editingAwardId=id;
+  const award=(db.awards||[]).find(a=>a.id===id);
+  document.getElementById('sheet-award-title').textContent=id?'编辑评选':'新增评选';
+  document.getElementById('award-name').value=award?.name||'';
+  document.getElementById('award-note').value=award?.note||'';
+  document.getElementById('award-book-search').value='';
+  awardDraftEntries={};
+  awardEntries(award||{}).forEach(({entry})=>{
+    awardDraftEntries[entry.bookId]={bookId:entry.bookId,shortReason:entry.shortReason||'',longReason:entry.longReason||''};
+  });
+  renderAwardBookPicker();
+  openSheet('sheet-award');
+}
+
+function renderAwardBookPicker(){
+  const wrap=document.getElementById('award-book-picker');
+  if(!wrap) return;
+  const q=(document.getElementById('award-book-search')?.value||'').trim().toLowerCase();
+  const books=[...db.books].sort((a,b)=>(a.title||'').localeCompare(b.title||'','zh-CN')).filter(b=>{
+    if(!q) return true;
+    return `${b.title||''} ${b.author||''}`.toLowerCase().includes(q);
+  });
+  wrap.innerHTML=books.length?books.map(b=>{
+    const entry=awardDraftEntries[b.id]||{};
+    const selected=!!awardDraftEntries[b.id];
+    return `<label class="award-book-option ${selected?'selected':''}">
+      <input type="checkbox" ${selected?'checked':''} onchange="setAwardBookSelected('${b.id}',this.checked,this)">
+      <span style="flex:1;min-width:0">
+        <span style="font-weight:600;color:var(--text)">《${escapeHtml(b.title)}》</span>
+        <span>${b.author?` / ${escapeHtml(b.author)}`:''}</span>
+        <span class="award-book-reasons">
+          <textarea class="award-reason-input" placeholder="短版上榜理由：榜单里会显示这一段" oninput="updateAwardReason('${b.id}','shortReason',this.value)">${escapeHtml(entry.shortReason||'')}</textarea>
+          <textarea class="award-reason-input" placeholder="长版上榜理由：展开评选详情后显示" style="min-height:82px" oninput="updateAwardReason('${b.id}','longReason',this.value)">${escapeHtml(entry.longReason||'')}</textarea>
+        </span>
+      </span>
+    </label>`;
+  }).join(''):'<div class="tag-selected-empty">没有匹配的书</div>';
+}
+
+function setAwardBookSelected(bookId,checked,el){
+  const row=el.closest('.award-book-option');
+  row?.classList.toggle('selected',checked);
+  if(checked){
+    awardDraftEntries[bookId]=awardDraftEntries[bookId]||{bookId,shortReason:'',longReason:''};
+  }else{
+    delete awardDraftEntries[bookId];
+  }
+}
+
+function updateAwardReason(bookId,field,value){
+  awardDraftEntries[bookId]=awardDraftEntries[bookId]||{bookId,shortReason:'',longReason:''};
+  awardDraftEntries[bookId][field]=value;
+}
+
+function saveAward(){
+  const name=document.getElementById('award-name').value.trim();
+  if(!name){toast('先写评选名称');return;}
+  const entries=Object.values(awardDraftEntries).filter(e=>db.books.some(b=>b.id===e.bookId)).map(e=>({
+    bookId:e.bookId,
+    shortReason:(e.shortReason||'').trim(),
+    longReason:(e.longReason||'').trim()
+  }));
+  const award={id:editingAwardId||genId(),name,note:document.getElementById('award-note').value.trim(),entries,updatedAt:Date.now()};
+  db.awards=db.awards||[];
+  const idx=db.awards.findIndex(a=>a.id===award.id);
+  if(idx>-1) db.awards[idx]=award; else db.awards.unshift(award);
+  save();
+  closeSheet('sheet-award');
+  renderAwards();
+  toast(editingAwardId?'评选已更新':'评选已添加');
+}
+
+function deleteAward(id){
+  const award=(db.awards||[]).find(a=>a.id===id);
+  if(!award||!confirm(`删除评选「${award.name||'未命名'}」吗？`)) return;
+  db.awards=(db.awards||[]).filter(a=>a.id!==id);
+  save();
+  renderAwards();
+  toast('评选已删除');
+}
+
+function jumpToAward(id){
+  const el=document.getElementById(`award-${id}`);
+  if(!el) return;
+  el.open=true;
+  el.scrollIntoView({behavior:'smooth',block:'start'});
 }
 
 function renderPathItem(book,log,month,index){
@@ -3611,7 +3885,8 @@ async function exportData(){
       authorNotes:db.authorNotes||{},
       authorQuotes:db.authorQuotes||{},
       authorProfiles:db.authorProfiles||{},
-      flowerNotes:db.flowerNotes||{}
+      flowerNotes:db.flowerNotes||{},
+      awards:db.awards||[]
     }
   };
   const data=JSON.stringify(backup,null,2);
@@ -3665,7 +3940,8 @@ function handleImport(e){
         authorNotes:data.authorNotes||{},
         authorQuotes:data.authorQuotes||{},
         authorProfiles:data.authorProfiles||{},
-        flowerNotes:data.flowerNotes||{}
+        flowerNotes:data.flowerNotes||{},
+        awards:data.awards||[]
       };
       TAG_CATS.forEach(c=>{if(!db.tagHistory[c.key])db.tagHistory[c.key]=[];});
       save();
@@ -3679,7 +3955,7 @@ function handleImport(e){
 
 function clearData(){
   if(!confirm('确定清空所有数据？此操作不可撤销！')) return;
-  db={books:[],tagHistory:{shou:[],gong:[],era:[],plot:[],vibe:[],warn:[]},apiKey:db.aiKeys?.gemini||db.apiKey,aiKeys:db.aiKeys||{openai:'',gemini:db.apiKey||''},lastBackupAt:db.lastBackupAt||'',settings:{shelfView:db.settings?.shelfView||'list',aiProvider:db.settings?.aiProvider||'gemini',pathNoteFont:db.settings?.pathNoteFont||'kai'},authorNotes:{},authorQuotes:{},authorProfiles:{},flowerNotes:{}};
+  db={books:[],tagHistory:{shou:[],gong:[],era:[],plot:[],vibe:[],warn:[]},apiKey:db.aiKeys?.gemini||db.apiKey,aiKeys:db.aiKeys||{openai:'',gemini:db.apiKey||''},lastBackupAt:db.lastBackupAt||'',settings:{shelfView:db.settings?.shelfView||'list',aiProvider:db.settings?.aiProvider||'gemini',pathNoteFont:db.settings?.pathNoteFont||'kai'},authorNotes:{},authorQuotes:{},authorProfiles:{},flowerNotes:{},awards:[]};
   save();
   renderShelf();
   toast('已清空');
