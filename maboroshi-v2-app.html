@@ -310,6 +310,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
 /* ── DETAIL PAGE ── */
 .detail-hero{background:linear-gradient(160deg,var(--pink3) 0%,var(--cream) 100%);padding:24px 20px 20px;position:relative}
 .detail-back{background:rgba(255,255,255,0.7);border:none;border-radius:50%;width:36px;height:36px;display:flex;align-items:center;justify-content:center;cursor:pointer;margin-bottom:16px;color:var(--text2);font-size:18px}
+.detail-hero-main{display:grid;grid-template-columns:92px minmax(0,1fr);gap:14px;align-items:start}
 .detail-cover{position:relative;width:92px;height:128px;border-radius:14px;margin-bottom:14px;box-shadow:0 4px 16px rgba(0,0,0,0.15);display:flex;align-items:flex-end;justify-content:center;font-size:14px;font-weight:700;color:#fff;text-align:center;padding:10px 7px;overflow:hidden}
 .detail-cover::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 28% 24%,rgba(255,255,255,.62),transparent 17%),linear-gradient(180deg,transparent 52%,rgba(45,28,35,.2));z-index:1}
 .detail-cover::after{content:attr(data-mark);position:absolute;right:10px;top:8px;color:rgba(255,255,255,.76);z-index:2}
@@ -318,6 +319,8 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
 .detail-author{font-size:13px;color:var(--text2);margin-bottom:10px}
 .detail-author-link{cursor:pointer;text-decoration:underline;text-decoration-color:rgba(196,96,126,.35);text-underline-offset:3px}
 .detail-badges{display:flex;flex-wrap:wrap;gap:6px}
+.detail-awards{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.detail-award-chip{border:none;border-radius:999px;padding:4px 9px;background:linear-gradient(145deg,#fff4bb,#f8c8d8);color:#8a4f62;font-size:11px;box-shadow:0 4px 10px rgba(176,120,32,.12);cursor:pointer}
 .badge{font-size:11px;padding:3px 10px;border-radius:20px;font-weight:500}
 .badge-pink{background:var(--pink3);color:var(--pink2)}
 .badge-yellow{background:var(--yellow);color:var(--yellow2)}
@@ -565,14 +568,20 @@ body.note-font-brush{--path-note-font:'Ma Shan Zheng','FZShuTi','华文新魏','
 .award-index{display:flex;flex-direction:column;gap:10px;margin-bottom:18px}
 .award-index::after{content:'评选详细内容';display:flex;align-items:center;gap:10px;margin:12px 2px 2px;font-family:'Noto Serif SC',serif;font-size:15px;font-weight:700;color:var(--text2)}
 .award-index::before{content:'榜单';font-family:'Noto Serif SC',serif;font-size:15px;font-weight:700;color:var(--pink2);margin:0 2px -2px}
-.award-index-card{position:relative;border:1px solid rgba(226,174,80,.42);border-radius:18px;background:radial-gradient(circle at 12% 16%,rgba(255,239,171,.74),transparent 24%),linear-gradient(145deg,rgba(255,252,238,.96),rgba(255,237,213,.86) 52%,rgba(252,232,240,.84));padding:13px 13px 12px;box-shadow:0 8px 22px rgba(176,120,32,.13),inset 0 0 0 1px rgba(255,255,255,.66);overflow:hidden}
+.award-index-card{position:relative;border:1px solid rgba(226,174,80,.42);border-radius:18px;background:radial-gradient(circle at 12% 16%,rgba(255,239,171,.74),transparent 24%),linear-gradient(145deg,rgba(255,252,238,.96),rgba(255,237,213,.86) 52%,rgba(252,232,240,.84));padding:13px 13px 12px;box-shadow:0 8px 22px rgba(176,120,32,.13),inset 0 0 0 1px rgba(255,255,255,.66);overflow:hidden;text-align:center}
 .award-index-card::after{content:'✦';position:absolute;right:12px;top:8px;color:rgba(232,130,159,.34);font-size:22px}
-.award-index-name{font-family:'Noto Serif SC',serif;font-size:16px;font-weight:700;color:#6a3d22;margin-bottom:5px;cursor:pointer}
-.award-index-note{font-size:11px;color:#9a765f;line-height:1.65;margin:0 28px 8px 0;white-space:pre-line}
+.award-index-name{position:relative;display:inline-block;font-family:'Noto Serif SC',serif;font-size:16px;font-weight:700;color:#6a3d22;margin:0 auto 7px;padding:5px 18px 6px;cursor:pointer;border-radius:999px;background:linear-gradient(145deg,rgba(255,250,230,.9),rgba(255,226,174,.58));box-shadow:inset 0 0 0 1px rgba(255,255,255,.75),0 4px 12px rgba(176,120,32,.12)}
+.award-index-name::before,.award-index-name::after{content:'';position:absolute;top:50%;width:18px;height:1px;background:rgba(176,120,32,.28)}
+.award-index-name::before{right:100%}.award-index-name::after{left:100%}
+.award-index-note{font-size:11px;color:#9a765f;line-height:1.65;margin:0 10px 8px;white-space:pre-line}
 .award-index-books{font-size:12px;color:var(--text2);line-height:1.65}
 .award-book-link{color:var(--pink2);text-decoration:underline;text-decoration-color:rgba(232,130,159,.24);text-underline-offset:3px;cursor:pointer}
-.award-index-reason{position:relative;margin:4px 0 8px 8px;padding-left:11px;color:#765848;font-family:'Long Cang','STXingkai','华文行楷','KaiTi',serif;font-size:15px;line-height:1.45;letter-spacing:.035em}
-.award-index-reason::before{content:'“';position:absolute;left:0;top:-2px;color:rgba(232,130,159,.58);font-family:'Noto Serif SC',serif}
+.award-index-entry{position:relative;text-align:left;padding-left:30px;margin:8px 0 2px}
+.award-rank{position:absolute;left:0;top:0;width:22px;height:22px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;background:#f3e5d8;color:#9a765f;font-size:11px;font-weight:700}
+.award-rank.top{background:linear-gradient(145deg,#fff3a8,#e8a95c);color:#6a3d22;box-shadow:0 3px 8px rgba(176,120,32,.18)}
+.award-rank.r2{background:linear-gradient(145deg,#f4f0ff,#bbb3d8);color:#51476f}.award-rank.r3{background:linear-gradient(145deg,#ffe7cd,#d79a72);color:#70462d}
+.award-index-reason{position:relative;margin:3px 0 8px;padding-left:9px;color:#7d6559;font-family:'LXGW WenKai','STKaiti','KaiTi','Noto Serif SC',serif;font-size:12px;line-height:1.6;letter-spacing:.015em}
+.award-index-reason::before{content:'“';position:absolute;left:0;top:-1px;color:rgba(176,120,32,.38);font-family:'Noto Serif SC',serif}
 .award-detail{margin-bottom:10px;border:1px solid rgba(232,201,184,.56);border-radius:18px;background:linear-gradient(145deg,rgba(255,255,255,.82),rgba(255,246,234,.72));overflow:hidden}
 .award-detail summary{list-style:none;cursor:pointer;padding:13px 14px;font-family:'Noto Serif SC',serif;font-size:15px;font-weight:700;color:var(--text);display:flex;justify-content:space-between;gap:12px}
 .award-detail summary::-webkit-details-marker{display:none}
@@ -581,9 +590,12 @@ body.note-font-brush{--path-note-font:'Ma Shan Zheng','FZShuTi','华文新魏','
 .award-detail-body{padding:0 14px 14px}
 .award-note{font-size:12px;color:var(--text2);line-height:1.7;background:rgba(255,244,214,.5);border-left:2px solid rgba(232,130,159,.34);border-radius:4px 12px 12px 4px;padding:8px 10px;margin-bottom:10px;white-space:pre-line}
 .award-path-card{margin:0 0 12px 42px}
-.award-reason-short{margin-top:10px;padding:9px 10px;border-radius:14px;background:linear-gradient(145deg,rgba(255,250,218,.94),rgba(232,244,238,.82));border:1px solid rgba(236,188,90,.34);font-size:12px;color:#675035;line-height:1.7;white-space:pre-line}
-.award-reason-long{margin-top:8px;padding:10px 11px;border-radius:14px;background:rgba(255,255,255,.58);border:1px dashed rgba(232,201,184,.68);font-size:12px;color:var(--text2);line-height:1.75;white-space:pre-line}
-.award-actions{display:flex;gap:8px;margin:10px 0 12px;flex-wrap:wrap}
+.award-medal{position:absolute;left:-45px;top:18px;width:42px;height:48px;filter:drop-shadow(0 4px 8px rgba(176,120,32,.18))}
+.award-medal svg{width:100%;height:100%;overflow:visible}
+.award-reason-short{margin-top:10px;padding:8px 10px;border-radius:12px;background:rgba(255,255,255,.42);border-left:2px solid rgba(176,120,32,.26);font-family:'LXGW WenKai','STKaiti','KaiTi','Noto Serif SC',serif;font-size:12px;color:#6f5a4f;line-height:1.65;white-space:pre-line}
+.award-reason-long{margin-top:8px;padding:9px 10px;border-radius:12px;background:rgba(255,255,255,.36);border:1px dashed rgba(188,160,142,.38);font-size:12px;color:var(--text2);line-height:1.72;white-space:pre-line}
+.award-actions{display:flex;gap:6px;margin:10px 0 2px;flex-wrap:wrap;justify-content:flex-end}
+.award-actions .btn{padding:4px 8px!important;font-size:11px!important}
 .award-card-actions{display:flex;gap:7px;margin-top:9px}
 .award-book-picker{display:flex;flex-direction:column;gap:7px;max-height:320px;overflow:auto;border:1px solid var(--border);border-radius:14px;padding:8px;background:rgba(255,255,255,.55)}
 .award-book-option{display:flex;gap:8px;align-items:flex-start;padding:8px;border-radius:10px;background:rgba(255,255,255,.64);font-size:12px;color:var(--text2);line-height:1.45}
@@ -601,6 +613,7 @@ body.magic-theme{background:#394678}
 body.magic-theme .detail-hero{background:radial-gradient(circle at 18% 22%,rgba(255,239,170,.42),transparent 19%),radial-gradient(circle at 84% 14%,rgba(187,224,255,.28),transparent 18%),linear-gradient(145deg,#637fc2,#42589c 56%,#334579)}
 body.magic-theme .detail-title{color:#fff8df}
 body.magic-theme .detail-author{color:rgba(239,229,255,.8)}
+body.magic-theme .detail-award-chip{background:linear-gradient(145deg,#f4ecff,#bfcaff);color:#51476f;box-shadow:0 0 14px rgba(255,226,173,.18)}
 body.magic-theme .detail-body{background:linear-gradient(180deg,rgba(255,249,235,.96),rgba(238,242,255,.96));color:#3d3658}
 body.magic-theme .detail-back{background:rgba(255,245,212,.22);color:#fff1be}
 body.magic-theme .sheet,body.magic-theme .mini-sheet{background:linear-gradient(180deg,#f8f1df,#eaf1ff);color:#3d3658}
@@ -650,11 +663,12 @@ body.magic-theme .award-index::before{color:#ffe4a2}
 body.magic-theme .award-index::after{color:#fff0bd}
 body.magic-theme .award-index-card{background:radial-gradient(circle at 12% 16%,rgba(255,226,173,.44),transparent 24%),linear-gradient(145deg,rgba(239,245,255,.96),rgba(226,216,255,.86) 52%,rgba(255,223,238,.78));border-color:rgba(255,226,173,.34);box-shadow:0 8px 22px rgba(18,22,60,.17),0 0 18px rgba(255,226,173,.12)}
 body.magic-theme .award-index-name{color:#4d4478}
+body.magic-theme .award-index-name{background:linear-gradient(145deg,rgba(255,246,218,.88),rgba(213,202,255,.58))}
 body.magic-theme .award-index-note{color:#746a91}
 body.magic-theme .award-detail{background:linear-gradient(145deg,rgba(239,245,255,.94),rgba(255,243,207,.88));border-color:rgba(116,110,183,.18);box-shadow:0 8px 20px rgba(18,22,60,.13)}
 body.magic-theme .award-note{background:rgba(230,235,255,.52);border-left-color:rgba(116,110,183,.34)}
 body.magic-theme .award-index-reason{color:#5a4b86}
-body.magic-theme .award-reason-short{background:linear-gradient(145deg,rgba(243,236,255,.9),rgba(213,225,255,.78));border-color:rgba(207,187,255,.42);color:#51476f}
+body.magic-theme .award-reason-short{background:rgba(239,245,255,.36);border-left-color:rgba(116,110,183,.3);color:#51476f}
 body.magic-theme .award-reason-long{background:rgba(239,245,255,.58);border-color:rgba(116,110,183,.22)}
 body.magic-theme .author-profile{background:linear-gradient(145deg,#e8f2ff,#fff2ca 52%,#e4dcff);border-color:rgba(116,110,183,.18)}
 body.magic-theme .author-note-box{background:linear-gradient(145deg,rgba(235,244,255,.92),rgba(255,242,208,.82));border-color:rgba(116,110,183,.2)}
@@ -1110,7 +1124,7 @@ body.magic-theme .author-wait-card{border-color:rgba(116,110,183,.18)}
     </div>
     <div class="form-group">
       <label class="form-label">选择上榜作品</label>
-      <input class="form-input" id="award-book-search" placeholder="搜索书名 / 作者" oninput="renderAwardBookPicker()">
+      <input class="form-input" id="award-book-search" placeholder="搜索书名 / 作者 / 标签" oninput="renderAwardBookPicker()">
       <div style="font-size:12px;color:var(--text3);line-height:1.7;margin-top:7px">勾选作品后，可以分别写短版和长版上榜理由。短版会显示在榜单里，长版会放进评选详情。</div>
       <div class="award-book-picker" id="award-book-picker" style="margin-top:8px"></div>
     </div>
@@ -1860,6 +1874,8 @@ function openDetail(id,opts={}){
   }
   const logs=b.readLogs||[];
   const bookQuotes=normalizeBookQuotes(b.bookQuotes||b.bookQuote);
+  const awardHits=getBookAwardHits(b.id);
+  const awardBadges=awardHits.length?`<div class="detail-awards">${awardHits.map(a=>`<button class="detail-award-chip" onclick="openAwardFromDetail('${a.id}')">上榜 · ${escapeHtml(a.name)}</button>`).join('')}</div>`:'';
   const tagGroups=TAG_CATS.map((c,ci)=>({c,ci,tags:b.tags?.[c.key]||[]})).filter(g=>g.tags.length);
   const tagsHtml=tagGroups.map(({c,ci,tags})=>`
     <div style="margin-bottom:10px">
@@ -1880,13 +1896,18 @@ function openDetail(id,opts={}){
   document.getElementById('page-detail').innerHTML=`
     <div class="detail-hero">
       <button class="detail-back" onclick="returnDetail()">←</button>
-      ${renderCover(b,'detail')}
-      <div class="detail-title">${b.title}</div>
-      <div class="detail-author ${b.author?'detail-author-link':''}" ${b.author?`onclick="openAuthorDetail(decodeURIComponent('${encodeURIComponent(b.author)}'))"`:''}>${b.author||'未知作者'}</div>
-      <div class="detail-badges">
-        <span class="badge badge-pink">${STATUS_MAP[b.status]||''}</span>
-        <span class="badge badge-green">${b.platform||''}</span>
-        ${logs.length>1?`<span class="badge badge-yellow">${logs.length} 刷</span>`:''}
+      <div class="detail-hero-main">
+        ${renderCover(b,'detail')}
+        <div>
+          <div class="detail-title">${b.title}</div>
+          <div class="detail-author ${b.author?'detail-author-link':''}" ${b.author?`onclick="openAuthorDetail(decodeURIComponent('${encodeURIComponent(b.author)}'))"`:''}>${b.author||'未知作者'}</div>
+          <div class="detail-badges">
+            <span class="badge badge-pink">${STATUS_MAP[b.status]||''}</span>
+            <span class="badge badge-green">${b.platform||''}</span>
+            ${logs.length>1?`<span class="badge badge-yellow">${logs.length} 刷</span>`:''}
+          </div>
+          ${awardBadges}
+        </div>
       </div>
     </div>
     <div class="detail-body">
@@ -1933,6 +1954,17 @@ function normalizeBookQuote(raw){
 function normalizeBookQuotes(raw){
   const list=Array.isArray(raw)?raw:(raw?[raw]:[]);
   return list.map(normalizeBookQuote).filter(q=>q.text);
+}
+
+function getBookAwardHits(bookId){
+  return (db.awards||[]).filter(a=>awardEntries(a).some(({entry})=>entry.bookId===bookId));
+}
+
+function openAwardFromDetail(awardId){
+  detailReturnState=null;
+  pathSubView='awards';
+  showPage('path');
+  setTimeout(()=>jumpToAward(awardId),80);
 }
 
 function renderBookScreenshots(book){
@@ -3340,7 +3372,7 @@ function renderAwards(){
     return `<div class="award-index-card">
       <div class="award-index-name" onclick="jumpToAward('${a.id}')">${escapeHtml(a.name||'未命名评选')}</div>
       ${a.note?`<div class="award-index-note">${escapeHtml(a.note)}</div>`:''}
-      <div class="award-index-books">${entries.length?entries.map(({book,entry})=>`<div><span class="award-book-link" onclick="event.stopPropagation();openDetail('${book.id}',{returnTo:'path-awards',awardId:'${a.id}'})">《${escapeHtml(book.title)}》</span>${book.author?` / ${escapeHtml(book.author)}`:''}${entry.shortReason?`<div class="award-index-reason">${escapeHtml(entry.shortReason)}</div>`:''}</div>`).join(''):'还没有选择上榜作品'}</div>
+      <div class="award-index-books">${entries.length?entries.map(({book,entry},i)=>`<div class="award-index-entry"><span class="award-rank ${i<3?'top r'+(i+1):''}">${i<3?['冠','亚','季'][i]:i+1}</span><span class="award-book-link" onclick="event.stopPropagation();openDetail('${book.id}',{returnTo:'path-awards',awardId:'${a.id}'})">《${escapeHtml(book.title)}》</span>${book.author?` / ${escapeHtml(book.author)}`:''}${entry.shortReason?`<div class="award-index-reason">${escapeHtml(entry.shortReason)}</div>`:''}</div>`).join(''):'还没有选择上榜作品'}</div>
     </div>`;
   }).join('');
   const detailHtml=awards.map(a=>{
@@ -3349,12 +3381,12 @@ function renderAwards(){
       <summary>${escapeHtml(a.name||'未命名评选')}</summary>
       <div class="award-detail-body">
         ${a.note?`<div class="award-note">${escapeHtml(a.note)}</div>`:''}
+        ${entries.length?entries.map(({book,entry},i)=>renderAwardPathCard(book,entry,i)).join(''):'<div class="tag-selected-empty">还没有选择上榜作品</div>'}
         <div class="award-actions">
           <button class="btn btn-ghost" onclick="openAwardMetaSheet('${a.id}')">编辑评选</button>
           <button class="btn btn-ghost" onclick="openAwardSheet('${a.id}')">新增作品</button>
           <button class="btn btn-ghost" onclick="deleteAward('${a.id}')">删除评选</button>
         </div>
-        ${entries.length?entries.map(({book,entry},i)=>renderAwardPathCard(book,entry,i)).join(''):'<div class="tag-selected-empty">还没有选择上榜作品</div>'}
       </div>
     </details>`;
   }).join('');
@@ -3372,8 +3404,8 @@ function renderAwardPathCard(book,entry,index){
   const quote=normalizeBookQuote(book.bookQuotes||book.bookQuote);
   const review=getLatestReviewExcerpt(book);
   return `<div class="vine-item award-path-card flower-${index%5}">
-    ${renderFlower(index)}
-    <div class="vine-date">上榜作品</div>
+    ${renderAwardMedal(index)}
+    <div class="vine-date">${index+1} · 上榜作品</div>
     <div class="path-book-title" onclick="openDetail('${book.id}',{returnTo:'path-awards',awardId:'${entry.awardId||''}'})">${escapeHtml(book.title)}</div>
     <div class="path-author" onclick="openAuthorDetail(decodeURIComponent('${encodeURIComponent(book.author||'')}'),{returnTo:'path-awards',awardId:'${entry.awardId||''}'})">${escapeHtml(book.author||'未知作者')}</div>
     <div class="path-meta">${[book.finishYear?`${book.finishYear} 完结`:'',names].filter(Boolean).map(escapeHtml).join(' · ')}</div>
@@ -3383,6 +3415,19 @@ function renderAwardPathCard(book,entry,index){
     ${quote.text?`<div class="path-quote">“${escapeHtml(quote.text)}”${quote.speaker?`<div class="book-quote-meta">${escapeHtml(quote.speaker)}说</div>`:''}</div>`:''}
     ${review?`<div class="path-feeling">${escapeHtml(review)}</div>`:''}
     <div class="award-card-actions"><button class="btn btn-ghost" style="padding:5px 10px;font-size:11px" onclick="editAwardEntry('${entry.awardId||''}','${book.id}')">编辑理由</button></div>
+  </div>`;
+}
+
+function renderAwardMedal(index){
+  const label=index<3?['冠','亚','季'][index]:index+1;
+  return `<div class="award-medal">
+    <svg viewBox="0 0 42 48" aria-hidden="true">
+      <defs><linearGradient id="awardMedal${index}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${index===0?'#fff2a8':index===1?'#ebe8ff':index===2?'#ffd9b8':'#f7e7d8'}"/><stop offset="1" stop-color="${index===0?'#e5a85f':index===1?'#aaa3cf':index===2?'#d68e68':'#d9bfae'}"/></linearGradient></defs>
+      <path d="M16 29 L10 46 L21 39 L32 46 L26 29" fill="rgba(232,130,159,.34)"/>
+      <circle cx="21" cy="20" r="15" fill="url(#awardMedal${index})" stroke="rgba(120,84,52,.16)"/>
+      <path d="M12 18 C8 13 12 7 18 10 C20 3 28 5 27 12 C34 12 35 21 29 24 C31 31 21 34 18 27 C12 30 7 23 12 18Z" fill="rgba(255,255,255,.38)"/>
+      <text x="21" y="24" text-anchor="middle" font-size="11" font-weight="700" fill="#6a3d22">${label}</text>
+    </svg>
   </div>`;
 }
 
@@ -3455,7 +3500,8 @@ function renderAwardBookPicker(){
   const q=(document.getElementById('award-book-search')?.value||'').trim().toLowerCase();
   const books=[...db.books].sort((a,b)=>(a.title||'').localeCompare(b.title||'','zh-CN')).filter(b=>{
     if(!q) return true;
-    return `${b.title||''} ${b.author||''}`.toLowerCase().includes(q);
+    const tags=Object.values(b.tags||{}).flat().join(' ');
+    return `${b.title||''} ${b.author||''} ${tags}`.toLowerCase().includes(q);
   });
   wrap.innerHTML=books.length?books.map(b=>{
     const entry=awardDraftEntries[b.id]||{};
