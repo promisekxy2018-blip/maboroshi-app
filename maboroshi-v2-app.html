@@ -562,12 +562,17 @@ body.note-font-brush{--path-note-font:'Ma Shan Zheng','FZShuTi','华文新魏','
 .award-title{font-family:'Noto Serif SC',serif;font-size:22px;font-weight:700;color:var(--text)}
 .award-sub{font-size:12px;color:var(--text3);line-height:1.7;margin-top:5px}
 .award-section{padding:0 14px 28px}
-.award-index{display:flex;flex-direction:column;gap:8px;margin-bottom:14px}
-.award-index-card{border:1px solid rgba(232,201,184,.55);border-radius:16px;background:rgba(255,255,255,.74);padding:11px 12px;box-shadow:0 5px 15px rgba(143,98,80,.08)}
-.award-index-name{font-family:'Noto Serif SC',serif;font-size:15px;font-weight:700;color:var(--text);margin-bottom:6px;cursor:pointer}
+.award-index{display:flex;flex-direction:column;gap:10px;margin-bottom:18px}
+.award-index::after{content:'评选详细内容';display:flex;align-items:center;gap:10px;margin:12px 2px 2px;font-family:'Noto Serif SC',serif;font-size:15px;font-weight:700;color:var(--text2)}
+.award-index::before{content:'榜单';font-family:'Noto Serif SC',serif;font-size:15px;font-weight:700;color:var(--pink2);margin:0 2px -2px}
+.award-index-card{position:relative;border:1px solid rgba(226,174,80,.42);border-radius:18px;background:radial-gradient(circle at 12% 16%,rgba(255,239,171,.74),transparent 24%),linear-gradient(145deg,rgba(255,252,238,.96),rgba(255,237,213,.86) 52%,rgba(252,232,240,.84));padding:13px 13px 12px;box-shadow:0 8px 22px rgba(176,120,32,.13),inset 0 0 0 1px rgba(255,255,255,.66);overflow:hidden}
+.award-index-card::after{content:'✦';position:absolute;right:12px;top:8px;color:rgba(232,130,159,.34);font-size:22px}
+.award-index-name{font-family:'Noto Serif SC',serif;font-size:16px;font-weight:700;color:#6a3d22;margin-bottom:5px;cursor:pointer}
+.award-index-note{font-size:11px;color:#9a765f;line-height:1.65;margin:0 28px 8px 0;white-space:pre-line}
 .award-index-books{font-size:12px;color:var(--text2);line-height:1.65}
 .award-book-link{color:var(--pink2);text-decoration:underline;text-decoration-color:rgba(232,130,159,.24);text-underline-offset:3px;cursor:pointer}
-.award-index-reason{margin:5px 0 8px;padding:7px 9px;border-radius:10px;background:rgba(255,244,214,.56);color:var(--text2);font-size:12px;line-height:1.65}
+.award-index-reason{position:relative;margin:4px 0 8px 8px;padding-left:11px;color:#765848;font-family:'Long Cang','STXingkai','华文行楷','KaiTi',serif;font-size:15px;line-height:1.45;letter-spacing:.035em}
+.award-index-reason::before{content:'“';position:absolute;left:0;top:-2px;color:rgba(232,130,159,.58);font-family:'Noto Serif SC',serif}
 .award-detail{margin-bottom:10px;border:1px solid rgba(232,201,184,.56);border-radius:18px;background:linear-gradient(145deg,rgba(255,255,255,.82),rgba(255,246,234,.72));overflow:hidden}
 .award-detail summary{list-style:none;cursor:pointer;padding:13px 14px;font-family:'Noto Serif SC',serif;font-size:15px;font-weight:700;color:var(--text);display:flex;justify-content:space-between;gap:12px}
 .award-detail summary::-webkit-details-marker{display:none}
@@ -578,7 +583,8 @@ body.note-font-brush{--path-note-font:'Ma Shan Zheng','FZShuTi','华文新魏','
 .award-path-card{margin:0 0 12px 42px}
 .award-reason-short{margin-top:10px;padding:9px 10px;border-radius:14px;background:linear-gradient(145deg,rgba(255,250,218,.94),rgba(232,244,238,.82));border:1px solid rgba(236,188,90,.34);font-size:12px;color:#675035;line-height:1.7;white-space:pre-line}
 .award-reason-long{margin-top:8px;padding:10px 11px;border-radius:14px;background:rgba(255,255,255,.58);border:1px dashed rgba(232,201,184,.68);font-size:12px;color:var(--text2);line-height:1.75;white-space:pre-line}
-.award-actions{display:flex;gap:8px;margin-top:10px}
+.award-actions{display:flex;gap:8px;margin:10px 0 12px;flex-wrap:wrap}
+.award-card-actions{display:flex;gap:7px;margin-top:9px}
 .award-book-picker{display:flex;flex-direction:column;gap:7px;max-height:320px;overflow:auto;border:1px solid var(--border);border-radius:14px;padding:8px;background:rgba(255,255,255,.55)}
 .award-book-option{display:flex;gap:8px;align-items:flex-start;padding:8px;border-radius:10px;background:rgba(255,255,255,.64);font-size:12px;color:var(--text2);line-height:1.45}
 .award-book-option input{margin-top:2px}
@@ -640,9 +646,15 @@ body.magic-theme .path-quote{background:rgba(255,246,218,.42);border-left-color:
 body.magic-theme .award-hero{background:radial-gradient(circle at 16% 20%,rgba(255,240,177,.34),transparent 21%),radial-gradient(circle at 84% 18%,rgba(185,223,255,.24),transparent 18%),linear-gradient(145deg,rgba(105,129,198,.94),rgba(63,82,149,.92));border-color:rgba(255,226,173,.26);box-shadow:0 12px 28px rgba(8,10,28,.18)}
 body.magic-theme .award-title{color:#fff7df}
 body.magic-theme .award-sub{color:rgba(238,225,255,.74)}
-body.magic-theme .award-index-card,body.magic-theme .award-detail{background:linear-gradient(145deg,rgba(239,245,255,.94),rgba(255,243,207,.88));border-color:rgba(116,110,183,.18);box-shadow:0 8px 20px rgba(18,22,60,.13)}
+body.magic-theme .award-index::before{color:#ffe4a2}
+body.magic-theme .award-index::after{color:#fff0bd}
+body.magic-theme .award-index-card{background:radial-gradient(circle at 12% 16%,rgba(255,226,173,.44),transparent 24%),linear-gradient(145deg,rgba(239,245,255,.96),rgba(226,216,255,.86) 52%,rgba(255,223,238,.78));border-color:rgba(255,226,173,.34);box-shadow:0 8px 22px rgba(18,22,60,.17),0 0 18px rgba(255,226,173,.12)}
+body.magic-theme .award-index-name{color:#4d4478}
+body.magic-theme .award-index-note{color:#746a91}
+body.magic-theme .award-detail{background:linear-gradient(145deg,rgba(239,245,255,.94),rgba(255,243,207,.88));border-color:rgba(116,110,183,.18);box-shadow:0 8px 20px rgba(18,22,60,.13)}
 body.magic-theme .award-note{background:rgba(230,235,255,.52);border-left-color:rgba(116,110,183,.34)}
-body.magic-theme .award-index-reason,body.magic-theme .award-reason-short{background:linear-gradient(145deg,rgba(243,236,255,.9),rgba(213,225,255,.78));border-color:rgba(207,187,255,.42);color:#51476f}
+body.magic-theme .award-index-reason{color:#5a4b86}
+body.magic-theme .award-reason-short{background:linear-gradient(145deg,rgba(243,236,255,.9),rgba(213,225,255,.78));border-color:rgba(207,187,255,.42);color:#51476f}
 body.magic-theme .award-reason-long{background:rgba(239,245,255,.58);border-color:rgba(116,110,183,.22)}
 body.magic-theme .author-profile{background:linear-gradient(145deg,#e8f2ff,#fff2ca 52%,#e4dcff);border-color:rgba(116,110,183,.18)}
 body.magic-theme .author-note-box{background:linear-gradient(145deg,rgba(235,244,255,.92),rgba(255,242,208,.82));border-color:rgba(116,110,183,.2)}
@@ -1501,6 +1513,14 @@ function returnDetail(){
     }
     return;
   }
+  if(detailReturnState?.type==='path-awards'){
+    const target=detailReturnState.awardId;
+    detailReturnState=null;
+    pathSubView='awards';
+    showPage('path',{pushState:false});
+    setTimeout(()=>{if(target) jumpToAward(target);},80);
+    return;
+  }
   detailReturnState=null;
   showPage('shelf',{pushState:false});
 }
@@ -1830,7 +1850,9 @@ function clearShelfFilters(){
 function openDetail(id,opts={}){
   const b=db.books.find(x=>x.id===id);
   if(!b) return;
-  if(opts.returnTo==='stats'||document.getElementById('stats-modal')?.classList.contains('show')){
+  if(opts.returnTo==='path-awards'){
+    detailReturnState={type:'path-awards',awardId:opts.awardId||''};
+  }else if(opts.returnTo==='stats'||document.getElementById('stats-modal')?.classList.contains('show')){
     detailReturnState={type:'stats-modal',snapshot:JSON.parse(JSON.stringify(statsModal))};
     closeStatsModal();
   }else{
@@ -3198,7 +3220,8 @@ function openStatsBooksBy(type,value){
   else openStatsBooks(`月份：${value}`, db.books.filter(b=>(b.readLogs||[]).some(l=>l.date?.startsWith(value))));
 }
 
-function openAuthorDetail(author){
+function openAuthorDetail(author,opts={}){
+  if(opts.returnTo==='path-awards') detailReturnState={type:'path-awards',awardId:opts.awardId||''};
   const books=db.books.filter(b=>b.author===author);
   statsModal={mode:'author-detail',title:`作者：${author}`,books,items:[],author};
   openStatsModal(`作者：${author}`,`${books.length} 本书 · 可记录你对这位作者的评价`);
@@ -3316,7 +3339,8 @@ function renderAwards(){
     const entries=awardEntries(a);
     return `<div class="award-index-card">
       <div class="award-index-name" onclick="jumpToAward('${a.id}')">${escapeHtml(a.name||'未命名评选')}</div>
-      <div class="award-index-books">${entries.length?entries.map(({book,entry})=>`<div><span class="award-book-link" onclick="event.stopPropagation();openDetail('${book.id}')">《${escapeHtml(book.title)}》</span>${book.author?` / ${escapeHtml(book.author)}`:''}${entry.shortReason?`<div class="award-index-reason">${escapeHtml(entry.shortReason)}</div>`:''}</div>`).join(''):'还没有选择上榜作品'}</div>
+      ${a.note?`<div class="award-index-note">${escapeHtml(a.note)}</div>`:''}
+      <div class="award-index-books">${entries.length?entries.map(({book,entry})=>`<div><span class="award-book-link" onclick="event.stopPropagation();openDetail('${book.id}',{returnTo:'path-awards',awardId:'${a.id}'})">《${escapeHtml(book.title)}》</span>${book.author?` / ${escapeHtml(book.author)}`:''}${entry.shortReason?`<div class="award-index-reason">${escapeHtml(entry.shortReason)}</div>`:''}</div>`).join(''):'还没有选择上榜作品'}</div>
     </div>`;
   }).join('');
   const detailHtml=awards.map(a=>{
@@ -3325,11 +3349,12 @@ function renderAwards(){
       <summary>${escapeHtml(a.name||'未命名评选')}</summary>
       <div class="award-detail-body">
         ${a.note?`<div class="award-note">${escapeHtml(a.note)}</div>`:''}
-        ${entries.length?entries.map(({book,entry},i)=>renderAwardPathCard(book,entry,i)).join(''):'<div class="tag-selected-empty">还没有选择上榜作品</div>'}
         <div class="award-actions">
-          <button class="btn btn-ghost" onclick="openAwardSheet('${a.id}')">编辑</button>
-          <button class="btn btn-ghost" onclick="deleteAward('${a.id}')">删除</button>
+          <button class="btn btn-ghost" onclick="openAwardMetaSheet('${a.id}')">编辑评选</button>
+          <button class="btn btn-ghost" onclick="openAwardSheet('${a.id}')">新增作品</button>
+          <button class="btn btn-ghost" onclick="deleteAward('${a.id}')">删除评选</button>
         </div>
+        ${entries.length?entries.map(({book,entry},i)=>renderAwardPathCard(book,entry,i)).join(''):'<div class="tag-selected-empty">还没有选择上榜作品</div>'}
       </div>
     </details>`;
   }).join('');
@@ -3338,21 +3363,26 @@ function renderAwards(){
 
 function awardEntries(award){
   const entries=(award.entries||[]).length?award.entries:(award.bookIds||[]).map(bookId=>({bookId,shortReason:'',longReason:''}));
-  return entries.map(entry=>({entry,book:db.books.find(b=>b.id===entry.bookId)})).filter(x=>x.book);
+  return entries.map(entry=>({entry:{...entry,awardId:award?.id||''},book:db.books.find(b=>b.id===entry.bookId)})).filter(x=>x.book);
 }
 
 function renderAwardPathCard(book,entry,index){
   const tags=Object.entries(book.tags||{}).flatMap(([k,arr])=>arr.map(t=>({t,ci:TAG_CATS.findIndex(c=>c.key===k)}))).slice(0,6);
   const names=[book.shouName&&`受：${book.shouName}`,book.gongName&&`攻：${book.gongName}`].filter(Boolean).join(' · ');
+  const quote=normalizeBookQuote(book.bookQuotes||book.bookQuote);
+  const review=getLatestReviewExcerpt(book);
   return `<div class="vine-item award-path-card flower-${index%5}">
     ${renderFlower(index)}
     <div class="vine-date">上榜作品</div>
-    <div class="path-book-title" onclick="openDetail('${book.id}')">${escapeHtml(book.title)}</div>
-    <div class="path-author" onclick="openAuthorDetail(decodeURIComponent('${encodeURIComponent(book.author||'')}'))">${escapeHtml(book.author||'未知作者')}</div>
+    <div class="path-book-title" onclick="openDetail('${book.id}',{returnTo:'path-awards',awardId:'${entry.awardId||''}'})">${escapeHtml(book.title)}</div>
+    <div class="path-author" onclick="openAuthorDetail(decodeURIComponent('${encodeURIComponent(book.author||'')}'),{returnTo:'path-awards',awardId:'${entry.awardId||''}'})">${escapeHtml(book.author||'未知作者')}</div>
     <div class="path-meta">${[book.finishYear?`${book.finishYear} 完结`:'',names].filter(Boolean).map(escapeHtml).join(' · ')}</div>
     ${tags.length?`<div class="path-tags">${tags.map(({t,ci})=>`<span class="tag-chip tag-${ci}">${escapeHtml(t)}</span>`).join('')}</div>`:''}
     ${entry.shortReason?`<div class="award-reason-short">${escapeHtml(entry.shortReason)}</div>`:''}
     ${entry.longReason?`<div class="award-reason-long">${escapeHtml(entry.longReason)}</div>`:''}
+    ${quote.text?`<div class="path-quote">“${escapeHtml(quote.text)}”${quote.speaker?`<div class="book-quote-meta">${escapeHtml(quote.speaker)}说</div>`:''}</div>`:''}
+    ${review?`<div class="path-feeling">${escapeHtml(review)}</div>`:''}
+    <div class="award-card-actions"><button class="btn btn-ghost" style="padding:5px 10px;font-size:11px" onclick="editAwardEntry('${entry.awardId||''}','${book.id}')">编辑理由</button></div>
   </div>`;
 }
 
@@ -3380,6 +3410,43 @@ function openAwardSheet(id=null){
   });
   renderAwardBookPicker();
   openSheet('sheet-award');
+}
+
+function openAwardMetaSheet(id){
+  const award=(db.awards||[]).find(a=>a.id===id);
+  if(!award) return;
+  const name=prompt('评选名称',award.name||'');
+  if(name===null) return;
+  const note=prompt('评选内容备注',award.note||'');
+  if(note===null) return;
+  award.name=name.trim()||award.name;
+  award.note=note.trim();
+  award.updatedAt=Date.now();
+  save();
+  renderAwards();
+  setTimeout(()=>jumpToAward(id),40);
+}
+
+function editAwardEntry(awardId,bookId){
+  const award=(db.awards||[]).find(a=>a.id===awardId);
+  if(!award) return;
+  award.entries=award.entries||[];
+  let entry=award.entries.find(e=>e.bookId===bookId);
+  if(!entry){
+    entry={bookId,shortReason:'',longReason:''};
+    award.entries.push(entry);
+  }
+  const book=db.books.find(b=>b.id===bookId);
+  const shortReason=prompt(`《${book?.title||''}》短版上榜理由`,entry.shortReason||'');
+  if(shortReason===null) return;
+  const longReason=prompt(`《${book?.title||''}》长版上榜理由`,entry.longReason||'');
+  if(longReason===null) return;
+  entry.shortReason=shortReason.trim();
+  entry.longReason=longReason.trim();
+  award.updatedAt=Date.now();
+  save();
+  renderAwards();
+  setTimeout(()=>jumpToAward(awardId),40);
 }
 
 function renderAwardBookPicker(){
