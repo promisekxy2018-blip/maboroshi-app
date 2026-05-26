@@ -589,7 +589,7 @@ body.note-font-brush{--path-note-font:'Ma Shan Zheng','FZShuTi','华文新魏','
 #page-path.award-night .award-section{padding-top:2px}
 .award-index{display:flex;flex-direction:column;gap:10px;margin-bottom:18px}
 .award-index::after{content:'拾花笺';display:flex;align-items:center;gap:10px;margin:14px 2px 2px;font-family:'Noto Serif SC',serif;font-size:15px;font-weight:700;color:rgba(255,241,200,.92)}
-.award-index::before{content:'星章名录';font-family:'Noto Serif SC',serif;font-size:15px;font-weight:700;color:#ffe6a2;margin:0 2px -2px;text-shadow:0 0 12px rgba(255,226,173,.32)}
+.award-index::before{content:'朝花榜';font-family:'Noto Serif SC',serif;font-size:15px;font-weight:700;color:#ffe6a2;margin:0 2px -2px;text-shadow:0 0 12px rgba(255,226,173,.32)}
 .award-index-card{position:relative;border:1px solid rgba(232,194,96,.44);border-radius:18px;background:radial-gradient(circle at 18% 12%,rgba(255,235,176,.25),transparent 18%),linear-gradient(145deg,rgba(255,253,245,.96),rgba(244,235,214,.9) 50%,rgba(235,240,245,.84));padding:15px 12px 12px;box-shadow:0 10px 24px rgba(23,29,62,.16),inset 0 0 0 1px rgba(255,255,255,.72);overflow:hidden;text-align:center}
 .award-index-card::before{content:'';position:absolute;left:12px;right:12px;top:9px;height:3px;border-radius:999px;background:linear-gradient(90deg,transparent,#c49b5d,transparent);opacity:.5}
 .award-index-card::after{content:'✦';position:absolute;right:12px;top:13px;color:rgba(176,120,32,.3);font-size:20px}
@@ -823,8 +823,8 @@ body.magic-theme .author-wait-card{border-color:rgba(116,110,183,.18)}
         <div class="path-subnav" id="path-subnav"></div>
       </div>
       <div class="path-hero" id="path-log-hero">
-        <div class="path-title">花信笺</div>
-        <div class="path-sub" id="path-log-sub" onclick="editPathBannerText('log')">5.0 分作品会在这里沿着时间藤蔓慢慢开花。每一朵，都是某段阅读岁月留下的花信。</div>
+        <div class="path-title">繁花纪年</div>
+        <div class="path-sub" id="path-log-sub" onclick="editPathBannerText('log')">5.0 分作品会在这里沿着时间藤蔓慢慢开花。每一朵，都是某一年读过之后仍然留在心里的光。</div>
       </div>
       <div class="path-wrap" id="path-content"></div>
       <div class="award-hero" id="path-award-hero">
@@ -3405,7 +3405,7 @@ function renderPathSubnav(){
   const nav=document.getElementById('path-subnav');
   if(!nav) return;
   nav.innerHTML=[
-    ['log','花信笺'],
+    ['log','繁花纪年'],
     ['awards','朝花夕拾']
   ].map(([key,label])=>`<button class="${pathSubView===key?'active':''}" onclick="setPathSubView('${key}')">${label}</button>`).join('');
 }
@@ -3429,7 +3429,7 @@ function applyPathSubView(){
 function applyPathBannerTexts(){
   const log=document.getElementById('path-log-sub');
   const award=document.getElementById('path-award-sub');
-  if(log) log.textContent=db.settings?.pathLogText||'5.0 分作品会在这里沿着时间藤蔓慢慢开花。每一朵，都是某段阅读岁月留下的花信。';
+  if(log) log.textContent=db.settings?.pathLogText||'5.0 分作品会在这里沿着时间藤蔓慢慢开花。每一朵，都是某一年读过之后仍然留在心里的光。';
   if(award) award.textContent=db.settings?.pathAwardText||'给读过的书颁一些很私人的奖：最佳爹系、最佳温柔攻、最会让人念念不忘的关系。';
 }
 
@@ -3437,7 +3437,7 @@ function editPathBannerText(kind){
   db.settings=db.settings||{};
   const key=kind==='log'?'pathLogText':'pathAwardText';
   const current=db.settings[key]||document.getElementById(kind==='log'?'path-log-sub':'path-award-sub')?.textContent||'';
-  openTextEditor(kind==='log'?'编辑花信笺说明':'编辑朝花夕拾说明',current,(val)=>{
+  openTextEditor(kind==='log'?'编辑繁花纪年说明':'编辑朝花夕拾说明',current,(val)=>{
     db.settings[key]=val.trim()||current;
     save();
     applyPathBannerTexts();
