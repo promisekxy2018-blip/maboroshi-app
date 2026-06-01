@@ -130,6 +130,12 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
 .btn-icon{width:40px;height:40px;border-radius:50%;background:var(--pink3);color:var(--pink2);font-size:20px;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center}
 .fab{position:fixed;bottom:84px;right:20px;width:52px;height:52px;border-radius:50%;background:var(--pink2);color:#fff;font-size:26px;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(232,130,159,0.4);z-index:99;transition:transform 0.15s}
 .fab:active{transform:scale(0.93)}
+.fab.light-fab{background:radial-gradient(circle at 34% 30%,#fff9dc 0 10%,#ffd86b 11% 27%,#f2a8c4 52%,#9b8be0 100%);box-shadow:0 0 0 4px rgba(255,226,173,.22),0 0 24px rgba(255,216,107,.48),0 8px 22px rgba(139,109,172,.25);font-size:0}
+.fab.light-fab::before{content:'✦';font-size:26px;color:white;text-shadow:0 0 9px rgba(255,255,255,.95),0 0 18px rgba(255,226,173,.8)}
+.fab.arc-fab{background:linear-gradient(145deg,#ffe2ec,#ffd7b5 48%,#b9d8ff);box-shadow:0 0 0 4px rgba(255,226,236,.28),0 8px 22px rgba(160,112,130,.24);font-size:0}
+.fab.arc-fab::before{content:'◕‿◕';width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at 50% 34%,#fff7ef 0 45%,#f6b4c7 46% 100%);color:#6f4b6b;font-size:12px;font-weight:700;box-shadow:inset 0 -4px 0 rgba(255,180,202,.28)}
+body.magic-theme .fab.light-fab{background:radial-gradient(circle at 34% 30%,#fff7d0 0 10%,#ffe4a2 11% 30%,#b9c5ff 56%,#6678c0 100%);box-shadow:0 0 0 4px rgba(255,226,173,.18),0 0 28px rgba(255,226,173,.46),0 8px 24px rgba(6,9,28,.35)}
+body.magic-theme .fab.arc-fab{background:linear-gradient(145deg,#fff0ce,#d8ddff 48%,#687dcc);box-shadow:0 0 0 4px rgba(255,226,173,.16),0 8px 24px rgba(6,9,28,.35)}
 
 /* ── SEARCH BAR ── */
 .search-wrap{padding:0 16px 12px}
@@ -573,6 +579,7 @@ body.magic-theme .ai-task-panel,body.magic-theme .ai-task-card{background:linear
 .light-controls{padding:0 16px 10px;display:flex;flex-direction:column;gap:8px}
 .light-filter-row{display:flex;gap:8px;overflow-x:auto}
 .light-filter-row .form-select{min-width:110px;padding-top:8px;padding-bottom:8px;font-size:12px}
+.light-filter-row .form-input{min-width:0}
 .light-list{padding:0 16px 92px;display:flex;flex-direction:column;gap:12px}
 .light-card{position:relative;border:1px solid rgba(232,201,184,.48);border-radius:22px 10px 22px 10px;background:radial-gradient(circle at 92% 10%,rgba(255,226,173,.4),transparent 24px),radial-gradient(circle at 12% 100%,rgba(246,232,255,.3),transparent 36px),linear-gradient(145deg,rgba(255,255,255,.86),rgba(255,248,236,.62));padding:15px;box-shadow:0 10px 24px rgba(143,98,80,.09),inset 0 0 0 1px rgba(255,255,255,.58);overflow:hidden}
 .light-card::before{content:'';position:absolute;left:0;right:0;top:0;height:2px;background:linear-gradient(90deg,rgba(240,186,99,.56),rgba(246,190,210,.24),transparent)}
@@ -581,6 +588,7 @@ body.magic-theme .ai-task-panel,body.magic-theme .ai-task-card{background:linear
 .light-card-title{font-family:'Noto Serif SC',serif;font-size:16px;font-weight:700;color:var(--text);line-height:1.5}
 .light-date{font-size:10px;color:var(--text3);white-space:nowrap;margin-top:4px}
 .light-text{position:relative;margin-top:9px;padding:9px 10px;border-radius:12px 5px 12px 5px;background:linear-gradient(115deg,rgba(255,250,236,.58),rgba(255,255,255,.2));font-size:13px;color:var(--text2);line-height:1.75;white-space:pre-line;display:-webkit-box;-webkit-line-clamp:5;-webkit-box-orient:vertical;overflow:hidden}
+.light-essence{margin-top:9px;padding:9px 11px;border-radius:7px 15px 7px 15px;background:linear-gradient(115deg,rgba(255,239,190,.62),rgba(246,232,255,.34));border-left:3px solid rgba(240,186,99,.55);font-family:'Noto Serif SC',serif;font-size:13px;color:#7c5a30;line-height:1.75;white-space:pre-line}
 .light-chip-row{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}
 .light-chip{font-size:10px;border-radius:999px;padding:3px 8px;background:rgba(255,232,239,.82);color:#9a5a70;box-shadow:0 1px 3px rgba(143,98,80,.06)}
 .light-chip.big{background:linear-gradient(145deg,rgba(255,239,190,.92),rgba(255,226,173,.68));color:#9b6e22}
@@ -597,6 +605,16 @@ body.magic-theme .ai-task-panel,body.magic-theme .ai-task-card{background:linear
 .arc-meta{margin-top:7px;font-size:12px;color:var(--text2);line-height:1.7}
 .arc-record-list{margin-top:10px;border-top:1px dashed rgba(232,201,184,.58);padding-top:8px;display:flex;flex-direction:column;gap:6px}
 .arc-record-item{font-size:12px;color:var(--text2);line-height:1.55}
+.arc-detail-hero{position:relative;margin:0 16px 12px;padding:15px;border-radius:24px 10px 24px 10px;background:radial-gradient(circle at 90% 12%,rgba(255,226,173,.45),transparent 28px),linear-gradient(145deg,rgba(255,255,255,.84),rgba(246,232,255,.42));border:1px solid rgba(232,201,184,.5);box-shadow:0 10px 24px rgba(143,98,80,.09);overflow:hidden}
+.arc-detail-hero::after{content:'弧';position:absolute;right:-8px;bottom:-18px;font-family:'Noto Serif SC',serif;font-size:60px;color:rgba(182,162,216,.13)}
+.arc-detail-back{border:none;background:rgba(255,255,255,.64);border-radius:999px;color:var(--text2);font-size:12px;padding:6px 11px;margin-bottom:9px}
+.arc-detail-name{font-family:'Noto Serif SC',serif;font-size:22px;font-weight:800;color:var(--text)}
+.arc-detail-note{margin-top:8px;font-size:13px;line-height:1.75;color:var(--text2);white-space:pre-line}
+.arc-detail-section-title{margin:2px 16px 8px;font-size:13px;color:var(--text2);font-weight:700}
+.arc-detail-record{margin:0 16px 12px;padding:14px;border-radius:18px 8px 18px 8px;background:rgba(255,255,255,.78);border:1px solid rgba(232,201,184,.48);box-shadow:0 8px 20px rgba(143,98,80,.07)}
+.arc-detail-record-title{font-family:'Noto Serif SC',serif;font-size:16px;font-weight:700;color:var(--text);line-height:1.45}
+.arc-detail-record-meta{font-size:11px;color:var(--text3);margin-top:3px}
+.arc-detail-record-text{margin-top:9px;font-size:13px;color:var(--text2);line-height:1.75;white-space:pre-line}
 .arc-actions,.light-actions{display:flex;gap:7px;margin-top:10px;justify-content:flex-end}
 .arc-actions button,.light-actions button{border:none;border-radius:999px;background:rgba(255,255,255,.62);color:var(--text2);font-size:11px;padding:5px 9px}
 .capture-shot-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-top:8px}
@@ -605,6 +623,10 @@ body.magic-theme .ai-task-panel,body.magic-theme .ai-task-card{background:linear
 .capture-shot button{position:absolute;right:3px;top:3px;width:22px;height:22px;border:none;border-radius:50%;background:rgba(61,43,31,.58);color:white}
 .profile-picker{border:1px solid rgba(232,201,184,.5);border-radius:15px;padding:8px;background:linear-gradient(145deg,rgba(255,255,255,.56),rgba(255,248,236,.38));display:flex;flex-direction:column;gap:6px}
 .profile-pick{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text2);padding:7px;border-radius:11px;background:rgba(255,255,255,.58)}
+.arc-tag-input-row{display:flex;gap:8px}
+.arc-tag-input-row .form-input{flex:1;min-width:0}
+.arc-tag-history{display:none}
+.arc-tag-history.show{display:flex}
 body.magic-theme #page-light::before{background:linear-gradient(116deg,transparent 0 12%,rgba(255,226,173,.18) 12.2% 12.8%,transparent 13.2% 46%,rgba(185,197,255,.13) 46.2% 47%,transparent 47.4%),radial-gradient(circle at 86% 15%,rgba(255,226,173,.26),transparent 72px),radial-gradient(circle at 14% 66%,rgba(185,197,255,.16),transparent 96px);opacity:.92}
 body.magic-theme .light-hero{background:radial-gradient(circle at 88% 18%,rgba(255,226,173,.32),transparent 24px),radial-gradient(circle at 18% 88%,rgba(185,197,255,.16),transparent 36px),linear-gradient(105deg,rgba(255,246,218,.14),rgba(174,192,255,.08));border-left-color:#ffe4a2;box-shadow:0 10px 24px rgba(5,8,28,.24),inset 0 0 0 1px rgba(255,226,173,.15)}
 body.magic-theme .light-hero::before{background:linear-gradient(90deg,rgba(255,226,173,.62),rgba(185,197,255,.28),transparent)}
@@ -620,6 +642,7 @@ body.magic-theme .light-card::after{color:rgba(255,226,173,.08);text-shadow:0 0 
 body.magic-theme .arc-card::before{border-color:rgba(255,226,173,.18);box-shadow:-18px 28px 0 -24px rgba(185,197,255,.58),0 0 22px rgba(255,226,173,.08)}
 body.magic-theme .light-card-title,body.magic-theme .arc-name{color:#fff7df}
 body.magic-theme .light-text{background:linear-gradient(115deg,rgba(14,22,55,.46),rgba(255,246,218,.06));color:rgba(255,246,218,.82);box-shadow:inset 0 0 0 1px rgba(255,226,173,.08)}
+body.magic-theme .light-essence{background:linear-gradient(115deg,rgba(255,226,173,.18),rgba(185,197,255,.12));border-left-color:rgba(255,226,173,.56);color:#fff0c4}
 body.magic-theme .arc-meta,body.magic-theme .arc-record-item{color:rgba(255,246,218,.78)}
 body.magic-theme .light-date{color:rgba(238,225,255,.58)}
 body.magic-theme .light-chip{background:rgba(255,226,173,.14);color:#ffe8b2;border:1px solid rgba(255,226,173,.12)}
@@ -631,6 +654,10 @@ body.magic-theme .arc-count{background:linear-gradient(145deg,rgba(255,226,173,.
 body.magic-theme .arc-record-list{border-top-color:rgba(255,226,173,.16)}
 body.magic-theme .arc-actions button,body.magic-theme .light-actions button{background:rgba(255,246,218,.12);color:rgba(255,246,218,.78);border:1px solid rgba(255,226,173,.12)}
 body.magic-theme .profile-picker,body.magic-theme .profile-pick{background:rgba(255,246,218,.12);border-color:rgba(255,226,173,.18)}
+body.magic-theme .arc-detail-hero,body.magic-theme .arc-detail-record{background:radial-gradient(circle at 90% 12%,rgba(255,226,173,.14),transparent 24px),linear-gradient(145deg,rgba(255,246,218,.12),rgba(190,205,255,.07));border-color:rgba(255,226,173,.2);box-shadow:0 12px 26px rgba(6,9,28,.28);color:#fff5dd}
+body.magic-theme .arc-detail-name,body.magic-theme .arc-detail-record-title{color:#fff7df}
+body.magic-theme .arc-detail-note,body.magic-theme .arc-detail-record-text{color:rgba(255,246,218,.78)}
+body.magic-theme .arc-detail-back{background:rgba(255,246,218,.12);color:#fff1c4;border:1px solid rgba(255,226,173,.14)}
 body.magic-theme #sheet-light-record .sheet-header,body.magic-theme #sheet-arc-profile .sheet-header{background:radial-gradient(circle at 86% 20%,rgba(255,226,173,.12),transparent 34px),linear-gradient(145deg,rgba(255,246,218,.08),rgba(185,197,255,.07));border-bottom-color:rgba(255,226,173,.15)}
 .path-hero{position:relative;margin:0 16px 12px;padding:10px 13px 11px 14px;border-radius:8px 20px 8px 20px;background:radial-gradient(ellipse at 88% 22%,rgba(183,217,129,.3),transparent 24px),linear-gradient(100deg,rgba(237,247,233,.82),rgba(255,248,242,.18));border:none;border-left:3px solid #8fbf6e;box-shadow:0 8px 20px rgba(95,150,88,.08);overflow:hidden}
 .path-hero::after{content:'❦';position:absolute;right:12px;top:7px;color:rgba(143,191,110,.58);font-size:16px;text-shadow:-20px 18px 0 rgba(248,184,200,.22)}
@@ -997,11 +1024,6 @@ body.magic-theme .author-wait-card{border-color:rgba(116,110,183,.18)}
           <div class="page-title serif">捕　光</div>
           <div class="page-subtitle">把灵感与情感碰撞出的余晖留下来</div>
         </div>
-        <button class="btn-icon" onclick="openLightRecordSheet()">＋</button>
-      </div>
-      <div class="light-hero">
-        <div class="light-title">誓要捕捉最后的余晖</div>
-        <div class="light-sub">素材、灵感、观察，和那些一闪而过却念念不忘的人物弧光。</div>
       </div>
       <div class="light-subnav" id="light-subnav"></div>
       <div class="light-controls" id="light-controls"></div>
@@ -1181,7 +1203,7 @@ body.magic-theme .author-wait-card{border-color:rgba(116,110,183,.18)}
           <div class="settings-item-left">
             <div class="settings-item-icon" style="background:#e8f0fe">ℹ️</div>
             <div>
-              <div class="settings-item-title">幻 maboroshi v2.32</div>
+              <div class="settings-item-title">幻 maboroshi v2.33</div>
               <div class="settings-item-sub">数据和密码均存储于本地</div>
             </div>
           </div>
@@ -1416,6 +1438,10 @@ body.magic-theme .author-wait-card{border-color:rgba(116,110,183,.18)}
       <textarea class="form-textarea" id="light-text-input" style="min-height:220px" placeholder="把这一瞬间完整地留下来。"></textarea>
     </div>
     <div class="form-group">
+      <label class="form-label">精华记录</label>
+      <textarea class="form-textarea" id="light-essence-input" style="min-height:120px" placeholder="这一道光里最值得留下的一句、一个火花、一个核心念头。"></textarea>
+    </div>
+    <div class="form-group">
       <label class="form-label">链接</label>
       <textarea class="form-textarea" id="light-links-input" style="min-height:70px" placeholder="每行一个链接"></textarea>
     </div>
@@ -1445,20 +1471,20 @@ body.magic-theme .author-wait-card{border-color:rgba(116,110,183,.18)}
     </div>
     <div class="form-group">
       <label class="form-label">性格</label>
-      <input class="form-input" id="arc-personality-input" placeholder="输入后回车添加" onkeydown="if(event.key==='Enter'){event.preventDefault();addArcTag('personality')}">
-      <div class="tag-picker-options" id="arc-personality-history"></div>
+      <div class="arc-tag-input-row"><input class="form-input" id="arc-personality-input" placeholder="输入后点击添加，或从历史里选" onfocus="showArcTagHistory('personality')" oninput="showArcTagHistory('personality')" onkeydown="if(event.key==='Enter'){event.preventDefault();addArcTag('personality')}"><button type="button" class="btn btn-ghost" style="font-size:12px;padding:8px 12px" onclick="addArcTag('personality')">添加</button></div>
+      <div class="tag-picker-options arc-tag-history" id="arc-personality-history"></div>
       <div class="selected-tags" id="arc-personality-selected"></div>
     </div>
     <div class="form-group">
       <label class="form-label">身份</label>
-      <input class="form-input" id="arc-identity-input" placeholder="输入后回车添加" onkeydown="if(event.key==='Enter'){event.preventDefault();addArcTag('identity')}">
-      <div class="tag-picker-options" id="arc-identity-history"></div>
+      <div class="arc-tag-input-row"><input class="form-input" id="arc-identity-input" placeholder="输入后点击添加，或从历史里选" onfocus="showArcTagHistory('identity')" oninput="showArcTagHistory('identity')" onkeydown="if(event.key==='Enter'){event.preventDefault();addArcTag('identity')}"><button type="button" class="btn btn-ghost" style="font-size:12px;padding:8px 12px" onclick="addArcTag('identity')">添加</button></div>
+      <div class="tag-picker-options arc-tag-history" id="arc-identity-history"></div>
       <div class="selected-tags" id="arc-identity-selected"></div>
     </div>
     <div class="form-group">
       <label class="form-label">人生阶段</label>
-      <input class="form-input" id="arc-stage-input" placeholder="输入后回车添加" onkeydown="if(event.key==='Enter'){event.preventDefault();addArcTag('stage')}">
-      <div class="tag-picker-options" id="arc-stage-history"></div>
+      <div class="arc-tag-input-row"><input class="form-input" id="arc-stage-input" placeholder="输入后点击添加，或从历史里选" onfocus="showArcTagHistory('stage')" oninput="showArcTagHistory('stage')" onkeydown="if(event.key==='Enter'){event.preventDefault();addArcTag('stage')}"><button type="button" class="btn btn-ghost" style="font-size:12px;padding:8px 12px" onclick="addArcTag('stage')">添加</button></div>
+      <div class="tag-picker-options arc-tag-history" id="arc-stage-history"></div>
       <div class="selected-tags" id="arc-stage-selected"></div>
     </div>
     <div class="form-group">
@@ -1693,6 +1719,7 @@ let awardEntryEditorState = null;
 let lightSubView = 'records';
 let editingLightId = null;
 let editingArcId = null;
+let currentArcDetailId = null;
 let arcReturnToLight = false;
 let lightDraft = {smallTags:[],profileIds:[],screenshots:[]};
 let arcDraft = {personality:[],identity:[],stage:[]};
@@ -1834,7 +1861,7 @@ function showPage(p, opts={}){
   if(ni) ni.classList.add('active');
   const fab = document.getElementById('fab');
   fab.style.display = (p==='shelf'||p==='light') ? 'flex' : 'none';
-  fab.onclick = p==='light' ? openLightRecordSheet : openAddSheet;
+  updateFabForPage(p);
   pageHistory.push(p);
   if(p==='stats') renderStats();
   if(p==='shelf') renderShelf();
@@ -1844,6 +1871,30 @@ function showPage(p, opts={}){
   if(p==='light') renderLight();
   window.scrollTo&&document.getElementById('main').scrollTo(0,0);
   if(opts.pushState!==false) pushAppState({type:'page',page:p});
+}
+
+function updateFabForPage(p=currentPageName()){
+  const fab=document.getElementById('fab');
+  if(!fab) return;
+  fab.classList.remove('light-fab','arc-fab');
+  if(p==='light'){
+    if(lightSubView==='profiles'){
+      fab.classList.add('arc-fab');
+      fab.onclick=()=>openArcProfileSheet();
+      fab.title='新增弧光档案';
+    }else{
+      fab.classList.add('light-fab');
+      fab.onclick=()=>openLightRecordSheet();
+      fab.title='新增捕光记录';
+    }
+  }else{
+    fab.onclick=openAddSheet;
+    fab.title='添加书籍';
+  }
+}
+
+function currentPageName(){
+  return document.querySelector('.page.active')?.id?.replace('page-','')||'shelf';
 }
 function goSettings(){showPage('settings');}
 
@@ -1861,6 +1912,7 @@ function appBack(){
   if(document.getElementById('stats-modal')?.classList.contains('show')){closeStatsModal();return true;}
   if(hasOpenOverlay()){closeAllSheets();return true;}
   const active=document.querySelector('.page.active')?.id?.replace('page-','')||'shelf';
+  if(active==='light'&&currentArcDetailId){currentArcDetailId=null;lightSubView='profiles';renderLight();return true;}
   if(active==='detail'){returnDetail();return true;}
   if(active==='settings'||active==='stats'||active==='encounter'||active==='path'||active==='light'){showPage('shelf',{pushState:false});return true;}
   if(confirm('要退出「幻」吗？')){exitApp();return true;}
@@ -4201,7 +4253,9 @@ function renderCardVineFrame(index){
 // ═══════════════════════════════════════
 function renderLight(){
   renderLightNav();
-  if(lightSubView==='profiles') renderArcProfiles();
+  updateFabForPage('light');
+  if(lightSubView==='profiles'&&currentArcDetailId) renderArcDetail(currentArcDetailId);
+  else if(lightSubView==='profiles') renderArcProfiles();
   else renderLightRecords();
 }
 
@@ -4211,12 +4265,12 @@ function renderLightNav(){
   nav.innerHTML=[
     ['records','捕光记录'],
     ['profiles','弧光档案']
-  ].map(([k,l])=>`<button class="${lightSubView===k?'active':''}" onclick="lightSubView='${k}';renderLight()">${l}</button>`).join('');
+  ].map(([k,l])=>`<button class="${lightSubView===k?'active':''}" onclick="lightSubView='${k}';currentArcDetailId=null;renderLight()">${l}</button>`).join('');
 }
 
 function setLightFilter(key,value){
   lightFilters[key]=value;
-  renderLightRecords();
+  renderLight();
 }
 
 function renderLightRecords(){
@@ -4228,7 +4282,6 @@ function renderLightRecords(){
     <div class="light-filter-row">
       <select class="form-select" onchange="setLightFilter('big',this.value)">${bigs.map(v=>`<option value="${escapeAttr(v)}" ${lightFilters.big===v?'selected':''}>${v==='all'?'全部大标签':escapeHtml(v)}</option>`).join('')}</select>
       <select class="form-select" onchange="setLightFilter('small',this.value)">${smalls.map(v=>`<option value="${escapeAttr(v)}" ${lightFilters.small===v?'selected':''}>${v==='all'?'全部小标签':escapeHtml(v)}</option>`).join('')}</select>
-      <button class="btn btn-ghost" style="font-size:12px;padding:8px 12px;white-space:nowrap" onclick="openLightRecordSheet()">＋ 捕光</button>
       <button class="btn btn-ghost" style="font-size:12px;padding:8px 12px;white-space:nowrap" onclick="openLightTagManager()">标签管理</button>
     </div>`;
   let records=[...(db.lightRecords||[])];
@@ -4258,6 +4311,7 @@ function renderLightCard(r){
       ${profiles}
     </div>
     ${r.text?`<div class="light-text">${escapeHtml(r.text)}</div>`:''}
+    ${r.essence?`<div class="light-essence">${escapeHtml(r.essence)}</div>`:''}
     ${links.length?`<div class="light-links">${links.map(l=>`<a href="${escapeAttr(l)}" target="_blank" rel="noreferrer">${escapeHtml(l)}</a>`).join('')}</div>`:''}
     ${shots.length?`<div class="light-thumb-row">${shots.map((s,i)=>`<img class="light-thumb" src="${escapeAttr(s.dataUrl)}" alt="" onclick="openLightScreenshotViewer('${r.id}',${i})">`).join('')}</div>`:''}
     <div class="light-actions"><button onclick="openLightRecordSheet('${r.id}')">编辑</button><button onclick="deleteLightRecord('${r.id}')">删除</button></div>
@@ -4267,7 +4321,8 @@ function renderLightCard(r){
 function renderArcProfiles(){
   const controls=document.getElementById('light-controls');
   const content=document.getElementById('light-content');
-  controls.innerHTML=`<div class="light-filter-row"><input class="form-input" id="arc-query" placeholder="搜索人物代号 / 标签 / 相关记录" value="${escapeAttr(lightFilters.query||'')}" oninput="setLightFilter('query',this.value)"><button class="btn btn-ghost" style="font-size:12px;padding:8px 12px;white-space:nowrap" onclick="openArcProfileSheet()">＋ 档案</button><button class="btn btn-ghost" style="font-size:12px;padding:8px 12px;white-space:nowrap" onclick="openLightTagManager()">标签管理</button></div>`;
+  currentArcDetailId=null;
+  controls.innerHTML=`<div class="light-filter-row"><input class="form-input" id="arc-query" placeholder="搜索人物代号 / 标签 / 相关记录" value="${escapeAttr(lightFilters.query||'')}" oninput="setLightFilter('query',this.value)"><button class="btn btn-ghost" style="font-size:12px;padding:8px 12px;white-space:nowrap" onclick="openLightTagManager()">标签管理</button></div>`;
   const q=(lightFilters.query||'').trim().toLowerCase();
   let profiles=[...(db.arcProfiles||[])];
   if(q) profiles=profiles.filter(p=>{
@@ -4282,12 +4337,47 @@ function renderArcCard(p){
   const records=getArcRecords(p.id);
   const tags=[...(p.personalityTags||[]),...(p.identityTags||[]),...(p.stageTags||[])];
   return `<div class="arc-card">
-    <div class="arc-head"><div class="arc-name">${escapeHtml(p.code||'未命名人物')}</div><div class="arc-count">${records.length} 条捕光</div></div>
+    <div class="arc-head"><div class="arc-name" onclick="openArcDetail('${p.id}')">${escapeHtml(p.code||'未命名人物')}</div><div class="arc-count">${records.length} 条捕光</div></div>
     ${tags.length?`<div class="light-chip-row">${tags.map(t=>`<span class="light-chip">${escapeHtml(t)}</span>`).join('')}</div>`:''}
     ${p.note?`<div class="arc-meta">${escapeHtml(p.note)}</div>`:''}
     ${records.length?`<div class="arc-record-list">${records.slice(0,6).map(r=>`<div class="arc-record-item" onclick="openLightRecordSheet('${r.id}')">《${escapeHtml(r.title||'未命名')}》 · ${escapeHtml([r.bigTag,...(r.smallTags||[])].filter(Boolean).join(' / '))}</div>`).join('')}</div>`:''}
     <div class="arc-actions"><button onclick="openArcProfileSheet('${p.id}')">编辑</button><button onclick="deleteArcProfile('${p.id}')">删除</button></div>
   </div>`;
+}
+
+function openArcDetail(id){
+  currentArcDetailId=id;
+  lightSubView='profiles';
+  renderLight();
+}
+
+function renderArcDetail(id){
+  const controls=document.getElementById('light-controls');
+  const content=document.getElementById('light-content');
+  const p=(db.arcProfiles||[]).find(x=>x.id===id);
+  if(!p){currentArcDetailId=null;renderArcProfiles();return;}
+  controls.innerHTML='';
+  const groups=[
+    ['性格',p.personalityTags||[]],
+    ['身份',p.identityTags||[]],
+    ['人生阶段',p.stageTags||[]]
+  ];
+  const records=getArcRecords(id).sort((a,b)=>(b.updatedAt||b.createdAt||0)-(a.updatedAt||a.createdAt||0));
+  content.innerHTML=`<div class="arc-detail-hero">
+    <button class="arc-detail-back" onclick="currentArcDetailId=null;renderLight()">← 返回弧光档案</button>
+    <div class="arc-detail-name">${escapeHtml(p.code||'未命名人物')}</div>
+    ${groups.map(([label,tags])=>tags.length?`<div class="light-chip-row"><span class="light-chip big">${label}</span>${tags.map(t=>`<span class="light-chip">${escapeHtml(t)}</span>`).join('')}</div>`:'').join('')}
+    ${p.note?`<div class="arc-detail-note">${escapeHtml(p.note)}</div>`:''}
+    <div class="arc-actions"><button onclick="openArcProfileSheet('${p.id}')">编辑档案</button></div>
+  </div>
+  <div class="arc-detail-section-title">相关捕光 · ${records.length} 条</div>
+  ${records.length?records.map(r=>`<div class="arc-detail-record">
+    <div class="arc-detail-record-title">${escapeHtml(r.title||'未命名捕光')}</div>
+    <div class="arc-detail-record-meta">${formatDateShort(r.updatedAt||r.createdAt)} · ${escapeHtml([r.bigTag,...(r.smallTags||[])].filter(Boolean).join(' / '))}</div>
+    ${r.essence?`<div class="light-essence">${escapeHtml(r.essence)}</div>`:''}
+    ${r.text?`<div class="arc-detail-record-text">${escapeHtml(r.text)}</div>`:''}
+    <div class="light-actions"><button onclick="openLightRecordSheet('${r.id}')">编辑这条捕光</button></div>
+  </div>`).join(''):`<div class="path-empty">这个人物还没有关联捕光记录。</div>`}`;
 }
 
 function getLightTagConfigs(){
@@ -4439,6 +4529,7 @@ function openLightRecordSheet(id=null){
   document.getElementById('light-title-input').value=r?.title||'';
   document.getElementById('light-big-input').value=r?.bigTag||'';
   document.getElementById('light-text-input').value=r?.text||'';
+  document.getElementById('light-essence-input').value=r?.essence||'';
   document.getElementById('light-links-input').value=(r?.links||[]).join('\n');
   renderLightForm();
   openSheet('sheet-light-record');
@@ -4500,6 +4591,7 @@ function saveLightRecord(){
     smallTags:[...lightDraft.smallTags],
     profileIds:[...lightDraft.profileIds],
     text:document.getElementById('light-text-input').value.trim(),
+    essence:document.getElementById('light-essence-input').value.trim(),
     links:document.getElementById('light-links-input').value.split(/\n+/).map(s=>s.trim()).filter(Boolean),
     screenshots:[...(lightDraft.screenshots||[])],
     createdAt:editingLightId?((db.lightRecords||[]).find(r=>r.id===editingLightId)?.createdAt||now):now,
@@ -4541,10 +4633,22 @@ function openArcProfileSheet(id=null,returnToLight=false){
 
 function renderArcForm(){
   ['personality','identity','stage'].forEach(k=>{
-    const hist=db.lightTagHistory[k]||[];
-    document.getElementById(`arc-${k}-history`).innerHTML=hist.map(t=>`<button type="button" class="tag-option ${arcDraft[k].includes(t)?'selected':''}" onclick="toggleArcTag('${k}',decodeURIComponent('${encodeURIComponent(t)}'))">${escapeHtml(t)}</button>`).join('');
+    const input=document.getElementById(`arc-${k}-input`);
+    const q=(input?.value||'').trim().toLowerCase();
+    const hist=[...(db.lightTagHistory[k]||[])].sort((a,b)=>{
+      const aa=String(a).toLowerCase().includes(q)?0:1;
+      const bb=String(b).toLowerCase().includes(q)?0:1;
+      return aa-bb||a.localeCompare(b,'zh-CN');
+    });
+    document.getElementById(`arc-${k}-history`).innerHTML=hist.map(t=>`<button type="button" class="tag-option ${arcDraft[k].includes(t)?'selected':''}" onclick="toggleArcTag('${k}',decodeURIComponent('${encodeURIComponent(t)}'))">${escapeHtml(t)}</button>`).join('')||'<span class="tag-selected-empty">暂无历史标签</span>';
     document.getElementById(`arc-${k}-selected`).innerHTML=arcDraft[k].map(t=>`<span class="selected-tag">${escapeHtml(t)} <button onclick="toggleArcTag('${k}',decodeURIComponent('${encodeURIComponent(t)}'))">×</button></span>`).join('');
   });
+}
+
+function showArcTagHistory(kind){
+  document.querySelectorAll('.arc-tag-history').forEach(el=>el.classList.remove('show'));
+  document.getElementById(`arc-${kind}-history`)?.classList.add('show');
+  renderArcForm();
 }
 
 function addArcTag(kind){
@@ -4584,6 +4688,8 @@ function saveArcProfile(){
   if(arcReturnToLight){
     if(!lightDraft.profileIds.includes(profile.id)) lightDraft.profileIds.push(profile.id);
     renderLightForm();
+  }else if(currentArcDetailId===profile.id){
+    renderLight();
   }else{
     lightSubView='profiles';
     renderLight();
@@ -4595,6 +4701,7 @@ function deleteArcProfile(id){
   if(!confirm('删除这个人物档案吗？相关捕光记录只会解除关联，不会删除。')) return;
   db.arcProfiles=(db.arcProfiles||[]).filter(p=>p.id!==id);
   (db.lightRecords||[]).forEach(r=>{r.profileIds=(r.profileIds||[]).filter(pid=>pid!==id);});
+  if(currentArcDetailId===id) currentArcDetailId=null;
   save();
   renderLight();
   toast('档案已删除');
