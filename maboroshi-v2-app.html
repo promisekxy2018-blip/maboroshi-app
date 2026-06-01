@@ -605,13 +605,13 @@ body.magic-theme .ai-task-panel,body.magic-theme .ai-task-card{background:linear
 .path-quote-mark{position:absolute;left:7px;top:-2px;font-size:24px;font-weight:700;line-height:1;color:rgba(232,130,159,.45)}
 .path-quote-end{display:inline-block;margin-left:4px;font-size:18px;font-weight:700;line-height:0;color:rgba(232,130,159,.38);vertical-align:-5px}
 .path-feeling{margin-top:8px;font-size:12px;color:var(--text2);line-height:1.7;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
-.path-note{position:relative;margin-top:10px;padding:12px 36px 12px 14px;border-radius:24px 15px 25px 17px;background:radial-gradient(circle at 9% 18%,rgba(255,255,255,.98),transparent 26%),radial-gradient(circle at 88% 16%,rgba(255,231,177,.65),transparent 24%),linear-gradient(145deg,rgba(255,253,224,.98),rgba(255,241,205,.94) 48%,rgba(224,244,231,.9));border:1px solid rgba(236,188,90,.58);box-shadow:0 8px 20px rgba(218,173,88,.16),inset 0 0 0 1px rgba(255,255,255,.68);font-family:var(--path-note-font,'LXGW WenKai','STKaiti','KaiTi','Kaiti SC','Noto Serif SC',serif);font-size:var(--path-note-size,13px);color:#675035;line-height:var(--path-note-leading,1.62);letter-spacing:var(--path-note-spacing,.045em)}
+.path-note{position:relative;z-index:0;margin-top:10px;padding:13px 38px 13px 16px;border-radius:24px 15px 25px 17px;background:radial-gradient(circle at 9% 18%,rgba(255,255,255,.98),transparent 26%),radial-gradient(circle at 88% 16%,rgba(255,231,177,.65),transparent 24%),linear-gradient(145deg,rgba(255,253,224,.98),rgba(255,241,205,.94) 48%,rgba(224,244,231,.9));border:1px solid rgba(118,164,90,.5);box-shadow:0 8px 20px rgba(218,173,88,.16),inset 0 0 0 1px rgba(255,255,255,.68),inset 0 0 0 3px rgba(184,216,143,.16);font-family:var(--path-note-font,'LXGW WenKai','STKaiti','KaiTi','Kaiti SC','Noto Serif SC',serif);font-size:var(--path-note-size,13px);color:#675035;line-height:var(--path-note-leading,1.62);letter-spacing:var(--path-note-spacing,.045em)}
 body.note-font-serif{--path-note-font:'Noto Serif SC','Songti SC','SimSun',serif;--path-note-size:13px;--path-note-leading:1.68;--path-note-spacing:.02em}
 body.note-font-kai{--path-note-font:'LXGW WenKai','STKaiti','KaiTi','Kaiti SC','FZKai-Z03','Noto Serif SC',serif;--path-note-size:13px;--path-note-leading:1.62;--path-note-spacing:.04em}
 body.note-font-xingkai{--path-note-font:'STXingkai','华文行楷','Xingkai SC','Long Cang','FZShuTi','KaiTi',serif;--path-note-size:14px;--path-note-leading:1.55;--path-note-spacing:.05em}
 body.note-font-brush{--path-note-font:'Ma Shan Zheng','FZShuTi','华文新魏','Long Cang','KaiTi',serif;--path-note-size:14px;--path-note-leading:1.5;--path-note-spacing:.045em}
-.path-note::before{content:'';position:absolute;right:12px;top:-8px;width:22px;height:31px;border-radius:70% 30% 65% 35%;background:linear-gradient(145deg,#fff4b7,#b9dcaa);transform:rotate(28deg);box-shadow:-15px 8px 0 -6px rgba(248,184,200,.78),0 3px 8px rgba(144,170,88,.15)}
-.path-note::after{content:'';position:absolute;left:10px;bottom:-8px;width:34px;height:16px;border-radius:50%;background:rgba(255,255,255,.48);filter:blur(1px)}
+.path-note::before{content:'';position:absolute;inset:-7px -6px -8px -7px;pointer-events:none;border-radius:29px 19px 30px 20px;background:radial-gradient(ellipse at 4% 22%,rgba(118,164,90,.75) 0 2px,transparent 3px),radial-gradient(ellipse at 96% 72%,rgba(118,164,90,.58) 0 2px,transparent 3px),linear-gradient(115deg,transparent 0 10%,rgba(92,150,87,.58) 10% 11.2%,transparent 12% 76%,rgba(92,150,87,.42) 77% 78.2%,transparent 79%),linear-gradient(18deg,transparent 0 16%,rgba(142,187,104,.52) 16% 17.2%,transparent 18% 70%,rgba(142,187,104,.38) 71% 72.2%,transparent 73%);box-shadow:-12px 10px 0 -8px rgba(151,194,113,.7),12px -8px 0 -8px rgba(248,184,200,.72);z-index:-1}
+.path-note::after{content:'❧';position:absolute;left:9px;bottom:-12px;width:auto;height:auto;background:none;filter:none;color:rgba(102,153,83,.55);font-size:17px;transform:rotate(-18deg);text-shadow:23px -2px 0 rgba(151,194,113,.36),285px -42px 0 rgba(151,194,113,.24)}
 .path-note-empty{font-size:12px;color:#a98f66}
 .path-note-edit{position:absolute;right:8px;bottom:7px;border:none;background:rgba(255,255,255,.5);color:#c77a91;border-radius:999px;padding:3px 7px;font-size:10px;font-family:'Noto Sans SC',sans-serif}
 .path-empty{padding:28px 18px;text-align:center;color:var(--text3);line-height:1.8;background:rgba(255,255,255,.7);border:1px dashed var(--border);border-radius:18px}
@@ -726,8 +726,9 @@ body.magic-theme .flower-leaf{fill:#ffe4a2}
 body.magic-theme .flower-petal{filter:drop-shadow(0 0 5px rgba(255,226,173,.44));stroke:rgba(255,246,218,.22)}
 body.magic-theme .flower-core{filter:drop-shadow(0 0 8px rgba(255,226,173,.72))}
 body.magic-theme .flower-core-dot{fill:#fff3ca;filter:drop-shadow(0 0 5px rgba(255,226,173,.55))}
-body.magic-theme .path-note{background:radial-gradient(circle at 12% 14%,rgba(255,255,255,.9),transparent 21%),radial-gradient(circle at 86% 12%,rgba(229,205,255,.72),transparent 20%),linear-gradient(145deg,rgba(243,236,255,.98),rgba(213,225,255,.92) 48%,rgba(255,214,232,.86));border:1px solid rgba(207,187,255,.78);box-shadow:0 0 0 1px rgba(42,48,108,.34),0 0 24px rgba(188,166,255,.36),0 10px 22px rgba(15,20,58,.22),inset 0 0 0 1px rgba(255,255,255,.72);color:#3b315f}
-body.magic-theme .path-note::before{background:linear-gradient(145deg,#f8efff,#b7c8ff);box-shadow:-15px 8px 0 -6px rgba(255,181,219,.74),0 0 16px rgba(193,171,255,.48)}
+body.magic-theme .path-note{background:radial-gradient(circle at 12% 14%,rgba(255,255,255,.9),transparent 21%),radial-gradient(circle at 86% 12%,rgba(229,205,255,.72),transparent 20%),linear-gradient(145deg,rgba(243,236,255,.98),rgba(213,225,255,.92) 48%,rgba(255,214,232,.86));border:1px solid rgba(207,187,255,.78);box-shadow:0 0 0 1px rgba(42,48,108,.34),0 0 24px rgba(188,166,255,.36),0 10px 22px rgba(15,20,58,.22),inset 0 0 0 1px rgba(255,255,255,.72),inset 0 0 0 3px rgba(193,171,255,.16);color:#3b315f}
+body.magic-theme .path-note::before{background:radial-gradient(ellipse at 5% 20%,rgba(255,226,173,.82) 0 2px,transparent 3px),radial-gradient(ellipse at 96% 72%,rgba(190,205,255,.72) 0 2px,transparent 3px),linear-gradient(115deg,transparent 0 10%,rgba(190,205,255,.64) 10% 11.2%,transparent 12% 76%,rgba(255,226,173,.46) 77% 78.2%,transparent 79%),linear-gradient(18deg,transparent 0 16%,rgba(184,208,255,.5) 16% 17.2%,transparent 18% 70%,rgba(255,181,219,.38) 71% 72.2%,transparent 73%);box-shadow:-12px 10px 0 -8px rgba(190,205,255,.7),12px -8px 0 -8px rgba(255,226,173,.56)}
+body.magic-theme .path-note::after{color:rgba(122,103,185,.5);text-shadow:23px -2px 0 rgba(255,226,173,.35),285px -42px 0 rgba(190,205,255,.26)}
 body.magic-theme .path-note-edit{background:rgba(245,237,255,.58);color:#6d58b0}
 body.magic-theme .path-quote{background:rgba(255,246,218,.42);border-left-color:rgba(116,110,183,.3)}
 body.magic-theme .award-hero{background:linear-gradient(90deg,rgba(92,78,135,.52),rgba(52,63,108,.08));border-left-color:#ffe4a2;box-shadow:none}
@@ -754,11 +755,14 @@ body.magic-theme .award-detail summary{color:#fff2c7;text-shadow:0 0 10px rgba(2
 body.magic-theme .award-detail summary::after{color:rgba(255,240,189,.62)}
 body.magic-theme .award-note{background:rgba(255,246,218,.13);border-left-color:rgba(255,226,173,.34);color:rgba(255,246,218,.76)}
 body.magic-theme .award-book-link{background:rgba(255,255,255,.08);border-color:rgba(255,226,173,.2);color:#fff7df;text-shadow:0 0 10px rgba(255,226,173,.52),0 0 18px rgba(184,208,255,.24);box-shadow:0 0 12px rgba(255,226,173,.08)}
-body.magic-theme .award-index-reason{background:linear-gradient(135deg,rgba(255,246,218,.12),rgba(184,208,255,.06));border-color:rgba(255,226,173,.18);color:rgba(255,244,221,.8);box-shadow:0 0 14px rgba(255,226,173,.08),inset 0 0 0 1px rgba(255,255,255,.06)}
-body.magic-theme .award-reason-short{background:linear-gradient(115deg,rgba(30,38,86,.82),rgba(48,55,112,.68));border-color:rgba(255,226,173,.28);color:#fff3ca;box-shadow:0 0 18px rgba(255,226,173,.12),inset 0 0 0 1px rgba(255,255,255,.08);text-shadow:0 0 8px rgba(255,226,173,.22)}
-body.magic-theme .award-reason-short::before{background:linear-gradient(#ffe4a2,#b9c5ff);box-shadow:0 0 10px rgba(255,226,173,.36)}
-body.magic-theme .award-reason-long{background:linear-gradient(145deg,rgba(25,32,76,.84),rgba(44,50,105,.68));border-color:rgba(190,205,255,.28);color:#efe6ff;box-shadow:0 0 16px rgba(184,208,255,.1),inset 0 0 0 1px rgba(255,255,255,.08);text-shadow:0 0 8px rgba(184,208,255,.18)}
-body.magic-theme .award-reason-long::after{background:rgba(255,226,173,.2)}
+body.magic-theme .award-index-reason{background:radial-gradient(circle at 92% 12%,rgba(255,255,255,.72),transparent 17px),linear-gradient(135deg,rgba(255,239,184,.9),rgba(229,221,255,.78));border-color:rgba(255,226,173,.48);color:#4f426b;box-shadow:0 0 0 1px rgba(255,255,255,.18),0 8px 18px rgba(6,9,28,.14),0 0 18px rgba(255,226,173,.16)}
+body.magic-theme .award-index-reason::before{color:rgba(108,82,159,.32)}
+body.magic-theme .award-index-reason::after{color:rgba(108,82,159,.28)}
+body.magic-theme .award-reason-short{background:radial-gradient(circle at 92% 10%,rgba(255,255,255,.68),transparent 22px),linear-gradient(115deg,rgba(255,240,187,.94),rgba(222,230,255,.84));border:1px solid rgba(255,226,173,.55);color:#4d4164;box-shadow:0 0 0 1px rgba(255,255,255,.2),0 12px 24px rgba(6,9,28,.18),0 0 22px rgba(255,226,173,.16);text-shadow:none}
+body.magic-theme .award-reason-short::before{left:8px;top:-6px;bottom:auto;width:42px;height:3px;border-radius:999px;background:linear-gradient(90deg,#ffe4a2,#b9c5ff,transparent);box-shadow:0 0 12px rgba(255,226,173,.42)}
+body.magic-theme .award-reason-short::after{content:'✦';position:absolute;right:11px;top:6px;color:rgba(108,82,159,.32);font-size:14px;text-shadow:0 0 10px rgba(255,226,173,.44)}
+body.magic-theme .award-reason-long{background:linear-gradient(145deg,rgba(238,232,255,.86),rgba(255,246,218,.72));border:1px solid rgba(190,205,255,.36);color:#504766;box-shadow:0 10px 22px rgba(6,9,28,.15),inset 0 0 0 1px rgba(255,255,255,.3);text-shadow:none}
+body.magic-theme .award-reason-long::after{background:linear-gradient(90deg,transparent,rgba(255,226,173,.55),transparent);filter:none;height:1px;right:14px;left:14px;width:auto;bottom:6px}
 body.magic-theme .author-profile{background:linear-gradient(145deg,#e8f2ff,#fff2ca 52%,#e4dcff);border-color:rgba(116,110,183,.18)}
 body.magic-theme .author-note-box{background:linear-gradient(145deg,rgba(235,244,255,.92),rgba(255,242,208,.82));border-color:rgba(116,110,183,.2)}
 .author-avatar.has-avatar{background-size:cover!important;background-position:center;color:transparent}
@@ -3935,26 +3939,49 @@ function renderPathItem(book,log,month,index){
 
 function renderFlower(index){
   const id=`petalGrad${index}`;
-  const petals=[
-    [24,7,0],[33,12,42],[38,22,92],[31,32,150],[18,32,210],[10,22,268],[15,12,318]
+  const variants=[
+    {
+      petals:[[24,7,0],[33,12,42],[38,22,92],[31,32,150],[18,32,210],[10,22,268],[15,12,318]],
+      inner:[[24,14,14],[31,20,82],[27,28,146],[19,27,218],[17,19,292]],
+      petal:'M0,-14 C7,-15 13,-8 11,0 C10,10 3,15 0,16 C-3,15 -10,10 -11,0 C-13,-8 -7,-15 0,-14Z',
+      innerShape:'M0,-10 C5,-10 9,-4 8,2 C6,8 3,11 0,12 C-3,11 -6,8 -8,2 C-9,-4 -5,-10 0,-10Z',
+      core:[24,22,5.6]
+    },
+    {
+      petals:[[24,8,0],[34,15,58],[34,29,124],[20,34,194],[11,20,276]],
+      inner:[[24,16,0],[30,23,86],[21,27,210]],
+      petal:'M0,-16 C5,-14 11,-7 10,1 C9,12 2,18 0,19 C-2,18 -9,12 -10,1 C-11,-7 -5,-14 0,-16Z',
+      innerShape:'M0,-10 C4,-9 8,-3 7,3 C5,9 -2,12 -6,5 C-9,-1 -5,-8 0,-10Z',
+      core:[24,23,5.2]
+    },
+    {
+      petals:[[24,8,0],[31,11,35],[38,19,82],[35,30,132],[26,36,180],[15,32,228],[10,21,278],[16,12,326]],
+      inner:[[24,15,20],[31,20,75],[28,28,150],[19,28,222],[17,19,295]],
+      petal:'M0,-12 C8,-16 16,-9 13,1 C11,10 4,14 0,15 C-4,14 -11,10 -13,1 C-16,-9 -8,-16 0,-12Z',
+      innerShape:'M0,-8 C6,-10 10,-4 8,3 C5,9 -5,9 -8,3 C-10,-4 -6,-10 0,-8Z',
+      core:[24,23,5.8]
+    },
+    {
+      petals:[[24,7,0],[34,13,48],[39,24,96],[32,34,150],[20,35,205],[10,26,258],[13,14,312]],
+      inner:[[24,15,0],[31,21,78],[25,29,160],[18,22,248]],
+      petal:'M0,-15 C6,-16 12,-9 10,-1 C13,5 8,13 0,17 C-8,13 -13,5 -10,-1 C-12,-9 -6,-16 0,-15Z',
+      innerShape:'M0,-9 C5,-10 9,-4 8,2 C7,8 2,12 0,13 C-2,12 -7,8 -8,2 C-9,-4 -5,-10 0,-9Z',
+      core:[24,22,5.4]
+    }
   ];
-  const inner=[
-    [24,14,14],[31,20,82],[27,28,146],[19,27,218],[17,19,292]
-  ];
-  const petalShape=index%2===0?'M0,-14 C7,-15 13,-8 11,0 C10,10 3,15 0,16 C-3,15 -10,10 -11,0 C-13,-8 -7,-15 0,-14Z':'M0,-15 C6,-13 13,-7 11,1 C9,11 3,16 0,17 C-3,16 -9,11 -11,1 C-13,-7 -6,-13 0,-15Z';
-  const innerShape='M0,-10 C5,-10 9,-4 8,2 C6,8 3,11 0,12 C-3,11 -6,8 -8,2 C-9,-4 -5,-10 0,-10Z';
+  const v=variants[index%variants.length];
   return `<div class="vine-flower flower-${index%5}">
     <svg viewBox="0 0 54 54" aria-hidden="true">
       <defs><linearGradient id="${id}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="var(--petal-a)"/><stop offset="1" stop-color="var(--petal-b)"/></linearGradient></defs>
       <path class="flower-stem" d="M24 49 C19 39 21 32 26 25"/>
       <path class="flower-leaf" d="M20 40 C10 34 8 27 18 28 C24 29 25 35 20 40Z"/>
       <path class="flower-leaf" d="M27 37 C38 33 41 25 31 25 C25 26 24 32 27 37Z"/>
-      ${petals.map(([x,y,r])=>`<path class="flower-petal" fill="url(#${id})" d="${petalShape}" transform="translate(${x} ${y}) rotate(${r})"/>`).join('')}
-      ${inner.map(([x,y,r])=>`<path class="flower-petal flower-inner" fill="url(#${id})" d="${innerShape}" transform="translate(${x} ${y}) rotate(${r})"/>`).join('')}
-      <circle class="flower-core" cx="24" cy="22" r="5.6"/>
-      <circle class="flower-core-dot" cx="22" cy="20" r="1.1"/>
-      <circle class="flower-core-dot" cx="26" cy="20.5" r="1"/>
-      <circle class="flower-core-dot" cx="24.2" cy="24" r="1.15"/>
+      ${v.petals.map(([x,y,r])=>`<path class="flower-petal" fill="url(#${id})" d="${v.petal}" transform="translate(${x} ${y}) rotate(${r})"/>`).join('')}
+      ${v.inner.map(([x,y,r])=>`<path class="flower-petal flower-inner" fill="url(#${id})" d="${v.innerShape}" transform="translate(${x} ${y}) rotate(${r})"/>`).join('')}
+      <circle class="flower-core" cx="${v.core[0]}" cy="${v.core[1]}" r="${v.core[2]}"/>
+      <circle class="flower-core-dot" cx="${v.core[0]-2}" cy="${v.core[1]-2}" r="1.1"/>
+      <circle class="flower-core-dot" cx="${v.core[0]+2}" cy="${v.core[1]-1.5}" r="1"/>
+      <circle class="flower-core-dot" cx="${v.core[0]+.2}" cy="${v.core[1]+2}" r="1.15"/>
     </svg>
   </div>`;
 }
