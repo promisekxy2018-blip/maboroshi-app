@@ -274,6 +274,13 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
 .rating-slider{width:100%;-webkit-appearance:none;appearance:none;height:6px;border-radius:3px;background:var(--border);outline:none;cursor:pointer}
 .rating-slider::-webkit-slider-thumb{-webkit-appearance:none;width:24px;height:24px;border-radius:50%;background:var(--pink2);box-shadow:0 2px 8px rgba(232,130,159,0.4);cursor:pointer}
 .nearby-books{margin-top:10px;font-size:11px;color:var(--text3);background:var(--pink3);border-radius:var(--r3);padding:8px 12px;min-height:32px;line-height:1.6}
+.nearby-score-row{display:grid;grid-template-columns:44px minmax(0,1fr);gap:8px;padding:2px 0;border-bottom:1px dashed rgba(232,201,184,.4)}
+.nearby-score-row:last-child{border-bottom:none}
+.nearby-score-row.active{font-weight:700;color:var(--text)}
+.nearby-score-label{white-space:nowrap;color:var(--pink2)}
+.nearby-score-books{overflow:hidden;text-overflow:ellipsis}
+.log-date-row{display:flex;gap:8px;align-items:center}
+.log-date-row .form-input{flex:1}
 
 /* ── TAG SYSTEM ── */
 .tag-categories{display:flex;flex-direction:column;gap:14px}
@@ -349,6 +356,18 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
 .synopsis-fold summary::after{content:'展开';font-size:11px;color:var(--text3)}
 .synopsis-fold[open] summary::after{content:'收起'}
 .synopsis-body{padding:0 12px 12px;font-size:13px;color:var(--text2);line-height:1.7;white-space:pre-line}
+.peer-review-fold{border:1px solid rgba(232,201,184,.52);border-radius:14px;background:rgba(255,255,255,.58);overflow:hidden}
+.peer-review-fold summary{list-style:none;cursor:pointer;padding:10px 12px;font-size:13px;color:var(--text2);display:flex;align-items:center;justify-content:space-between}
+.peer-review-fold summary::-webkit-details-marker{display:none}
+.peer-review-fold summary::after{content:'展开';font-size:11px;color:var(--text3)}
+.peer-review-fold[open] summary::after{content:'收起'}
+.peer-review-body{padding:0 12px 12px}
+.peer-review-actions{display:flex;gap:6px;overflow-x:auto;margin-bottom:10px}
+.peer-review-actions .btn{white-space:nowrap;padding:6px 9px!important;font-size:11px!important}
+.peer-review-card{padding:10px;border-radius:12px;background:rgba(255,248,242,.78);border:1px solid rgba(232,201,184,.42);margin-top:8px}
+.peer-review-type{display:inline-flex;border-radius:999px;padding:2px 7px;font-size:10px;background:var(--pink3);color:var(--pink2);margin-bottom:5px}
+.peer-review-text{font-size:12px;color:var(--text2);line-height:1.7;white-space:pre-line}
+.peer-review-meta{font-size:10px;color:var(--text3);line-height:1.6;margin-top:5px}
 .screenshot-section{border:1px solid var(--border);border-radius:16px;background:rgba(255,255,255,.52);overflow:hidden}
 .screenshot-section summary{list-style:none;display:flex;align-items:center;justify-content:space-between;padding:11px 12px;cursor:pointer;color:var(--text2);font-size:13px}
 .screenshot-section summary::-webkit-details-marker{display:none}
@@ -1333,7 +1352,10 @@ body.magic-theme .author-wait-card{border-color:rgba(116,110,183,.18)}
   <div style="font-family:'Noto Serif SC',serif;font-size:16px;font-weight:600;margin-bottom:16px" id="mini-log-title">添加阅读记录</div>
   <div class="form-group">
     <label class="form-label">读完日期</label>
-    <input class="form-input" id="log-date" type="date">
+    <div class="log-date-row">
+      <input class="form-input" id="log-date" type="date">
+      <button type="button" class="btn btn-ghost" onclick="clearLogDate()" style="padding:9px 12px;font-size:12px;white-space:nowrap">清除</button>
+    </div>
   </div>
   <div class="form-group">
     <label class="form-label">阅读阶段</label>
@@ -1958,6 +1980,7 @@ function openDetail(id,opts={}){
   }
   const logs=b.readLogs||[];
   const bookQuotes=normalizeBookQuotes(b.bookQuotes||b.bookQuote);
+  const peerReviews=normalizePeerReviews(b.peerReviews);
   const awardHits=getBookAwardHits(b.id);
   const awardBadges=awardHits.length?`<div class="detail-awards">${awardHits.map(a=>`<button class="detail-award-chip" onclick="openAwardFromDetail('${a.id}')">上榜 · ${escapeHtml(a.name)}</button>`).join('')}</div>`:'';
   const tagGroups=TAG_CATS.map((c,ci)=>({c,ci,tags:b.tags?.[c.key]||[]})).filter(g=>g.tags.length);
@@ -2012,12 +2035,15 @@ function openDetail(id,opts={}){
         </div>
         <div class="read-logs">${logsHtml}</div>
       </div>
+      <div class="detail-section">
+        ${renderPeerReviews(b)}
+      </div>
       <div style="display:flex;gap:10px;margin-top:8px">
         <button class="btn btn-ghost" style="flex:1;padding:12px" onclick="openEditSheet('${id}')">✏️ 编辑书籍</button>
         <button class="btn" style="flex:1;padding:12px;background:var(--red2);color:#fff;font-size:14px" onclick="deleteBook('${id}')">🗑️ 删除</button>
       </div>
     </div>`;
-  showPage('detail');
+  showPage('detail',opts.pushState===false?{pushState:false}:{});
 }
 
 function deleteBook(id){
@@ -2038,6 +2064,38 @@ function normalizeBookQuote(raw){
 function normalizeBookQuotes(raw){
   const list=Array.isArray(raw)?raw:(raw?[raw]:[]);
   return list.map(normalizeBookQuote).filter(q=>q.text);
+}
+
+function normalizePeerReviews(raw){
+  const list=Array.isArray(raw)?raw:[];
+  return list.map(r=>{
+    if(typeof r==='string') return {type:'同好书评',text:r,sourceHint:'',createdAt:Date.now()};
+    return {
+      type:r.type||'同好书评',
+      text:r.text||r.review||'',
+      sourceHint:r.sourceHint||r.source||'',
+      createdAt:r.createdAt||Date.now()
+    };
+  }).filter(r=>r.text).slice(0,60);
+}
+
+function renderPeerReviews(book){
+  const reviews=normalizePeerReviews(book.peerReviews);
+  return `<details class="peer-review-fold">
+    <summary><span>同好书评 · ${reviews.length} 条</span></summary>
+    <div class="peer-review-body">
+      <div class="peer-review-actions">
+        <button class="btn btn-ghost" id="peer-review-all-btn-${book.id}" onclick="event.preventDefault();autoFetchPeerReviews('${book.id}','all')">抓取书评</button>
+        <button class="btn btn-ghost" id="peer-review-positive-btn-${book.id}" onclick="event.preventDefault();autoFetchPeerReviews('${book.id}','positive')">抓取正面书评</button>
+        <button class="btn btn-ghost" id="peer-review-negative-btn-${book.id}" onclick="event.preventDefault();autoFetchPeerReviews('${book.id}','negative')">抓取负面书评</button>
+      </div>
+      ${reviews.length?reviews.map(r=>`<div class="peer-review-card">
+        <div class="peer-review-type">${escapeHtml(r.type)}</div>
+        <div class="peer-review-text">${escapeHtml(r.text)}</div>
+        ${r.sourceHint?`<div class="peer-review-meta">${escapeHtml(r.sourceHint)}</div>`:''}
+      </div>`).join(''):'<div class="peer-review-meta">还没有抓取同好书评。这里会追加保存，不会覆盖旧内容。</div>'}
+    </div>
+  </details>`;
 }
 
 function getBookAwardHits(bookId){
@@ -2260,6 +2318,7 @@ function importBatchBooks(){
       synopsis:'',
       bookQuote:{text:'',speaker:'',sourceHint:''},
       bookQuotes:[],
+      peerReviews:[],
       screenshots:[],
       finishYear:'',
       tags:{shou:[],gong:[],era:[],plot:[],vibe:[],warn:[]},
@@ -2529,6 +2588,10 @@ function openMiniLog(saveToBook=false){
   pushAppState({type:'mini-log'});
 }
 
+function clearLogDate(){
+  document.getElementById('log-date').value='';
+}
+
 function closeMiniLog(){
   document.getElementById('mini-log').classList.remove('show');
   document.getElementById('overlay').classList.remove('show');
@@ -2538,17 +2601,16 @@ function updateLogRating(){
   const v=parseInt(document.getElementById('log-rating').value);
   const r=v/10;
   document.getElementById('log-rating-num').textContent=r.toFixed(1);
-  // show nearby books
-  const nearby=db.books.filter(b=>{
-    const logs=b.readLogs||[];
-    return logs.some(l=>Math.abs((l.rating||0)-r)<0.15);
-  }).map(b=>b.title).slice(0,5);
   const nbEl=document.getElementById('log-nearby-books');
-  if(nearby.length){
-    nbEl.textContent=`${r.toFixed(1)} 分附近：${nearby.join('、')}`;
-  } else {
-    nbEl.textContent='这个分段暂无其他书籍';
-  }
+  const scores=[2,1,0,-1,-2].map(offset=>Math.max(0,Math.min(5,Math.round((r+offset/10)*10)/10)));
+  const unique=[...new Set(scores.map(x=>x.toFixed(1)))].map(Number);
+  nbEl.innerHTML=unique.map(score=>{
+    const books=db.books.filter(b=>(b.readLogs||[]).some(l=>Number(l.rating)===score)).map(b=>b.title).slice(0,8);
+    return `<div class="nearby-score-row ${Math.abs(score-r)<0.001?'active':''}">
+      <div class="nearby-score-label">${score.toFixed(1)}分：</div>
+      <div class="nearby-score-books">${books.length?books.map(escapeHtml).join('、'):'暂无'}</div>
+    </div>`;
+  }).join('');
 }
 
 function saveMiniLog(){
@@ -2606,6 +2668,7 @@ function saveBook(){
     synopsis:document.getElementById('f-synopsis').value.trim(),
     bookQuotes,
     bookQuote:bookQuotes[0]||{text:'',speaker:'',sourceHint:''},
+    peerReviews:existingBook?.peerReviews||[],
     screenshots:existingBook?.screenshots||[],
     tags:{...formTags},
     readLogs:[...formLogs],
@@ -2947,6 +3010,50 @@ async function autoFetchSynopsis(mode='short'){
   }
 }
 
+function setPeerReviewBusy(bookId,busy,type=''){
+  ['all','positive','negative'].forEach(key=>{
+    const btn=document.getElementById(`peer-review-${key}-btn-${bookId}`);
+    if(!btn) return;
+    btn.disabled=busy;
+    const label=key==='positive'?'抓取正面书评':key==='negative'?'抓取负面书评':'抓取书评';
+    btn.textContent=busy&&type===key?'抓取中…':label;
+  });
+}
+
+async function autoFetchPeerReviews(bookId,type='all'){
+  const book=db.books.find(b=>b.id===bookId);
+  if(!book) return;
+  if(!book.title||!book.author){toast('抓取书评前先确定书名和作者');return;}
+  if(!hasActiveAIKey()) return;
+  setPeerReviewBusy(bookId,true,type);
+  const typeLabel=type==='positive'?'正面书评':type==='negative'?'负面书评':'同好书评';
+  const taskId=startAITask(`${typeLabel} · ${book.title}`,'正在搜索公开书评',`openDetail('${bookId}')`);
+  try{
+    const tone=type==='positive'?'偏正面、推荐理由或高赞夸点':type==='negative'?'偏负面、排雷、争议点或低分理由':'有代表性的综合评价，可以包含正面和负面';
+    const prompt=`请为 BL/耽美网文《${book.title}》（作者：${book.author}）寻找 2 到 3 条公开同好书评摘要。必须同时匹配书名和作者；平台线索为「${book.platform||'未知'}」，若为未知或其他则忽略。
+目标书评类型：${tone}。
+优先参考公开作品评论、长评、书单评价、读者讨论里点赞/阅读/互动较多或经常被提到的观点。不要编造具体点赞数；如果无法确认来源，只写“公开书评整理”。
+每条书评用自己的话概括，不要大段照抄原文。每条 60 到 160 字。
+请只回复 JSON，不要解释或 Markdown：
+{"matched":"true/false","reviews":[{"type":"${typeLabel}","text":"书评摘要","sourceHint":"来源提示或空字符串"}],"sourceHint":"总体来源提示或空字符串"}`;
+    const json=parsePeerReviewsAI(await callAI(prompt,{maxOutputTokens:1400}),type);
+    if(json.matched===false||String(json.matched||'').toLowerCase()==='false') throw new Error('NO_EXACT_MATCH');
+    if(!json.reviews.length) throw new Error('AI_PARSE_JSON');
+    book.peerReviews=[...normalizePeerReviews(book.peerReviews),...json.reviews].slice(0,60);
+    book.updatedAt=Date.now();
+    save();
+    openDetail(bookId,{pushState:false});
+    updateAITask(taskId,json.sourceHint?`已追加：${json.sourceHint}`:`已追加 ${json.reviews.length} 条${typeLabel}`,'done');
+    toast(`已追加 ${json.reviews.length} 条${typeLabel}`);
+  }catch(e){
+    updateAITask(taskId,formatAIError(e,'书评抓取失败'),'failed');
+    toast(formatAIError(e,'书评抓取失败'));
+    console.error(e);
+  }finally{
+    setPeerReviewBusy(bookId,false);
+  }
+}
+
 function activeAIProvider(){
   return db.settings?.aiProvider||'gemini';
 }
@@ -3096,6 +3203,18 @@ function parseBookQuoteAI(text){
   const textValue=quoteMatch?.[1]?.trim()||clean.split('\n').find(line=>line.trim().length>8&&line.trim().length<160)?.trim()||'';
   if(textValue) return {matched:'true',quote:{text:textValue,speaker:speakerMatch?.[1]?.trim()||''},sourceHint:'AI 返回了非标准 JSON，已自动保留语录正文'};
   throw new Error('AI_PARSE_JSON');
+}
+
+function parsePeerReviewsAI(text,type='all'){
+  const json=parseAIJson(text);
+  if(json.matched===false||String(json.matched||'').toLowerCase()==='false') return {matched:'false',reviews:[]};
+  const reviews=(Array.isArray(json.reviews)?json.reviews:[]).map(r=>({
+    type:r.type||(type==='positive'?'正面书评':type==='negative'?'负面书评':'同好书评'),
+    text:String(r.text||r.review||'').trim(),
+    sourceHint:String(r.sourceHint||r.source||'').trim(),
+    createdAt:Date.now()
+  })).filter(r=>r.text).slice(0,3);
+  return {matched:'true',reviews,sourceHint:json.sourceHint||''};
 }
 
 function extractSynopsisText(text){
@@ -3434,10 +3553,10 @@ function renderPath(){
   }
   let lastYear='';
   wrap.innerHTML=`<div class="vine-timeline">${renderVineSvg(Math.max(900,hall.length*360))}${renderVineBud()}<div class="vine-tip">藤蔓新梢 · 还会继续开花</div>${hall.map(({book,log},i)=>{
-    const date=log.date||'未知时间';
-    const year=date.slice(0,4)||'未知';
-    const month=date.length>=7?`${parseInt(date.slice(5,7),10)}月`:'月份未知';
-    const yearHtml=year!==lastYear?`<div class="vine-year">${escapeHtml(year)} 年</div>`:'';
+    const date=log.date||'';
+    const year=date?date.slice(0,4):(log.period||'时间未详');
+    const month=date&&date.length>=7?`${parseInt(date.slice(5,7),10)}月`:(log.period||'时间未详');
+    const yearHtml=year!==lastYear?`<div class="vine-year">${escapeHtml(year)}${date?' 年':''}</div>`:'';
     lastYear=year;
     return `${yearHtml}${renderPathItem(book,log,month,i)}`;
   }).join('')}</div>`;
