@@ -576,19 +576,22 @@ body.magic-theme .ai-task-panel,body.magic-theme .ai-task-card{background:linear
 .vine-tip::after{content:'';position:absolute;left:12px;top:-8px;width:12px;height:18px;border-radius:70% 30% 60% 40%;background:linear-gradient(145deg,#fff6b8,#b8d981);transform:rotate(18deg);box-shadow:0 0 10px rgba(183,217,129,.34)}
 .vine-year{position:relative;z-index:1;margin:18px 0 8px -34px;padding-left:0;font-family:'Noto Serif SC',serif;font-size:18px;font-weight:700;color:var(--pink2)}
 .vine-year::before{content:'';position:absolute;left:18px;top:24px;width:28px;height:2px;background:rgba(118,164,90,.38);transform:rotate(-18deg);border-radius:999px}
-.vine-item{--petal-a:#f8b8c8;--petal-b:#f6d28e;--petal-c:#b9dcaa;position:relative;z-index:1;margin:0 0 18px;padding:15px 15px 15px 18px;background:linear-gradient(145deg,rgba(255,255,255,.9),rgba(255,249,236,.82));border:1px solid rgba(226,190,161,.42);border-radius:28px 18px 26px 18px;box-shadow:0 8px 22px rgba(143,98,80,.12)}
+.vine-item{--petal-a:#f8b8c8;--petal-b:#f6d28e;--petal-c:#b9dcaa;position:relative;z-index:1;margin:0 0 18px;padding:16px 16px 16px 19px;background:linear-gradient(145deg,rgba(255,255,255,.9),rgba(255,249,236,.82));border:1px solid rgba(226,190,161,.3);border-radius:28px 18px 26px 18px;box-shadow:0 8px 22px rgba(143,98,80,.12)}
 .vine-item::before,.vine-item::after{content:'';position:absolute;z-index:-1;border-radius:55% 45% 58% 42%;background:linear-gradient(145deg,rgba(252,232,240,.72),rgba(255,246,218,.7));border:1px solid rgba(226,190,161,.22)}
 .vine-item::before{inset:-7px 18% auto 9%;height:30px;transform:rotate(-2deg)}
 .vine-item::after{right:-7px;bottom:18px;width:38px;height:58px;transform:rotate(10deg)}
+.vine-item .path-book-title::after{content:'';position:absolute;left:8px;right:10px;top:8px;bottom:8px;pointer-events:none;border-radius:26px 16px 24px 16px;border:1px solid rgba(111,169,111,.22);background:linear-gradient(90deg,rgba(111,169,111,.36) 0 0) top left/32% 2px no-repeat,linear-gradient(90deg,rgba(111,169,111,.28) 0 0) bottom right/36% 2px no-repeat,linear-gradient(180deg,rgba(111,169,111,.28) 0 0) left top/2px 42% no-repeat,linear-gradient(180deg,rgba(111,169,111,.2) 0 0) right bottom/2px 38% no-repeat}
+.vine-item .path-book-title::before{content:'❧';position:absolute;right:13px;top:7px;color:rgba(111,169,111,.42);font-size:16px;transform:rotate(18deg)}
 .vine-item:nth-of-type(3n){--petal-a:#a8d5b5;--petal-b:#f2a8c4;--petal-c:#f7d98b}
 .vine-item:nth-of-type(3n+1){--petal-a:#a8c4d5;--petal-b:#c4a8d5;--petal-c:#f5c4a1}
 .vine-flower{position:absolute;left:-48px;top:10px;width:54px;height:54px;filter:drop-shadow(0 5px 9px rgba(95,150,88,.25))}
 .vine-flower svg{width:100%;height:100%;overflow:visible}
 .flower-stem{stroke:#659c62;stroke-width:2.2;stroke-linecap:round;fill:none}
 .flower-leaf{fill:#86bd77;stroke:rgba(70,124,67,.14);stroke-width:.5;transform-origin:center}
-.flower-petal{fill:var(--petal-a);stroke:rgba(150,82,112,.14);stroke-width:.7}
+.flower-petal{fill:var(--petal-a);stroke:rgba(150,82,112,.18);stroke-width:.7;filter:drop-shadow(0 1px 1px rgba(150,82,112,.12))}
 .flower-inner{opacity:.9;filter:brightness(1.05)}
-.flower-core{fill:#ffeaa0;stroke:rgba(139,96,38,.2);stroke-width:.8}
+.flower-core{fill:#ffeaa0;stroke:rgba(139,96,38,.22);stroke-width:.8;filter:drop-shadow(0 1px 2px rgba(139,96,38,.18))}
+.flower-core-dot{fill:#b76f39;opacity:.58}
 .flower-1{--petal-a:#b9d7ff;--petal-b:#d5b8ff}.flower-1 .flower-core{fill:#ffd98b}
 .flower-2{--petal-a:#f4b8c8;--petal-b:#ffd6a6}.flower-2 .flower-core{fill:#b9dcaa}
 .flower-3{--petal-a:#d5b8ff;--petal-b:#a8d5b5}.flower-3 .flower-core{fill:#fff0a8}
@@ -722,6 +725,7 @@ body.magic-theme .flower-stem{stroke:#b9c5ff}
 body.magic-theme .flower-leaf{fill:#ffe4a2}
 body.magic-theme .flower-petal{filter:drop-shadow(0 0 5px rgba(255,226,173,.44));stroke:rgba(255,246,218,.22)}
 body.magic-theme .flower-core{filter:drop-shadow(0 0 8px rgba(255,226,173,.72))}
+body.magic-theme .flower-core-dot{fill:#fff3ca;filter:drop-shadow(0 0 5px rgba(255,226,173,.55))}
 body.magic-theme .path-note{background:radial-gradient(circle at 12% 14%,rgba(255,255,255,.9),transparent 21%),radial-gradient(circle at 86% 12%,rgba(229,205,255,.72),transparent 20%),linear-gradient(145deg,rgba(243,236,255,.98),rgba(213,225,255,.92) 48%,rgba(255,214,232,.86));border:1px solid rgba(207,187,255,.78);box-shadow:0 0 0 1px rgba(42,48,108,.34),0 0 24px rgba(188,166,255,.36),0 10px 22px rgba(15,20,58,.22),inset 0 0 0 1px rgba(255,255,255,.72);color:#3b315f}
 body.magic-theme .path-note::before{background:linear-gradient(145deg,#f8efff,#b7c8ff);box-shadow:-15px 8px 0 -6px rgba(255,181,219,.74),0 0 16px rgba(193,171,255,.48)}
 body.magic-theme .path-note-edit{background:rgba(245,237,255,.58);color:#6d58b0}
@@ -751,9 +755,9 @@ body.magic-theme .award-detail summary::after{color:rgba(255,240,189,.62)}
 body.magic-theme .award-note{background:rgba(255,246,218,.13);border-left-color:rgba(255,226,173,.34);color:rgba(255,246,218,.76)}
 body.magic-theme .award-book-link{background:rgba(255,255,255,.08);border-color:rgba(255,226,173,.2);color:#fff7df;text-shadow:0 0 10px rgba(255,226,173,.52),0 0 18px rgba(184,208,255,.24);box-shadow:0 0 12px rgba(255,226,173,.08)}
 body.magic-theme .award-index-reason{background:linear-gradient(135deg,rgba(255,246,218,.12),rgba(184,208,255,.06));border-color:rgba(255,226,173,.18);color:rgba(255,244,221,.8);box-shadow:0 0 14px rgba(255,226,173,.08),inset 0 0 0 1px rgba(255,255,255,.06)}
-body.magic-theme .award-reason-short{background:linear-gradient(115deg,rgba(255,246,218,.18),rgba(188,197,255,.1));border-color:rgba(255,226,173,.18);color:rgba(255,246,218,.82);box-shadow:0 0 16px rgba(255,226,173,.08),inset 0 0 0 1px rgba(255,255,255,.06)}
+body.magic-theme .award-reason-short{background:linear-gradient(115deg,rgba(30,38,86,.82),rgba(48,55,112,.68));border-color:rgba(255,226,173,.28);color:#fff3ca;box-shadow:0 0 18px rgba(255,226,173,.12),inset 0 0 0 1px rgba(255,255,255,.08);text-shadow:0 0 8px rgba(255,226,173,.22)}
 body.magic-theme .award-reason-short::before{background:linear-gradient(#ffe4a2,#b9c5ff);box-shadow:0 0 10px rgba(255,226,173,.36)}
-body.magic-theme .award-reason-long{background:linear-gradient(145deg,rgba(218,226,255,.12),rgba(255,255,255,.06));border-color:rgba(255,226,173,.16);color:rgba(238,225,255,.8);box-shadow:inset 0 0 0 1px rgba(255,255,255,.05)}
+body.magic-theme .award-reason-long{background:linear-gradient(145deg,rgba(25,32,76,.84),rgba(44,50,105,.68));border-color:rgba(190,205,255,.28);color:#efe6ff;box-shadow:0 0 16px rgba(184,208,255,.1),inset 0 0 0 1px rgba(255,255,255,.08);text-shadow:0 0 8px rgba(184,208,255,.18)}
 body.magic-theme .award-reason-long::after{background:rgba(255,226,173,.2)}
 body.magic-theme .author-profile{background:linear-gradient(145deg,#e8f2ff,#fff2ca 52%,#e4dcff);border-color:rgba(116,110,183,.18)}
 body.magic-theme .author-note-box{background:linear-gradient(145deg,rgba(235,244,255,.92),rgba(255,242,208,.82));border-color:rgba(116,110,183,.2)}
@@ -3932,13 +3936,13 @@ function renderPathItem(book,log,month,index){
 function renderFlower(index){
   const id=`petalGrad${index}`;
   const petals=[
-    [24,7,0],[36,13,54],[37,27,112],[24,38,180],[11,27,238],[12,13,306]
+    [24,7,0],[33,12,42],[38,22,92],[31,32,150],[18,32,210],[10,22,268],[15,12,318]
   ];
   const inner=[
-    [24,15,18],[31,21,88],[24,29,168],[17,21,258]
+    [24,14,14],[31,20,82],[27,28,146],[19,27,218],[17,19,292]
   ];
-  const petalShape=index%2===0?'M0,-12 C8,-12 12,-5 8,3 C4,12 -4,12 -8,3 C-12,-5 -8,-12 0,-12Z':'M0,-13 C7,-10 12,-4 9,4 C5,13 -5,13 -9,4 C-12,-4 -7,-10 0,-13Z';
-  const innerShape='M0,-9 C6,-8 9,-3 7,3 C4,9 -4,9 -7,3 C-9,-3 -6,-8 0,-9Z';
+  const petalShape=index%2===0?'M0,-14 C7,-15 13,-8 11,0 C10,10 3,15 0,16 C-3,15 -10,10 -11,0 C-13,-8 -7,-15 0,-14Z':'M0,-15 C6,-13 13,-7 11,1 C9,11 3,16 0,17 C-3,16 -9,11 -11,1 C-13,-7 -6,-13 0,-15Z';
+  const innerShape='M0,-10 C5,-10 9,-4 8,2 C6,8 3,11 0,12 C-3,11 -6,8 -8,2 C-9,-4 -5,-10 0,-10Z';
   return `<div class="vine-flower flower-${index%5}">
     <svg viewBox="0 0 54 54" aria-hidden="true">
       <defs><linearGradient id="${id}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="var(--petal-a)"/><stop offset="1" stop-color="var(--petal-b)"/></linearGradient></defs>
@@ -3947,7 +3951,10 @@ function renderFlower(index){
       <path class="flower-leaf" d="M27 37 C38 33 41 25 31 25 C25 26 24 32 27 37Z"/>
       ${petals.map(([x,y,r])=>`<path class="flower-petal" fill="url(#${id})" d="${petalShape}" transform="translate(${x} ${y}) rotate(${r})"/>`).join('')}
       ${inner.map(([x,y,r])=>`<path class="flower-petal flower-inner" fill="url(#${id})" d="${innerShape}" transform="translate(${x} ${y}) rotate(${r})"/>`).join('')}
-      <circle class="flower-core" cx="24" cy="22" r="6"/>
+      <circle class="flower-core" cx="24" cy="22" r="5.6"/>
+      <circle class="flower-core-dot" cx="22" cy="20" r="1.1"/>
+      <circle class="flower-core-dot" cx="26" cy="20.5" r="1"/>
+      <circle class="flower-core-dot" cx="24.2" cy="24" r="1.15"/>
     </svg>
   </div>`;
 }
