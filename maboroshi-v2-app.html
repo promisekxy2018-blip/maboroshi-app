@@ -373,6 +373,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
 .peer-review-actions{display:flex;gap:6px;overflow-x:auto;margin-bottom:10px}
 .peer-review-actions .btn{white-space:nowrap;padding:6px 9px!important;font-size:11px!important}
 .peer-review-card{padding:10px;border-radius:12px;background:rgba(255,248,242,.78);border:1px solid rgba(232,201,184,.42);margin-top:8px}
+.peer-review-card.status{background:rgba(255,255,255,.5);border-style:dashed}
 .peer-review-head{display:flex;align-items:center;justify-content:space-between;gap:8px}
 .peer-review-type{display:inline-flex;border-radius:999px;padding:2px 7px;font-size:10px;background:var(--pink3);color:var(--pink2);margin-bottom:5px}
 .peer-review-delete{border:none;background:rgba(232,130,159,.12);color:var(--pink2);border-radius:999px;padding:2px 7px;font-size:10px}
@@ -630,7 +631,7 @@ body.note-font-brush{--path-note-font:'Ma Shan Zheng','FZShuTi','华文新魏','
 .award-index{display:flex;flex-direction:column;gap:10px;margin-bottom:18px}
 .award-index::after{content:'拾花笺';display:block;text-align:center;margin:16px auto 4px;font-family:'Noto Serif SC',serif;font-size:15px;font-weight:700;color:#8d6b5d;letter-spacing:.08em}
 .award-index::before{content:'朝花榜';display:block;text-align:center;font-family:'Noto Serif SC',serif;font-size:15px;font-weight:700;color:#b85d78;margin:0 auto -2px;text-shadow:0 2px 0 rgba(255,255,255,.85);letter-spacing:.08em}
-.award-index-card{position:relative;border:1px solid rgba(232,201,184,.62);border-radius:18px;background:linear-gradient(145deg,rgba(255,255,255,.74),rgba(255,248,236,.58));padding:15px 12px 12px;box-shadow:0 10px 24px rgba(143,98,80,.12),inset 0 0 0 1px rgba(255,255,255,.7);overflow:hidden;text-align:center;backdrop-filter:blur(3px)}
+.award-index-card{position:relative;border:1px solid rgba(232,201,184,.62);border-radius:20px 14px 22px 14px;background:linear-gradient(145deg,rgba(255,255,255,.74),rgba(255,248,236,.58));padding:16px 13px 13px;box-shadow:0 10px 24px rgba(143,98,80,.12),inset 0 0 0 1px rgba(255,255,255,.7);overflow:hidden;text-align:center;backdrop-filter:blur(3px)}
 .award-index-card::before{content:'';position:absolute;left:14px;right:14px;top:10px;height:1px;border-radius:999px;background:linear-gradient(90deg,transparent,rgba(232,130,159,.32),transparent);opacity:.85}
 .award-index-card::after{content:'✿';position:absolute;right:12px;top:10px;color:rgba(232,130,159,.28);font-size:19px}
 .award-index-name{position:relative;display:inline-block;font-family:'Noto Serif SC',serif;font-size:16px;font-weight:700;color:#7e4c3d;margin:0 auto 8px;padding:7px 24px 8px;cursor:pointer;border-radius:999px;background:radial-gradient(circle at 50% 0%,rgba(255,255,255,.88),transparent 36%),linear-gradient(145deg,rgba(255,232,239,.92),rgba(255,247,210,.84));border:1px solid rgba(232,130,159,.34);box-shadow:inset 0 0 0 1px rgba(255,255,255,.74),0 0 0 3px rgba(255,232,239,.36),0 8px 18px rgba(196,96,126,.12)}
@@ -643,7 +644,7 @@ body.note-font-brush{--path-note-font:'Ma Shan Zheng','FZShuTi','华文新魏','
 .award-rank{position:absolute;left:0;top:1px;width:24px;height:24px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;background:#f3e5d8;color:#9a765f;font-size:11px;font-weight:700}
 .award-rank.top{background:transparent;box-shadow:none;font-size:20px}
 .award-rank.r1{color:#c85f74}.award-rank.r2{color:#8056a8}.award-rank.r3{color:#5f9b68}.award-rank.r4{color:#b07820}
-.award-index-reason{position:relative;display:inline-block;margin:5px 0 6px;padding:4px 10px 4px 24px;border-radius:9px;background:rgba(255,255,255,.38);border:1px solid rgba(232,201,184,.32);color:#7d6559;font-family:'STKaiti','KaiTi','LXGW WenKai','Noto Serif SC',serif;font-size:12px;line-height:1.55;letter-spacing:.01em}
+.award-index-reason{position:relative;display:inline-block;margin:6px 0 7px;padding:5px 12px 5px 25px;border-radius:16px 6px 16px 6px;background:linear-gradient(135deg,rgba(255,255,255,.5),rgba(255,244,214,.32));border:1px solid rgba(232,201,184,.28);color:#7d6559;font-family:'STKaiti','KaiTi','LXGW WenKai','Noto Serif SC',serif;font-size:12px;line-height:1.55;letter-spacing:.01em;box-shadow:inset 0 0 0 1px rgba(255,255,255,.35)}
 .award-index-reason::before{content:'“';position:absolute;left:6px;top:0;color:rgba(196,96,126,.34);font-family:'Noto Serif SC',serif;font-size:18px;font-weight:700}
 .award-index-reason::after{content:'”';display:inline-block;margin-left:3px;color:rgba(196,96,126,.3);font-family:'Noto Serif SC',serif;font-size:16px;font-weight:700;vertical-align:-4px}
 .award-detail{position:relative;margin-bottom:10px;border:1px solid rgba(232,201,184,.56);border-radius:18px;background:linear-gradient(145deg,rgba(255,255,255,.82),rgba(255,246,234,.72));overflow:hidden;box-shadow:0 8px 18px rgba(143,98,80,.08)}
@@ -657,8 +658,10 @@ body.note-font-brush{--path-note-font:'Ma Shan Zheng','FZShuTi','华文新魏','
 .award-path-card{margin:0 0 12px 42px}
 .award-medal{position:absolute;left:-45px;top:18px;width:42px;height:48px;filter:drop-shadow(0 4px 8px rgba(176,120,32,.18))}
 .award-medal svg{width:100%;height:100%;overflow:visible}
-.award-reason-short{margin-top:10px;padding:8px 10px;border-radius:5px 14px 14px 5px;background:linear-gradient(90deg,rgba(241,232,220,.66),rgba(255,255,255,.32));border-left:3px solid rgba(137,116,95,.28);font-family:'STKaiti','KaiTi','LXGW WenKai','Noto Serif SC',serif;font-size:12px;color:#68594e;line-height:1.65;white-space:pre-line}
-.award-reason-long{margin-top:8px;padding:9px 10px;border-radius:14px 5px 14px 5px;background:linear-gradient(145deg,rgba(236,240,242,.48),rgba(255,255,255,.26));border:1px solid rgba(137,116,95,.18);font-family:'Noto Serif SC',serif;font-size:12px;color:#74665e;line-height:1.72;white-space:pre-line}
+.award-reason-short{position:relative;margin-top:10px;padding:9px 12px 9px 14px;border-radius:18px 6px 16px 6px;background:linear-gradient(115deg,rgba(255,250,236,.78),rgba(255,232,239,.38));border:1px solid rgba(232,201,184,.32);font-family:'STKaiti','KaiTi','LXGW WenKai','Noto Serif SC',serif;font-size:12px;color:#68594e;line-height:1.65;white-space:pre-line;box-shadow:inset 0 0 0 1px rgba(255,255,255,.42)}
+.award-reason-short::before{content:'';position:absolute;left:-1px;top:10px;bottom:10px;width:3px;border-radius:999px;background:linear-gradient(#e8829f,#f2d28e)}
+.award-reason-long{position:relative;margin-top:8px;padding:10px 12px;border-radius:8px 18px 8px 18px;background:linear-gradient(145deg,rgba(245,247,240,.56),rgba(255,255,255,.28));border:1px solid rgba(137,116,95,.18);font-family:'Noto Serif SC',serif;font-size:12px;color:#74665e;line-height:1.72;white-space:pre-line;box-shadow:inset 0 0 0 1px rgba(255,255,255,.32)}
+.award-reason-long::after{content:'';position:absolute;right:12px;bottom:-5px;width:36px;height:10px;border-radius:50%;background:rgba(232,201,184,.28);filter:blur(2px)}
 .award-actions{display:flex;gap:6px;margin:10px 0 2px;flex-wrap:wrap;justify-content:flex-end}
 .award-actions .btn{padding:4px 8px!important;font-size:11px!important}
 .award-card-actions{display:flex;gap:7px;margin-top:9px}
@@ -726,9 +729,9 @@ body.magic-theme .path-quote{background:rgba(255,246,218,.42);border-left-color:
 body.magic-theme .award-hero{background:linear-gradient(90deg,rgba(92,78,135,.52),rgba(52,63,108,.08));border-left-color:#ffe4a2;box-shadow:none}
 body.magic-theme .award-title{color:#fff7df}
 body.magic-theme .award-sub{color:rgba(238,225,255,.74)}
-body.magic-theme #page-path.award-night{background:radial-gradient(circle at 14% 7%,rgba(255,229,168,.24),transparent 18%),radial-gradient(circle at 84% 18%,rgba(166,193,255,.23),transparent 22%),radial-gradient(circle at 46% 42%,rgba(255,255,255,.08),transparent 16%),linear-gradient(180deg,#26385f 0%,#1e2b4f 54%,#293b63 100%);color:#fff5dd}
-body.magic-theme #page-path.award-night::before{background:radial-gradient(circle at 12% 18%,rgba(255,244,210,.85) 0 1px,transparent 2px),radial-gradient(circle at 32% 10%,rgba(203,221,255,.8) 0 1px,transparent 2px),radial-gradient(circle at 74% 14%,rgba(255,226,173,.8) 0 1px,transparent 2px),radial-gradient(circle at 88% 34%,rgba(255,255,255,.76) 0 1px,transparent 2px),radial-gradient(circle at 20% 68%,rgba(255,226,173,.58) 0 1px,transparent 2px),radial-gradient(ellipse at 50% 98%,rgba(255,226,173,.2),transparent 32%),linear-gradient(180deg,transparent 58%,rgba(7,10,32,.32));background-size:auto;opacity:.72}
-body.magic-theme #page-path.award-night::after{content:'';position:absolute;left:0;right:0;bottom:0;height:210px;pointer-events:none;background:radial-gradient(circle at 18% 72%,rgba(255,226,173,.55) 0 1px,transparent 2px),radial-gradient(circle at 58% 82%,rgba(205,223,255,.46) 0 1px,transparent 2px),radial-gradient(circle at 82% 66%,rgba(255,255,255,.62) 0 1px,transparent 2px),linear-gradient(180deg,transparent,rgba(11,15,42,.5));opacity:.9}
+body.magic-theme #page-path.award-night{background:radial-gradient(circle at 12% 5%,rgba(255,229,168,.28),transparent 16%),radial-gradient(circle at 86% 14%,rgba(166,193,255,.28),transparent 20%),radial-gradient(circle at 28% 34%,rgba(219,196,255,.18),transparent 26%),radial-gradient(circle at 70% 44%,rgba(255,255,255,.08),transparent 18%),linear-gradient(180deg,#26385f 0%,#1b284d 48%,#111832 100%);color:#fff5dd}
+body.magic-theme #page-path.award-night::before{background:radial-gradient(circle at 12% 18%,rgba(255,244,210,.9) 0 1px,transparent 2px),radial-gradient(circle at 32% 10%,rgba(203,221,255,.82) 0 1px,transparent 2px),radial-gradient(circle at 74% 14%,rgba(255,226,173,.84) 0 1px,transparent 2px),radial-gradient(circle at 88% 34%,rgba(255,255,255,.8) 0 1px,transparent 2px),radial-gradient(circle at 20% 68%,rgba(255,226,173,.6) 0 1px,transparent 2px),radial-gradient(circle at 46% 58%,rgba(203,221,255,.52) 0 1px,transparent 2px),radial-gradient(ellipse at 50% 100%,rgba(255,226,173,.24),transparent 36%),linear-gradient(180deg,transparent 54%,rgba(7,10,32,.42));background-size:auto;opacity:.82}
+body.magic-theme #page-path.award-night::after{content:'';position:absolute;left:0;right:0;bottom:0;height:260px;pointer-events:none;background:radial-gradient(circle at 18% 72%,rgba(255,226,173,.58) 0 1px,transparent 2px),radial-gradient(circle at 58% 82%,rgba(205,223,255,.5) 0 1px,transparent 2px),radial-gradient(circle at 82% 66%,rgba(255,255,255,.66) 0 1px,transparent 2px),radial-gradient(ellipse at 48% 100%,rgba(255,226,173,.18),transparent 42%),linear-gradient(180deg,transparent,rgba(6,9,28,.68));opacity:.95}
 body.magic-theme #page-path.award-night .page-header{background:linear-gradient(180deg,rgba(38,56,95,.96),rgba(38,56,95,.72));border-bottom-color:rgba(255,226,173,.12)}
 body.magic-theme #page-path.award-night .page-title,body.magic-theme #page-path.award-night .page-subtitle{color:#fff1c8}
 body.magic-theme #page-path.award-night .path-subnav button{background:rgba(255,255,255,.1);border-color:rgba(255,226,173,.16);color:rgba(255,246,218,.8)}
@@ -736,8 +739,9 @@ body.magic-theme #page-path.award-night .path-subnav button.active{background:li
 body.magic-theme .award-index::before{color:#ffe4a2;text-align:center;text-shadow:0 0 12px rgba(255,226,173,.38)}
 body.magic-theme .award-index::after{color:#fff0bd;text-align:center;text-shadow:0 0 12px rgba(255,226,173,.26)}
 body.magic-theme .award-add-pen{background:linear-gradient(145deg,#fff1bc,#dfe8ff);border-color:rgba(255,226,173,.38);color:#5b4a83}
-body.magic-theme .award-index-card{background:linear-gradient(145deg,rgba(255,255,255,.14),rgba(188,197,255,.08));border-color:rgba(255,226,173,.24);box-shadow:0 8px 22px rgba(8,12,38,.2),0 0 18px rgba(255,226,173,.1),inset 0 0 0 1px rgba(255,255,255,.08)}
-body.magic-theme .award-index-name{color:#fff3ca;background:radial-gradient(circle at 50% 0%,rgba(255,255,255,.34),transparent 35%),linear-gradient(145deg,rgba(255,226,173,.28),rgba(206,214,255,.12));border-color:rgba(255,226,173,.7);border-radius:15px 26px 15px 26px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.16),0 0 0 3px rgba(255,226,173,.08),0 0 24px rgba(255,226,173,.3);text-shadow:0 0 13px rgba(255,226,173,.55)}
+body.magic-theme .award-index-card{border-radius:22px 10px 24px 10px;background:radial-gradient(circle at 16% 8%,rgba(255,226,173,.18),transparent 18%),linear-gradient(145deg,rgba(255,255,255,.14),rgba(188,197,255,.07));border-color:rgba(255,226,173,.26);box-shadow:0 10px 26px rgba(6,9,28,.24),0 0 20px rgba(255,226,173,.1),inset 0 0 0 1px rgba(255,255,255,.08)}
+body.magic-theme .award-index-card::after{content:'✦';color:rgba(255,226,173,.34);text-shadow:0 0 12px rgba(255,226,173,.55)}
+body.magic-theme .award-index-name{color:#fff3ca;background:radial-gradient(circle at 50% 0%,rgba(255,255,255,.36),transparent 35%),linear-gradient(145deg,rgba(255,226,173,.3),rgba(206,214,255,.13));border-color:rgba(255,226,173,.72);border-radius:14px 28px 14px 28px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.16),0 0 0 3px rgba(255,226,173,.08),0 0 26px rgba(255,226,173,.34);text-shadow:0 0 13px rgba(255,226,173,.58)}
 body.magic-theme .award-index-name::before,body.magic-theme .award-index-name::after{content:'✦';color:rgba(255,226,173,.9);font-size:15px;text-shadow:0 0 12px rgba(255,226,173,.8)}
 body.magic-theme .award-index-note{color:rgba(255,238,205,.68)}
 body.magic-theme .award-detail{background:radial-gradient(circle at 86% 18%,rgba(255,226,173,.18),transparent 18%),linear-gradient(145deg,rgba(30,39,84,.62),rgba(49,59,112,.48));border-color:rgba(255,226,173,.24);box-shadow:0 10px 24px rgba(6,9,30,.2),0 0 20px rgba(255,226,173,.08);backdrop-filter:blur(5px)}
@@ -746,9 +750,11 @@ body.magic-theme .award-detail summary{color:#fff2c7;text-shadow:0 0 10px rgba(2
 body.magic-theme .award-detail summary::after{color:rgba(255,240,189,.62)}
 body.magic-theme .award-note{background:rgba(255,246,218,.13);border-left-color:rgba(255,226,173,.34);color:rgba(255,246,218,.76)}
 body.magic-theme .award-book-link{background:rgba(255,255,255,.08);border-color:rgba(255,226,173,.2);color:#fff7df;text-shadow:0 0 10px rgba(255,226,173,.52),0 0 18px rgba(184,208,255,.24);box-shadow:0 0 12px rgba(255,226,173,.08)}
-body.magic-theme .award-index-reason{background:rgba(255,255,255,.06);border-color:rgba(255,226,173,.12);color:rgba(255,244,221,.74)}
-body.magic-theme .award-reason-short{background:linear-gradient(90deg,rgba(229,233,255,.56),rgba(255,255,255,.24));border-left-color:rgba(116,110,183,.28);color:#51476f}
-body.magic-theme .award-reason-long{background:linear-gradient(145deg,rgba(238,241,255,.46),rgba(255,255,255,.22));border-color:rgba(116,110,183,.22);color:#5f587b}
+body.magic-theme .award-index-reason{background:linear-gradient(135deg,rgba(255,246,218,.12),rgba(184,208,255,.06));border-color:rgba(255,226,173,.18);color:rgba(255,244,221,.8);box-shadow:0 0 14px rgba(255,226,173,.08),inset 0 0 0 1px rgba(255,255,255,.06)}
+body.magic-theme .award-reason-short{background:linear-gradient(115deg,rgba(255,246,218,.18),rgba(188,197,255,.1));border-color:rgba(255,226,173,.18);color:rgba(255,246,218,.82);box-shadow:0 0 16px rgba(255,226,173,.08),inset 0 0 0 1px rgba(255,255,255,.06)}
+body.magic-theme .award-reason-short::before{background:linear-gradient(#ffe4a2,#b9c5ff);box-shadow:0 0 10px rgba(255,226,173,.36)}
+body.magic-theme .award-reason-long{background:linear-gradient(145deg,rgba(218,226,255,.12),rgba(255,255,255,.06));border-color:rgba(255,226,173,.16);color:rgba(238,225,255,.8);box-shadow:inset 0 0 0 1px rgba(255,255,255,.05)}
+body.magic-theme .award-reason-long::after{background:rgba(255,226,173,.2)}
 body.magic-theme .author-profile{background:linear-gradient(145deg,#e8f2ff,#fff2ca 52%,#e4dcff);border-color:rgba(116,110,183,.18)}
 body.magic-theme .author-note-box{background:linear-gradient(145deg,rgba(235,244,255,.92),rgba(255,242,208,.82));border-color:rgba(116,110,183,.2)}
 .author-avatar.has-avatar{background-size:cover!important;background-position:center;color:transparent}
@@ -2085,9 +2091,21 @@ function normalizePeerReviews(raw){
       type:r.type||'同好书评',
       text:r.text||r.review||'',
       sourceHint:r.sourceHint||r.source||'',
+      isStatus:!!r.isStatus,
       createdAt:r.createdAt||Date.now()
     };
   }).filter(r=>r.text).slice(0,60);
+}
+
+function makePeerReviewStatus(type='all',message='未找到可靠公开书评'){
+  const label=type==='positive'?'正面评价':type==='negative'?'负面评价':'公开评价';
+  return {
+    type:`${label}状态`,
+    text:message,
+    sourceHint:'AI 搜索公开评价后记录',
+    isStatus:true,
+    createdAt:Date.now()
+  };
 }
 
 function renderPeerReviews(book){
@@ -2096,11 +2114,11 @@ function renderPeerReviews(book){
     <summary><span>同好书评 · ${reviews.length} 条</span></summary>
     <div class="peer-review-body">
       <div class="peer-review-actions">
-        <button class="btn btn-ghost" id="peer-review-all-btn-${book.id}" onclick="event.preventDefault();autoFetchPeerReviews('${book.id}','all')">抓取书评</button>
-        <button class="btn btn-ghost" id="peer-review-positive-btn-${book.id}" onclick="event.preventDefault();autoFetchPeerReviews('${book.id}','positive')">抓取正面书评</button>
-        <button class="btn btn-ghost" id="peer-review-negative-btn-${book.id}" onclick="event.preventDefault();autoFetchPeerReviews('${book.id}','negative')">抓取负面书评</button>
+        <button class="btn btn-ghost" id="peer-review-all-btn-${book.id}" onclick="event.preventDefault();autoFetchPeerReviews('${book.id}','all')">AI搜索公开评价</button>
+        <button class="btn btn-ghost" id="peer-review-positive-btn-${book.id}" onclick="event.preventDefault();autoFetchPeerReviews('${book.id}','positive')">AI搜正面评价</button>
+        <button class="btn btn-ghost" id="peer-review-negative-btn-${book.id}" onclick="event.preventDefault();autoFetchPeerReviews('${book.id}','negative')">AI搜负面评价</button>
       </div>
-      ${reviews.length?reviews.map((r,i)=>`<div class="peer-review-card">
+      ${reviews.length?reviews.map((r,i)=>`<div class="peer-review-card ${r.isStatus?'status':''}">
         <div class="peer-review-head"><div class="peer-review-type">${escapeHtml(r.type)}</div><button class="peer-review-delete" onclick="event.preventDefault();event.stopPropagation();deletePeerReview('${book.id}',${i})">删除</button></div>
         <div class="peer-review-text">${escapeHtml(r.text)}</div>
         ${r.sourceHint?`<div class="peer-review-meta">${escapeHtml(r.sourceHint)}</div>`:''}
@@ -3047,8 +3065,8 @@ function setPeerReviewBusy(bookId,busy,type=''){
     const btn=document.getElementById(`peer-review-${key}-btn-${bookId}`);
     if(!btn) return;
     btn.disabled=busy;
-    const label=key==='positive'?'抓取正面书评':key==='negative'?'抓取负面书评':'抓取书评';
-    btn.textContent=busy&&type===key?'抓取中…':label;
+    const label=key==='positive'?'AI搜正面评价':key==='negative'?'AI搜负面评价':'AI搜索公开评价';
+    btn.textContent=busy&&type===key?'搜索中…':label;
   });
 }
 
@@ -3058,29 +3076,35 @@ async function autoFetchPeerReviews(bookId,type='all'){
   if(!book.title||!book.author){toast('抓取书评前先确定书名和作者');return;}
   if(!hasActiveAIKey()) return;
   setPeerReviewBusy(bookId,true,type);
-  const typeLabel=type==='positive'?'正面书评':type==='negative'?'负面书评':'同好书评';
-  const taskId=startAITask(`${typeLabel} · ${book.title}`,'正在搜索公开书评',`openDetail('${bookId}',{pushState:false});setTimeout(()=>openPeerReviewSection(),120)`);
+  const typeLabel=type==='positive'?'正面评价':type==='negative'?'负面评价':'公开评价';
+  const taskId=startAITask(`${typeLabel} · ${book.title}`,'正在搜索公开评价',`openDetail('${bookId}',{pushState:false});setTimeout(()=>openPeerReviewSection(),120)`);
   try{
     const tone=type==='positive'?'偏正面、推荐理由或高赞夸点':type==='negative'?'偏负面、排雷、争议点或低分理由':'有代表性的综合评价，可以包含正面和负面';
     const prompt=`请为 BL/耽美网文《${book.title}》（作者：${book.author}）寻找 2 到 3 条公开同好书评摘要。必须同时匹配书名和作者；平台线索为「${book.platform||'未知'}」，若为未知或其他则忽略。
-目标书评类型：${tone}。
+目标评价类型：${tone}。
 优先参考公开作品评论、长评、书单评价、读者讨论里点赞/阅读/互动较多或经常被提到的观点。不要编造具体点赞数；如果无法确认来源，只写“公开书评整理”。
 每条书评用自己的话概括，不要大段照抄原文。每条 60 到 160 字。
 优先回复 JSON；如果输出 JSON 不稳定，可以直接按 1、2、3 分条输出书评正文：
 {"matched":"true/false","reviews":[{"type":"${typeLabel}","text":"书评摘要","sourceHint":"来源提示或空字符串"}],"sourceHint":"总体来源提示或空字符串"}`;
     const json=parsePeerReviewsAI(await callAI(prompt,{maxOutputTokens:1400}),type);
-    if(json.matched===false||String(json.matched||'').toLowerCase()==='false') throw new Error('NO_EXACT_MATCH');
-    if(!json.reviews.length) throw new Error('AI_PARSE_JSON');
-    book.peerReviews=[...normalizePeerReviews(book.peerReviews),...json.reviews].slice(0,60);
+    const reviews=(json.matched===false||String(json.matched||'').toLowerCase()==='false'||!json.reviews.length)
+      ? [makePeerReviewStatus(type,'未找到可靠公开书评')]
+      : json.reviews;
+    book.peerReviews=[...normalizePeerReviews(book.peerReviews),...reviews].slice(0,60);
     book.updatedAt=Date.now();
     save();
     openDetail(bookId,{pushState:false});
     setTimeout(()=>openPeerReviewSection(),120);
-    updateAITask(taskId,json.sourceHint?`已追加：${json.sourceHint}`:`已追加 ${json.reviews.length} 条${typeLabel}`,'done');
-    toast(`已追加 ${json.reviews.length} 条${typeLabel}`);
+    updateAITask(taskId,json.sourceHint?`已追加：${json.sourceHint}`:`已追加 ${reviews.length} 条${typeLabel}`,'done');
+    toast(reviews[0]?.isStatus?'未找到可靠公开书评，已记录状态':`已追加 ${reviews.length} 条${typeLabel}`);
   }catch(e){
-    updateAITask(taskId,formatAIError(e,'书评抓取失败'),'failed');
-    toast(formatAIError(e,'书评抓取失败'));
+    book.peerReviews=[...normalizePeerReviews(book.peerReviews),makePeerReviewStatus(type,'未找到可靠公开书评')].slice(0,60);
+    book.updatedAt=Date.now();
+    save();
+    openDetail(bookId,{pushState:false});
+    setTimeout(()=>openPeerReviewSection(),120);
+    updateAITask(taskId,'未找到可靠公开书评，已记录状态','done');
+    toast('未找到可靠公开书评，已记录状态');
     console.error(e);
   }finally{
     setPeerReviewBusy(bookId,false);
@@ -3248,7 +3272,7 @@ function parsePeerReviewsAI(text,type='all'){
   }
   if(json.matched===false||String(json.matched||'').toLowerCase()==='false') return {matched:'false',reviews:[]};
   const reviews=(Array.isArray(json.reviews)?json.reviews:[]).map(r=>({
-    type:r.type||(type==='positive'?'正面书评':type==='negative'?'负面书评':'同好书评'),
+    type:r.type||(type==='positive'?'正面评价':type==='negative'?'负面评价':'公开评价'),
     text:String(r.text||r.review||'').trim(),
     sourceHint:String(r.sourceHint||r.source||'').trim(),
     createdAt:Date.now()
@@ -3257,7 +3281,7 @@ function parsePeerReviewsAI(text,type='all'){
 }
 
 function extractPeerReviewText(text,type='all'){
-  const typeLabel=type==='positive'?'正面书评':type==='negative'?'负面书评':'同好书评';
+  const typeLabel=type==='positive'?'正面评价':type==='negative'?'负面评价':'公开评价';
   let clean=String(text||'').replace(/```json|```/g,'').trim();
   if(/^NO_MATCH\b/i.test(clean)) return [];
   clean=clean
