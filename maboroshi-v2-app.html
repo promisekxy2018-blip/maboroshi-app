@@ -584,10 +584,10 @@ body.magic-theme .ai-task-panel,body.magic-theme .ai-task-card{background:linear
 .vine-item::before{inset:-7px 18% auto 9%;height:30px;transform:rotate(-2deg)}
 .vine-item::after{right:-7px;bottom:18px;width:38px;height:58px;transform:rotate(10deg)}
 .vine-item .path-book-title::after,.vine-item .path-book-title::before{content:none}
-.vine-card-frame{position:absolute;inset:5px 5px 5px 5px;z-index:0;pointer-events:none;color:rgba(93,142,82,.58)}
+.vine-card-frame{position:absolute;inset:-1px;z-index:2;pointer-events:none;color:rgba(93,142,82,.62)}
 .vine-card-frame svg{width:100%;height:100%;overflow:visible;display:block}
-.card-vine-main{fill:none;stroke:currentColor;stroke-width:1.25;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:92 12 42 18;filter:drop-shadow(0 1px 1px rgba(91,124,68,.1))}
-.card-vine-soft{fill:none;stroke:rgba(158,196,115,.38);stroke-width:.75;stroke-linecap:round;stroke-dasharray:34 18}
+.card-vine-main{fill:none;stroke:currentColor;stroke-width:1.15;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:78 12 32 16;filter:drop-shadow(0 1px 1px rgba(91,124,68,.1))}
+.card-vine-soft{fill:none;stroke:rgba(158,196,115,.38);stroke-width:.72;stroke-linecap:round;stroke-dasharray:28 18}
 .card-vine-leaf{fill:rgba(126,178,99,.62);stroke:rgba(85,135,77,.18);stroke-width:.5}
 .card-vine-star{fill:rgba(246,197,128,.66)}
 .vine-item:nth-of-type(3n){--petal-a:#a8d5b5;--petal-b:#f2a8c4;--petal-c:#f7d98b}
@@ -3954,17 +3954,17 @@ function renderPathItem(book,log,month,index){
 function renderCardVineFrame(index){
   return `<div class="vine-card-frame" aria-hidden="true">
     <svg viewBox="0 0 100 100" preserveAspectRatio="none">
-      <path class="card-vine-main" d="M10 5 C24 2 37 5 50 5 C63 5 78 2 90 8 C98 12 97 27 96 40 C95 56 100 75 90 89 C79 98 61 94 49 95 C35 96 20 99 9 89 C1 78 5 61 5 49 C5 35 1 15 10 5Z"/>
-      <path class="card-vine-soft" d="M8 20 C13 31 5 41 8 52 C11 64 4 75 12 86"/>
-      <path class="card-vine-soft" d="M91 17 C86 29 96 39 92 51 C88 64 96 77 86 88"/>
-      <path class="card-vine-leaf" d="M0 0 C3 -4 10 -4 14 0 C9 4 3 4 0 0Z" transform="translate(8 28) rotate(-54)"/>
-      <path class="card-vine-leaf" d="M0 0 C3 -4 10 -4 14 0 C9 4 3 4 0 0Z" transform="translate(92 32) rotate(150)"/>
-      <path class="card-vine-leaf" d="M0 0 C3 -4 10 -4 14 0 C9 4 3 4 0 0Z" transform="translate(22 94) rotate(18)"/>
-      <path class="card-vine-leaf" d="M0 0 C3 -4 10 -4 14 0 C9 4 3 4 0 0Z" transform="translate(75 95) rotate(-162)"/>
-      <circle class="card-vine-star" cx="16" cy="9" r=".8"/>
-      <circle class="card-vine-star" cx="89" cy="17" r=".75"/>
-      <circle class="card-vine-star" cx="94" cy="79" r=".75"/>
-      <circle class="card-vine-star" cx="8" cy="78" r=".7"/>
+      <path class="card-vine-main" d="M9 1.5 C25 0 39 1.6 51 1.5 C64 1.3 82 -1 92 5.5 C101 11 98.8 25 98.5 38 C98 55 101 76 92 91.5 C83 101 65 98.6 51 98.5 C36 98.4 17 101 7.5 91 C-1 78 .8 58 1.5 46 C2.2 31 -2 11 9 1.5Z"/>
+      <path class="card-vine-soft" d="M4.5 18 C9 30 1.5 40 4 53 C6.5 66 1.5 80 9.5 92"/>
+      <path class="card-vine-soft" d="M95 15 C90 27 98.5 39 95.5 52 C92 66 99 80 90 93"/>
+      <path class="card-vine-leaf" d="M0 0 C3 -4 10 -4 14 0 C9 4 3 4 0 0Z" transform="translate(3.5 30) rotate(-55)"/>
+      <path class="card-vine-leaf" d="M0 0 C3 -4 10 -4 14 0 C9 4 3 4 0 0Z" transform="translate(97 35) rotate(151)"/>
+      <path class="card-vine-leaf" d="M0 0 C3 -4 10 -4 14 0 C9 4 3 4 0 0Z" transform="translate(23 98) rotate(16)"/>
+      <path class="card-vine-leaf" d="M0 0 C3 -4 10 -4 14 0 C9 4 3 4 0 0Z" transform="translate(78 98) rotate(-164)"/>
+      <circle class="card-vine-star" cx="17" cy="2.5" r=".75"/>
+      <circle class="card-vine-star" cx="91" cy="10" r=".7"/>
+      <circle class="card-vine-star" cx="96" cy="80" r=".7"/>
+      <circle class="card-vine-star" cx="4" cy="78" r=".65"/>
     </svg>
   </div>`;
 }
