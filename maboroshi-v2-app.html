@@ -2925,10 +2925,10 @@ async function autoFetchSynopsis(mode='short'){
 已知官方简介：${summary||'暂无'}。
 请优先参考官方作品页、公开长评和可信公开书评。梗概不是导读：尽量按开端、关键关系变化、主要冲突升级、重要转折、高潮、结局写出关键情节点，明确人物做了什么和事件如何推进；信息不足时只写能确认的情节，不要用空泛推荐语代替剧情，不要照抄大段原文。
 本次需要${isLong?'长版，尽量覆盖全文关键情节点和结局，约 700 到 1400 字':'短版，保留主线、关系变化、关键冲突和结局，约 220 到 420 字'}。
-请优先只回复 JSON，不要解释或 Markdown；如果模型无法稳定输出 JSON，也可以直接输出完整剧情梗概正文：
-{"matched":"true/false","synopsis":"${isLong?'700到1400字':'220到420字'}的剧透版剧情梗概或空字符串","sourceHint":"信息来源提示或空字符串"}`;
-    const raw=await callAI(prompt,{maxOutputTokens:isLong?2600:1200});
-    const json=parseSynopsisAI(raw,{minLength:isLong?80:18});
+不要回复 JSON，不要 Markdown，不要解释，不要加标题。只输出完整剧情梗概正文。
+如果无法可靠确认这是同一本书，只输出 NO_MATCH。`;
+    const raw=await callAI(prompt,{maxOutputTokens:isLong?3800:1500});
+    const json=parseSynopsisAI(raw,{minLength:isLong?420:120,mode});
     if(json.matched===false||String(json.matched||'').toLowerCase()==='false') throw new Error('NO_EXACT_MATCH');
     if(json.synopsis) document.getElementById('f-synopsis').value=json.synopsis;
     if(editingBookId&&json.synopsis){
@@ -3067,13 +3067,25 @@ function parseAIJson(text){
 }
 
 function parseSynopsisAI(text,opts={}){
-  try{return parseAIJson(text);}catch(e){}
+  try{
+    const json=parseAIJson(text);
+    if(json.matched===false||String(json.matched||'').toLowerCase()==='false') return json;
+    const synopsis=extractSynopsisText(json.synopsis||'');
+    if(isLikelyIncompleteSynopsis(synopsis,opts)) throw new Error('AI_INCOMPLETE_SYNOPSIS');
+    return {...json,synopsis,sourceHint:json.sourceHint||'剧情正文已生成'};
+  }catch(e){
+    if(String(e?.message||'').includes('AI_INCOMPLETE_SYNOPSIS')) throw e;
+  }
   const synopsis=extractSynopsisText(text);
   const minLength=opts.minLength??40;
-  if(synopsis&&synopsis.length>=minLength){
-    return {matched:'true',synopsis,sourceHint:'AI 返回了非标准 JSON，已自动保留剧情正文'};
+  if(/^NO_MATCH\b/i.test(synopsis)) return {matched:'false',synopsis:'',sourceHint:''};
+  if(isLikelyIncompleteSynopsis(synopsis,opts)){
+    throw new Error('AI_INCOMPLETE_SYNOPSIS');
   }
-  throw new Error('AI_PARSE_JSON');
+  if(synopsis&&synopsis.length>=minLength){
+    return {matched:'true',synopsis,sourceHint:'剧情正文已生成'};
+  }
+  throw new Error('AI_INCOMPLETE_SYNOPSIS');
 }
 
 function parseBookQuoteAI(text){
@@ -3106,9 +3118,22 @@ function extractSynopsisText(text){
   return clean;
 }
 
+function isLikelyIncompleteSynopsis(text,opts={}){
+  const s=String(text||'').trim();
+  if(!s) return true;
+  const minLength=opts.minLength??40;
+  if(s.length<minLength) return true;
+  const tail=s.slice(-1);
+  const hasEndPunc=/[。！？.!?”」』）)]/.test(tail);
+  const abruptTail=/(但是|然而|因为|于是|随后|接着|并且|以及|最终|直到|当|在|和|与|、|，|：|；|“|《)$/.test(s);
+  const rawLooksJson=/"synopsis"\s*[:：]/.test(String(text||''))&&/[{]/.test(String(text||''))&&!/[}]\s*$/.test(String(text||'').trim());
+  return !hasEndPunc||abruptTail||rawLooksJson;
+}
+
 function formatAIError(err,fallback){
   const msg=String(err?.message||err||'');
   if(msg.includes('NO_EXACT_MATCH')) return '没找到可靠的书名+作者匹配，先留空';
+  if(msg.includes('AI_INCOMPLETE_SYNOPSIS')) return 'AI 返回的剧情像是没写完整，已保留原数据，请重试一次';
   if(msg.includes('AI_PARSE_JSON')) return 'AI 返回内容不是标准 JSON，已保留原数据，请重试一次';
   if(msg.includes('OPENAI_HTTP_400')) return `OpenAI 请求格式被拒绝：${msg.split(':').slice(1).join(':').trim()||'请稍后重试'}`;
   if(msg.includes('OPENAI_HTTP_401')) return 'OpenAI Key 不正确或已失效';
