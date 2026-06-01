@@ -267,6 +267,10 @@ body.magic-theme .fab.arc-fab{background:linear-gradient(145deg,#fff0ce,#d8ddff 
 .overlay{position:fixed;inset:0;background:rgba(61,43,31,0.35);z-index:200;opacity:0;transition:opacity 0.25s;pointer-events:none}
 .overlay.show{opacity:1;pointer-events:all}
 .sheet{position:fixed;bottom:0;left:0;right:0;background:var(--bg2);border-radius:24px 24px 0 0;z-index:201;transform:translateY(100%);transition:transform 0.3s cubic-bezier(0.32,0.72,0,1);max-height:92vh;display:flex;flex-direction:column}
+.sheet.detail-sheet{top:0;bottom:0;max-height:none;border-radius:0;background:linear-gradient(180deg,#fff8f2,#f8f0df)}
+.sheet.detail-sheet .sheet-handle{display:none}
+.sheet.detail-sheet .sheet-header{padding-top:calc(16px + env(safe-area-inset-top));background:linear-gradient(145deg,rgba(255,255,255,.8),rgba(255,248,242,.42))}
+.sheet.detail-sheet .sheet-body{padding-bottom:calc(28px + env(safe-area-inset-bottom))}
 .sheet.show{transform:translateY(0)}
 .sheet-handle{width:36px;height:4px;background:var(--border2);border-radius:2px;margin:12px auto 0}
 .sheet-header{padding:16px 20px 12px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border)}
@@ -322,6 +326,11 @@ body.magic-theme .fab.arc-fab{background:linear-gradient(145deg,#fff0ce,#d8ddff 
 .tag-chip-sel.cat-3{color:#b07820}.tag-chip-sel.cat-3.selected{background:#fef3e2}
 .tag-chip-sel.cat-4{color:#4a6eb0}.tag-chip-sel.cat-4.selected{background:#e8f0fe}
 .tag-chip-sel.cat-5{color:#b05050}.tag-chip-sel.cat-5.selected{background:#fdecea}
+.tag-chip-sel.light-cat-big{color:#b07820}.tag-chip-sel.light-cat-big.selected{background:#fef3e2}
+.tag-chip-sel.light-cat-small{color:#c4607e}.tag-chip-sel.light-cat-small.selected{background:#fce8f0}
+.tag-chip-sel.light-cat-personality{color:#c4607e}.tag-chip-sel.light-cat-personality.selected{background:#fce8f0}
+.tag-chip-sel.light-cat-identity{color:#4a9966}.tag-chip-sel.light-cat-identity.selected{background:#e8f4ee}
+.tag-chip-sel.light-cat-stage{color:#4a6eb0}.tag-chip-sel.light-cat-stage.selected{background:#e8f0fe}
 .tag-add-row{display:flex;gap:6px;margin-top:8px}
 .tag-add-input{flex:1;padding:6px 10px;border:1px solid var(--border2);border-radius:20px;font-size:12px;background:var(--bg);color:var(--text);font-family:'Noto Sans SC',sans-serif;outline:none}
 .tag-add-btn{padding:6px 12px;border-radius:20px;background:var(--pink3);color:var(--pink2);border:none;font-size:12px;cursor:pointer;font-weight:500}
@@ -668,6 +677,12 @@ body.magic-theme .arc-detail-hero,body.magic-theme .arc-detail-record{background
 body.magic-theme .arc-detail-name,body.magic-theme .arc-detail-record-title{color:#fff7df}
 body.magic-theme .arc-detail-note,body.magic-theme .arc-detail-record-text{color:rgba(255,246,218,.78)}
 body.magic-theme .arc-detail-back{background:rgba(255,246,218,.12);color:#fff1c4;border:1px solid rgba(255,226,173,.14)}
+body.magic-theme .sheet.detail-sheet{background:linear-gradient(180deg,#1e2755,#2f3e78 58%,#eef3ff)}
+body.magic-theme .sheet.detail-sheet .sheet-header{background:radial-gradient(circle at 18% 28%,rgba(255,239,170,.24),transparent 20%),linear-gradient(145deg,#536bb2,#3a4f92);border-bottom-color:rgba(255,226,173,.2)}
+body.magic-theme .sheet.detail-sheet .sheet-title{color:#fff7df}
+body.magic-theme .sheet.detail-sheet .sheet-close{background:rgba(255,246,218,.16);color:#fff1c4}
+body.magic-theme #sheet-arc-detail .arc-detail-hero,body.magic-theme #sheet-arc-detail .arc-detail-record,body.magic-theme #sheet-light-detail .arc-detail-record{background:radial-gradient(circle at 90% 12%,rgba(255,226,173,.16),transparent 24px),linear-gradient(145deg,rgba(18,28,68,.88),rgba(61,76,135,.72));border-color:rgba(255,226,173,.2)}
+body.magic-theme #sheet-arc-detail .arc-detail-section-title{color:#fff1c4}
 body.magic-theme #sheet-light-record .sheet-header,body.magic-theme #sheet-arc-profile .sheet-header{background:radial-gradient(circle at 86% 20%,rgba(255,226,173,.12),transparent 34px),linear-gradient(145deg,rgba(255,246,218,.08),rgba(185,197,255,.07));border-bottom-color:rgba(255,226,173,.15)}
 .path-hero{position:relative;margin:0 16px 12px;padding:10px 13px 11px 14px;border-radius:8px 20px 8px 20px;background:radial-gradient(ellipse at 88% 22%,rgba(183,217,129,.3),transparent 24px),linear-gradient(100deg,rgba(237,247,233,.82),rgba(255,248,242,.18));border:none;border-left:3px solid #8fbf6e;box-shadow:0 8px 20px rgba(95,150,88,.08);overflow:hidden}
 .path-hero::after{content:'❦';position:absolute;right:12px;top:7px;color:rgba(143,191,110,.58);font-size:16px;text-shadow:-20px 18px 0 rgba(248,184,200,.22)}
@@ -1213,7 +1228,7 @@ body.magic-theme .author-wait-card{border-color:rgba(116,110,183,.18)}
           <div class="settings-item-left">
             <div class="settings-item-icon" style="background:#e8f0fe">ℹ️</div>
             <div>
-              <div class="settings-item-title">幻 maboroshi v2.34</div>
+              <div class="settings-item-title">幻 maboroshi v2.35</div>
               <div class="settings-item-sub">数据和密码均存储于本地</div>
             </div>
           </div>
@@ -1429,20 +1444,25 @@ body.magic-theme .author-wait-card{border-color:rgba(116,110,183,.18)}
       <input class="form-input" id="light-title-input" placeholder="给这道光起个名字">
     </div>
     <div class="form-group">
-      <label class="form-label">大标签</label>
-      <div class="arc-tag-input-row"><input class="form-input" id="light-big-input" placeholder="素材 / 灵感 / 观察" onfocus="showLightBigHistory()" oninput="showLightBigHistory()" onkeydown="if(event.key==='Enter'){event.preventDefault();addLightBigTag()}"><button type="button" class="btn btn-ghost" style="font-size:12px;padding:8px 12px" onclick="addLightBigTag()">添加</button></div>
-      <div class="tag-picker-options arc-tag-history" id="light-big-history"></div>
-      <div class="selected-tags" id="light-big-selected"></div>
+      <div class="tag-category">
+        <div class="tag-category-label"><span>大标签</span><span id="light-big-count">0 个已选</span></div>
+        <div class="tag-selected-row" id="light-big-selected"></div>
+        <div class="tag-add-row">
+          <input class="tag-add-input" id="light-big-input" placeholder="点这里选择历史标签 / 输入新标签" onfocus="showLightBigHistory()" oninput="showLightBigHistory()" onkeydown="if(event.key==='Enter'){event.preventDefault();addLightBigTag()}">
+          <button class="tag-add-btn" type="button" onclick="addLightBigTag()">添加</button>
+        </div>
+        <div class="tag-picker" id="light-big-history"><div class="tag-picker-hint">点选标签；在输入框里写新标签后点添加</div><div class="tag-chips-wrap" id="light-big-chips"></div></div>
+      </div>
     </div>
     <div class="form-group">
-      <label class="form-label">小标签</label>
       <div class="tag-category">
-        <div class="tag-input-wrap">
-          <input class="tag-input" id="light-small-input" placeholder="输入后回车添加：人物、剧情、情感…" onfocus="showLightSmallHistory()" oninput="showLightSmallHistory()" onkeydown="if(event.key==='Enter'){event.preventDefault();addLightSmallTag()}">
+        <div class="tag-category-label"><span>小标签</span><span id="light-small-count">0 个已选</span></div>
+        <div class="tag-selected-row" id="light-small-selected"></div>
+        <div class="tag-add-row">
+          <input class="tag-add-input" id="light-small-input" placeholder="点这里选择历史标签 / 输入新标签" onfocus="showLightSmallHistory()" oninput="showLightSmallHistory()" onkeydown="if(event.key==='Enter'){event.preventDefault();addLightSmallTag()}">
           <button class="tag-add-btn" type="button" onclick="addLightSmallTag()">添加</button>
         </div>
-        <div class="tag-picker show" id="light-small-history"></div>
-        <div class="selected-tags" id="light-small-selected"></div>
+        <div class="tag-picker" id="light-small-history"><div class="tag-picker-hint">点选标签；在输入框里写新标签后点添加</div><div class="tag-chips-wrap" id="light-small-chips"></div></div>
       </div>
     </div>
     <div class="form-group">
@@ -1492,22 +1512,28 @@ body.magic-theme .author-wait-card{border-color:rgba(116,110,183,.18)}
       <input class="form-input" id="arc-code-input" placeholder="例如：雨夜里的医生 / A">
     </div>
     <div class="form-group">
-      <label class="form-label">性格</label>
-      <div class="arc-tag-input-row"><input class="form-input" id="arc-personality-input" placeholder="输入后点击添加，或从历史里选" onfocus="showArcTagHistory('personality')" oninput="showArcTagHistory('personality')" onkeydown="if(event.key==='Enter'){event.preventDefault();addArcTag('personality')}"><button type="button" class="btn btn-ghost" style="font-size:12px;padding:8px 12px" onclick="addArcTag('personality')">添加</button></div>
-      <div class="tag-picker-options arc-tag-history" id="arc-personality-history"></div>
-      <div class="selected-tags" id="arc-personality-selected"></div>
+      <div class="tag-category">
+        <div class="tag-category-label"><span>性格</span><span id="arc-personality-count">0 个已选</span></div>
+        <div class="tag-selected-row" id="arc-personality-selected"></div>
+        <div class="tag-add-row"><input class="tag-add-input" id="arc-personality-input" placeholder="点这里选择历史标签 / 输入新标签" onfocus="showArcTagHistory('personality')" oninput="showArcTagHistory('personality')" onkeydown="if(event.key==='Enter'){event.preventDefault();addArcTag('personality')}"><button class="tag-add-btn" type="button" onclick="addArcTag('personality')">添加</button></div>
+        <div class="tag-picker" id="arc-personality-history"><div class="tag-picker-hint">点选标签；在输入框里写新标签后点添加</div><div class="tag-chips-wrap" id="arc-personality-chips"></div></div>
+      </div>
     </div>
     <div class="form-group">
-      <label class="form-label">身份</label>
-      <div class="arc-tag-input-row"><input class="form-input" id="arc-identity-input" placeholder="输入后点击添加，或从历史里选" onfocus="showArcTagHistory('identity')" oninput="showArcTagHistory('identity')" onkeydown="if(event.key==='Enter'){event.preventDefault();addArcTag('identity')}"><button type="button" class="btn btn-ghost" style="font-size:12px;padding:8px 12px" onclick="addArcTag('identity')">添加</button></div>
-      <div class="tag-picker-options arc-tag-history" id="arc-identity-history"></div>
-      <div class="selected-tags" id="arc-identity-selected"></div>
+      <div class="tag-category">
+        <div class="tag-category-label"><span>身份</span><span id="arc-identity-count">0 个已选</span></div>
+        <div class="tag-selected-row" id="arc-identity-selected"></div>
+        <div class="tag-add-row"><input class="tag-add-input" id="arc-identity-input" placeholder="点这里选择历史标签 / 输入新标签" onfocus="showArcTagHistory('identity')" oninput="showArcTagHistory('identity')" onkeydown="if(event.key==='Enter'){event.preventDefault();addArcTag('identity')}"><button class="tag-add-btn" type="button" onclick="addArcTag('identity')">添加</button></div>
+        <div class="tag-picker" id="arc-identity-history"><div class="tag-picker-hint">点选标签；在输入框里写新标签后点添加</div><div class="tag-chips-wrap" id="arc-identity-chips"></div></div>
+      </div>
     </div>
     <div class="form-group">
-      <label class="form-label">人生阶段</label>
-      <div class="arc-tag-input-row"><input class="form-input" id="arc-stage-input" placeholder="输入后点击添加，或从历史里选" onfocus="showArcTagHistory('stage')" oninput="showArcTagHistory('stage')" onkeydown="if(event.key==='Enter'){event.preventDefault();addArcTag('stage')}"><button type="button" class="btn btn-ghost" style="font-size:12px;padding:8px 12px" onclick="addArcTag('stage')">添加</button></div>
-      <div class="tag-picker-options arc-tag-history" id="arc-stage-history"></div>
-      <div class="selected-tags" id="arc-stage-selected"></div>
+      <div class="tag-category">
+        <div class="tag-category-label"><span>人生阶段</span><span id="arc-stage-count">0 个已选</span></div>
+        <div class="tag-selected-row" id="arc-stage-selected"></div>
+        <div class="tag-add-row"><input class="tag-add-input" id="arc-stage-input" placeholder="点这里选择历史标签 / 输入新标签" onfocus="showArcTagHistory('stage')" oninput="showArcTagHistory('stage')" onkeydown="if(event.key==='Enter'){event.preventDefault();addArcTag('stage')}"><button class="tag-add-btn" type="button" onclick="addArcTag('stage')">添加</button></div>
+        <div class="tag-picker" id="arc-stage-history"><div class="tag-picker-hint">点选标签；在输入框里写新标签后点添加</div><div class="tag-chips-wrap" id="arc-stage-chips"></div></div>
+      </div>
     </div>
     <div class="form-group">
       <label class="form-label">备注</label>
@@ -1521,9 +1547,10 @@ body.magic-theme .author-wait-card{border-color:rgba(116,110,183,.18)}
 </div>
 
 <!-- ═══ LIGHT DETAIL SHEET ═══ -->
-<div class="sheet" id="sheet-light-detail">
+<div class="sheet detail-sheet" id="sheet-light-detail">
   <div class="sheet-handle"></div>
   <div class="sheet-header">
+    <button class="sheet-close" onclick="closeSheet('sheet-light-detail')">‹</button>
     <span class="sheet-title">捕光详情</span>
     <button class="sheet-close" onclick="closeSheet('sheet-light-detail')">×</button>
   </div>
@@ -1531,9 +1558,10 @@ body.magic-theme .author-wait-card{border-color:rgba(116,110,183,.18)}
 </div>
 
 <!-- ═══ ARC DETAIL SHEET ═══ -->
-<div class="sheet" id="sheet-arc-detail">
+<div class="sheet detail-sheet" id="sheet-arc-detail">
   <div class="sheet-handle"></div>
   <div class="sheet-header">
+    <button class="sheet-close" onclick="closeSheet('sheet-arc-detail')">‹</button>
     <span class="sheet-title">弧光档案详情</span>
     <button class="sheet-close" onclick="closeSheet('sheet-arc-detail')">×</button>
   </div>
@@ -4341,9 +4369,10 @@ function renderLightCard(r){
   const profiles=(r.profileIds||[]).map(id=>`<span class="light-chip profile">${escapeHtml(getArcProfileName(id))}</span>`).join('');
   const links=(r.links||[]).filter(Boolean);
   const shots=(r.screenshots||[]).slice(0,6);
+  const rid=encodeURIComponent(r.id);
   return `<div class="light-card">
     <div class="light-card-head">
-      <div class="light-card-title" onclick="openLightDetail('${r.id}')">${escapeHtml(r.title||'未命名捕光')}</div>
+      <div class="light-card-title" onclick="openLightDetail(decodeURIComponent('${rid}'))">${escapeHtml(r.title||'未命名捕光')}</div>
       <div class="light-date">${formatDateShort(r.updatedAt||r.createdAt)}</div>
     </div>
     <div class="light-chip-row">
@@ -4354,7 +4383,7 @@ function renderLightCard(r){
     ${r.text?`<div class="light-text">${escapeHtml(r.text)}</div>`:''}
     ${r.essence?`<div class="light-essence">${escapeHtml(r.essence)}</div>`:''}
     ${links.length?`<div class="light-links">${links.map(l=>`<a href="${escapeAttr(l)}" target="_blank" rel="noreferrer">${escapeHtml(l)}</a>`).join('')}</div>`:''}
-    ${shots.length?`<div class="light-thumb-row">${shots.map((s,i)=>`<img class="light-thumb" src="${escapeAttr(s.dataUrl)}" alt="" onclick="openLightScreenshotViewer('${r.id}',${i})">`).join('')}</div>`:''}
+    ${shots.length?`<div class="light-thumb-row">${shots.map((s,i)=>`<img class="light-thumb" src="${escapeAttr(s.dataUrl)}" alt="" onclick="openLightScreenshotViewer(decodeURIComponent('${rid}'),${i})">`).join('')}</div>`:''}
   </div>`;
 }
 
@@ -4376,11 +4405,12 @@ function renderArcProfiles(){
 function renderArcCard(p){
   const records=getArcRecords(p.id);
   const tags=[...(p.personalityTags||[]),...(p.identityTags||[]),...(p.stageTags||[])];
+  const pid=encodeURIComponent(p.id);
   return `<div class="arc-card">
-    <div class="arc-head"><div class="arc-name" onclick="openArcDetail('${p.id}')">${escapeHtml(p.code||'未命名人物')}</div><div class="arc-count">${records.length} 条捕光</div></div>
+    <div class="arc-head"><div class="arc-name" onclick="openArcDetail(decodeURIComponent('${pid}'))">${escapeHtml(p.code||'未命名人物')}</div><div class="arc-count">${records.length} 条捕光</div></div>
     ${tags.length?`<div class="light-chip-row">${tags.map(t=>`<span class="light-chip">${escapeHtml(t)}</span>`).join('')}</div>`:''}
     ${p.note?`<div class="arc-meta">${escapeHtml(p.note)}</div>`:''}
-    ${records.length?`<div class="arc-record-list">${records.slice(0,6).map(r=>`<div class="arc-record-item" onclick="openLightDetail('${r.id}')">《${escapeHtml(r.title||'未命名')}》 · ${escapeHtml([...getLightBigTags(r),...(r.smallTags||[])].filter(Boolean).join(' / '))}</div>`).join('')}</div>`:''}
+    ${records.length?`<div class="arc-record-list">${records.slice(0,6).map(r=>`<div class="arc-record-item" onclick="openLightDetail(decodeURIComponent('${encodeURIComponent(r.id)}'))">《${escapeHtml(r.title||'未命名')}》 · ${escapeHtml([...getLightBigTags(r),...(r.smallTags||[])].filter(Boolean).join(' / '))}</div>`).join('')}</div>`:''}
   </div>`;
 }
 
@@ -4390,8 +4420,9 @@ function openArcDetail(id){
 }
 
 function renderArcDetailSheet(id){
+  id=String(id||'');
   const body=document.getElementById('arc-detail-body');
-  const p=(db.arcProfiles||[]).find(x=>x.id===id);
+  const p=(db.arcProfiles||[]).find(x=>String(x.id)===id);
   if(!p){toast('这个人物档案不存在了');return;}
   const groups=[
     ['性格',p.personalityTags||[]],
@@ -4410,9 +4441,9 @@ function renderArcDetailSheet(id){
     <div class="arc-detail-record-meta">${formatDateShort(r.updatedAt||r.createdAt)} · ${escapeHtml([...getLightBigTags(r),...(r.smallTags||[])].filter(Boolean).join(' / '))}</div>
     ${r.essence?`<div class="light-essence">${escapeHtml(r.essence)}</div>`:''}
     ${r.text?`<div class="arc-detail-record-text">${escapeHtml(r.text)}</div>`:''}
-    <div class="light-actions"><button onclick="this.closest('.arc-detail-record').classList.toggle('open')">展开/收起</button><button onclick="openLightDetail('${r.id}')">查看捕光</button></div>
+    <div class="light-actions"><button onclick="this.closest('.arc-detail-record').classList.toggle('open')">展开/收起</button><button onclick="openLightDetail(decodeURIComponent('${encodeURIComponent(r.id)}'))">查看捕光</button></div>
   </div>`).join(''):`<div class="path-empty">这个人物还没有关联捕光记录。</div>`}
-  <div class="light-actions" style="padding-bottom:12px"><button onclick="editArcFromDetail('${p.id}')">编辑档案</button><button onclick="deleteArcProfile('${p.id}');closeSheet('sheet-arc-detail')">删除档案</button></div>`;
+  <div class="light-actions" style="padding-bottom:12px"><button onclick="editArcFromDetail(decodeURIComponent('${encodeURIComponent(p.id)}'))">编辑档案</button><button onclick="deleteArcProfile(decodeURIComponent('${encodeURIComponent(p.id)}'));closeSheet('sheet-arc-detail')">删除档案</button></div>`;
 }
 
 function editArcFromDetail(id){
@@ -4421,16 +4452,18 @@ function editArcFromDetail(id){
 }
 
 function openLightDetail(id){
+  id=String(id||'');
   if(document.getElementById('sheet-arc-detail')?.classList.contains('show')) closeSheet('sheet-arc-detail');
   renderLightDetailSheet(id);
   openSheet('sheet-light-detail');
 }
 
 function renderLightDetailSheet(id){
+  id=String(id||'');
   const body=document.getElementById('light-detail-body');
-  const r=(db.lightRecords||[]).find(x=>x.id===id);
+  const r=(db.lightRecords||[]).find(x=>String(x.id)===id);
   if(!r){toast('这条捕光记录不存在了');return;}
-  const profiles=(r.profileIds||[]).map(id=>`<span class="light-chip profile" onclick="openArcDetail('${id}')">${escapeHtml(getArcProfileName(id))}</span>`).join('');
+  const profiles=(r.profileIds||[]).map(id=>`<span class="light-chip profile" onclick="openArcDetail(decodeURIComponent('${encodeURIComponent(id)}'))">${escapeHtml(getArcProfileName(id))}</span>`).join('');
   const links=(r.links||[]).filter(Boolean);
   const shots=(r.screenshots||[]);
   body.innerHTML=`<div class="light-detail-head">
@@ -4445,8 +4478,8 @@ function renderLightDetailSheet(id){
   ${r.essence?`<div class="light-essence">${escapeHtml(r.essence)}</div>`:''}
   ${r.text?`<div class="light-detail-text">${escapeHtml(r.text)}</div>`:''}
   ${links.length?`<div class="light-links">${links.map(l=>`<a href="${escapeAttr(l)}" target="_blank" rel="noreferrer">${escapeHtml(l)}</a>`).join('')}</div>`:''}
-  ${shots.length?`<div class="light-thumb-row">${shots.map((s,i)=>`<img class="light-thumb" src="${escapeAttr(s.dataUrl)}" alt="" onclick="openLightScreenshotViewer('${r.id}',${i})">`).join('')}</div>`:''}
-  <div class="light-actions" style="padding-bottom:12px"><button onclick="editLightFromDetail('${r.id}')">编辑记录</button><button onclick="deleteLightRecord('${r.id}');closeSheet('sheet-light-detail')">删除记录</button></div>`;
+  ${shots.length?`<div class="light-thumb-row">${shots.map((s,i)=>`<img class="light-thumb" src="${escapeAttr(s.dataUrl)}" alt="" onclick="openLightScreenshotViewer(decodeURIComponent('${encodeURIComponent(r.id)}'),${i})">`).join('')}</div>`:''}
+  <div class="light-actions" style="padding-bottom:12px"><button onclick="editLightFromDetail(decodeURIComponent('${encodeURIComponent(r.id)}'))">编辑记录</button><button onclick="deleteLightRecord(decodeURIComponent('${encodeURIComponent(r.id)}'));closeSheet('sheet-light-detail')">删除记录</button></div>`;
 }
 
 function editLightFromDetail(id){
@@ -4627,10 +4660,19 @@ function renderLightForm(){
     const bb=String(b).toLowerCase().includes(bigQ)?0:1;
     return aa-bb||a.localeCompare(b,'zh-CN');
   });
-  document.getElementById('light-big-history').innerHTML=bigHist.map(t=>`<button type="button" class="tag-option ${lightDraft.bigTags.includes(t)?'selected':''}" onclick="toggleLightBigTag(decodeURIComponent('${encodeURIComponent(t)}'))">${escapeHtml(t)}</button>`).join('')||'<span class="tag-selected-empty">暂无历史标签</span>';
-  document.getElementById('light-big-selected').innerHTML=(lightDraft.bigTags||[]).map(t=>`<span class="selected-tag">${escapeHtml(t)} <button onclick="toggleLightBigTag(decodeURIComponent('${encodeURIComponent(t)}'))">×</button></span>`).join('');
-  document.getElementById('light-small-history').innerHTML=(db.lightTagHistory.small||[]).map(t=>`<button type="button" class="tag-chip-sel ${lightDraft.smallTags.includes(t)?'selected':''}" onclick="toggleLightSmallTag(decodeURIComponent('${encodeURIComponent(t)}'))">${escapeHtml(t)}</button>`).join('')||'<span class="tag-selected-empty">暂无历史标签</span>';
-  document.getElementById('light-small-selected').innerHTML=lightDraft.smallTags.map(t=>`<button type="button" class="tag-chip tag-selected-remove" onclick="toggleLightSmallTag(decodeURIComponent('${encodeURIComponent(t)}'))"><span>${escapeHtml(t)}</span><b>×</b></button>`).join('')||'<span class="tag-selected-empty">点击输入框选择或新增</span>';
+  document.getElementById('light-big-count').textContent=`${(lightDraft.bigTags||[]).length} 个已选`;
+  document.getElementById('light-big-chips').innerHTML=bigHist.map(t=>`<button type="button" class="tag-chip-sel light-cat-big ${lightDraft.bigTags.includes(t)?'selected':''}" onclick="toggleLightBigTag(decodeURIComponent('${encodeURIComponent(t)}'))">${escapeHtml(t)}</button>`).join('')||'<span class="tag-selected-empty">暂无历史标签</span>';
+  document.getElementById('light-big-selected').innerHTML=(lightDraft.bigTags||[]).map(t=>`<button type="button" class="tag-chip tag-3 tag-selected-remove" onclick="toggleLightBigTag(decodeURIComponent('${encodeURIComponent(t)}'))"><span>${escapeHtml(t)}</span><b>×</b></button>`).join('')||'<span class="tag-selected-empty">点击输入框选择或新增</span>';
+  const smallInput=document.getElementById('light-small-input');
+  const smallQ=(smallInput?.value||'').trim().toLowerCase();
+  const smallHist=[...(db.lightTagHistory.small||[])].sort((a,b)=>{
+    const aa=String(a).toLowerCase().includes(smallQ)?0:1;
+    const bb=String(b).toLowerCase().includes(smallQ)?0:1;
+    return aa-bb||a.localeCompare(b,'zh-CN');
+  });
+  document.getElementById('light-small-count').textContent=`${(lightDraft.smallTags||[]).length} 个已选`;
+  document.getElementById('light-small-chips').innerHTML=smallHist.map(t=>`<button type="button" class="tag-chip-sel light-cat-small ${lightDraft.smallTags.includes(t)?'selected':''}" onclick="toggleLightSmallTag(decodeURIComponent('${encodeURIComponent(t)}'))">${escapeHtml(t)}</button>`).join('')||'<span class="tag-selected-empty">暂无历史标签</span>';
+  document.getElementById('light-small-selected').innerHTML=lightDraft.smallTags.map(t=>`<button type="button" class="tag-chip tag-0 tag-selected-remove" onclick="toggleLightSmallTag(decodeURIComponent('${encodeURIComponent(t)}'))"><span>${escapeHtml(t)}</span><b>×</b></button>`).join('')||'<span class="tag-selected-empty">点击输入框选择或新增</span>';
   const profileQ=(document.getElementById('light-profile-query')?.value||'').trim().toLowerCase();
   let profiles=db.arcProfiles||[];
   if(profileQ) profiles=profiles.filter(p=>[p.code,...(p.personalityTags||[]),...(p.identityTags||[]),...(p.stageTags||[]),p.note].join(' ').toLowerCase().includes(profileQ));
@@ -4774,6 +4816,11 @@ function openArcProfileSheet(id=null,returnToLight=false){
 }
 
 function renderArcForm(){
+  const meta={
+    personality:{cls:'light-cat-personality',tag:'tag-0',label:'性格'},
+    identity:{cls:'light-cat-identity',tag:'tag-2',label:'身份'},
+    stage:{cls:'light-cat-stage',tag:'tag-4',label:'人生阶段'}
+  };
   ['personality','identity','stage'].forEach(k=>{
     const input=document.getElementById(`arc-${k}-input`);
     const q=(input?.value||'').trim().toLowerCase();
@@ -4782,13 +4829,14 @@ function renderArcForm(){
       const bb=String(b).toLowerCase().includes(q)?0:1;
       return aa-bb||a.localeCompare(b,'zh-CN');
     });
-    document.getElementById(`arc-${k}-history`).innerHTML=hist.map(t=>`<button type="button" class="tag-option ${arcDraft[k].includes(t)?'selected':''}" onclick="toggleArcTag('${k}',decodeURIComponent('${encodeURIComponent(t)}'))">${escapeHtml(t)}</button>`).join('')||'<span class="tag-selected-empty">暂无历史标签</span>';
-    document.getElementById(`arc-${k}-selected`).innerHTML=arcDraft[k].map(t=>`<span class="selected-tag">${escapeHtml(t)} <button onclick="toggleArcTag('${k}',decodeURIComponent('${encodeURIComponent(t)}'))">×</button></span>`).join('');
+    document.getElementById(`arc-${k}-count`).textContent=`${(arcDraft[k]||[]).length} 个已选`;
+    document.getElementById(`arc-${k}-chips`).innerHTML=hist.map(t=>`<button type="button" class="tag-chip-sel ${meta[k].cls} ${arcDraft[k].includes(t)?'selected':''}" onclick="toggleArcTag('${k}',decodeURIComponent('${encodeURIComponent(t)}'))">${escapeHtml(t)}</button>`).join('')||'<span class="tag-selected-empty">暂无历史标签</span>';
+    document.getElementById(`arc-${k}-selected`).innerHTML=arcDraft[k].map(t=>`<button type="button" class="tag-chip ${meta[k].tag} tag-selected-remove" onclick="toggleArcTag('${k}',decodeURIComponent('${encodeURIComponent(t)}'))"><span>${escapeHtml(t)}</span><b>×</b></button>`).join('')||'<span class="tag-selected-empty">点击输入框选择或新增</span>';
   });
 }
 
 function showArcTagHistory(kind){
-  document.querySelectorAll('.arc-tag-history').forEach(el=>el.classList.remove('show'));
+  document.querySelectorAll('#sheet-arc-profile .tag-picker').forEach(el=>el.classList.remove('show'));
   document.getElementById(`arc-${kind}-history`)?.classList.add('show');
   renderArcForm();
 }
