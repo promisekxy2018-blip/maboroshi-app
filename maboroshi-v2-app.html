@@ -1483,6 +1483,7 @@ let autoFetchBusy = false;
 let aiCandidateState = {draft:null,items:[]};
 let skipSourceLocateOnce = false;
 let detailReturnState = null;
+let currentDetailBookId = null;
 let aiTasks = [];
 let aiTaskPanelOpen = false;
 let screenshotDrafts = {};
@@ -2008,13 +2009,16 @@ function clearShelfFilters(){
 function openDetail(id,opts={}){
   const b=db.books.find(x=>x.id===id);
   if(!b) return;
-  if(opts.returnTo==='path-awards'){
-    detailReturnState={type:'path-awards',awardId:opts.awardId||''};
-  }else if(opts.returnTo==='stats'||document.getElementById('stats-modal')?.classList.contains('show')){
-    detailReturnState={type:'stats-modal',snapshot:JSON.parse(JSON.stringify(statsModal))};
-    closeStatsModal();
-  }else{
-    detailReturnState=null;
+  currentDetailBookId=id;
+  if(!opts.preserveReturn){
+    if(opts.returnTo==='path-awards'){
+      detailReturnState={type:'path-awards',awardId:opts.awardId||''};
+    }else if(opts.returnTo==='stats'||document.getElementById('stats-modal')?.classList.contains('show')){
+      detailReturnState={type:'stats-modal',snapshot:JSON.parse(JSON.stringify(statsModal))};
+      closeStatsModal();
+    }else{
+      detailReturnState=null;
+    }
   }
   const logs=b.readLogs||[];
   const bookQuotes=normalizeBookQuotes(b.bookQuotes||b.bookQuote);
@@ -2082,6 +2086,17 @@ function openDetail(id,opts={}){
       </div>
     </div>`;
   showPage('detail',opts.pushState===false?{pushState:false}:{});
+}
+
+function isDetailOpen(bookId=currentDetailBookId){
+  return !!bookId && currentDetailBookId===bookId && document.querySelector('.page.active')?.id==='page-detail';
+}
+
+function refreshOpenDetail(bookId,afterRender){
+  if(!isDetailOpen(bookId)) return false;
+  openDetail(bookId,{pushState:false,preserveReturn:true});
+  if(typeof afterRender==='function') setTimeout(afterRender,80);
+  return true;
 }
 
 function deleteBook(id){
@@ -2156,8 +2171,7 @@ function deletePeerReview(bookId,index){
   book.peerReviews=reviews;
   book.updatedAt=Date.now();
   save();
-  openDetail(bookId,{pushState:false});
-  setTimeout(()=>openPeerReviewSection(),80);
+  refreshOpenDetail(bookId,openPeerReviewSection);
   toast('已删除这条同好书评');
 }
 
@@ -2217,7 +2231,7 @@ async function addBookScreenshots(bookId,files){
       imgs.push({id:genId(),dataUrl:await compressImageFile(file),createdAt:Date.now()});
     }
     screenshotDrafts[bookId]=[...(screenshotDrafts[bookId]||[]),...imgs].slice(0,20);
-    openDetail(bookId,{pushState:false});
+    openDetail(bookId,{pushState:false,preserveReturn:true});
     toast(`已加入 ${imgs.length} 张待保存截图`);
   }catch(e){
     console.error(e);
@@ -2255,8 +2269,9 @@ function saveBookScreenshots(bookId){
   if(!pending.length){toast('没有待保存截图');return;}
   book.screenshots=[...(book.screenshots||[]),...pending].slice(0,80);
   screenshotDrafts[bookId]=[];
+  book.updatedAt=Date.now();
   save();
-  openDetail(bookId,{pushState:false});
+  openDetail(bookId,{pushState:false,preserveReturn:true});
   toast(`已保存 ${pending.length} 张截图`);
 }
 
@@ -2268,7 +2283,7 @@ function getScreenshotItems(bookId){
 
 function toggleScreenshotEdit(bookId){
   screenshotEditMode[bookId]=!screenshotEditMode[bookId];
-  openDetail(bookId,{pushState:false});
+  openDetail(bookId,{pushState:false,preserveReturn:true});
 }
 
 function removeBookScreenshot(bookId,index){
@@ -2278,11 +2293,12 @@ function removeBookScreenshot(bookId,index){
   if(index<savedLen){
     if(!confirm('删除这张截图吗？')) return;
     book.screenshots.splice(index,1);
+    book.updatedAt=Date.now();
     save();
   }else{
     screenshotDrafts[bookId]=(screenshotDrafts[bookId]||[]).filter((_,i)=>i!==index-savedLen);
   }
-  openDetail(bookId,{pushState:false});
+  openDetail(bookId,{pushState:false,preserveReturn:true});
 }
 
 function moveBookScreenshot(bookId,index,delta){
@@ -2296,8 +2312,9 @@ function moveBookScreenshot(bookId,index,delta){
   [all[index],all[ni]]=[all[ni],all[index]];
   book.screenshots=all.filter(x=>!pending.includes(x));
   screenshotDrafts[bookId]=all.filter(x=>pending.includes(x));
+  book.updatedAt=Date.now();
   save();
-  openDetail(bookId,{pushState:false});
+  openDetail(bookId,{pushState:false,preserveReturn:true});
 }
 
 function openScreenshotViewer(bookId,index){
@@ -2708,10 +2725,11 @@ function saveMiniLog(){
     const b=db.books.find(x=>x.id===editingBookId);
     if(b){
       b.readLogs=formLogs;
+      b.updatedAt=Date.now();
       save();
       toast('记录已保存');
       closeMiniLog();
-      openDetail(editingBookId);
+      openDetail(editingBookId,{pushState:false,preserveReturn:true});
       return;
     }
   }
@@ -2723,6 +2741,8 @@ function saveBook(){
   const title=document.getElementById('f-title').value.trim();
   if(!title){toast('请填写书名');return;}
   const existingBook=editingBookId?db.books.find(b=>b.id===editingBookId):null;
+  const savedBookId=editingBookId||null;
+  const shouldRefreshDetail=!!savedBookId&&isDetailOpen(savedBookId);
   const bookQuotes=collectBookQuotes();
   const book={
     id: editingBookId||genId(),
@@ -2756,6 +2776,7 @@ function saveBook(){
   save();
   closeSheet('sheet-book');
   renderShelf();
+  if(shouldRefreshDetail) openDetail(book.id,{pushState:false,preserveReturn:true});
   toast(editingBookId?'已更新':'已添加 🎉');
 }
 
@@ -3067,7 +3088,7 @@ async function autoFetchSynopsis(mode='short'){
     if(json.synopsis) document.getElementById('f-synopsis').value=json.synopsis;
     if(editingBookId&&json.synopsis){
       const book=db.books.find(b=>b.id===editingBookId);
-      if(book){book.synopsis=json.synopsis;save();renderShelf();}
+      if(book){book.synopsis=json.synopsis;save();renderShelf();refreshOpenDetail(editingBookId);}
     }
     updateAITask(taskId,json.sourceHint?`已补全：${json.sourceHint}`:'剧情已补全，点这里查看','done');
     if(editingBookId) setTimeout(()=>openEditSheet(editingBookId),250);
@@ -3114,16 +3135,14 @@ async function autoFetchPeerReviews(bookId,type='all'){
     book.peerReviews=[...normalizePeerReviews(book.peerReviews),...reviews].slice(0,60);
     book.updatedAt=Date.now();
     save();
-    openDetail(bookId,{pushState:false});
-    setTimeout(()=>openPeerReviewSection(),120);
+    refreshOpenDetail(bookId,openPeerReviewSection);
     updateAITask(taskId,json.sourceHint?`已追加：${json.sourceHint}`:`已追加 ${reviews.length} 条${typeLabel}`,'done');
     toast(reviews[0]?.isStatus?'未找到可靠公开书评，已记录状态':`已追加 ${reviews.length} 条${typeLabel}`);
   }catch(e){
     book.peerReviews=[...normalizePeerReviews(book.peerReviews),makePeerReviewStatus(type,'未找到可靠公开书评')].slice(0,60);
     book.updatedAt=Date.now();
     save();
-    openDetail(bookId,{pushState:false});
-    setTimeout(()=>openPeerReviewSection(),120);
+    refreshOpenDetail(bookId,openPeerReviewSection);
     updateAITask(taskId,'未找到可靠公开书评，已记录状态','done');
     toast('未找到可靠公开书评，已记录状态');
     console.error(e);
