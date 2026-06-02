@@ -130,12 +130,16 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
 .btn-icon{width:40px;height:40px;border-radius:50%;background:var(--pink3);color:var(--pink2);font-size:20px;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center}
 .fab{position:fixed;bottom:84px;right:20px;width:52px;height:52px;border-radius:50%;background:var(--pink2);color:#fff;font-size:26px;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(232,130,159,0.4);z-index:99;transition:transform 0.15s}
 .fab:active{transform:scale(0.93)}
+.fab.book-fab{background:linear-gradient(145deg,#fff5f0,#ffd9c8 45%,#f3b6c7);box-shadow:0 0 0 4px rgba(255,231,220,.34),0 8px 22px rgba(170,105,118,.22);font-size:0}
+.fab.book-fab::before{content:'';width:31px;height:31px;display:block;background:var(--bookmark-add-icon) center/contain no-repeat;filter:drop-shadow(0 0 6px rgba(255,255,255,.72))}
+.fab.book-fab{--bookmark-add-icon:url("data:image/svg+xml,%3Csvg viewBox='0 0 64 64' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%238d4f63' stroke-width='3.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M19 10h26a4 4 0 0 1 4 4v42l-16-8-16 8V14a4 4 0 0 1 4-4z'/%3E%3Cpath d='M24 17h20'/%3E%3Cpath d='M32 25v16'/%3E%3Cpath d='M24 33h16'/%3E%3Cpath d='M14 18c-4 2-6 6-6 12 0 7 3 12 8 15' opacity='.72'/%3E%3C/g%3E%3C/svg%3E")}
 .fab.light-fab{background:radial-gradient(circle at 34% 30%,#fff9dc 0 10%,#ffd86b 11% 27%,#f2a8c4 52%,#9b8be0 100%);box-shadow:0 0 0 4px rgba(255,226,173,.22),0 0 24px rgba(255,216,107,.48),0 8px 22px rgba(139,109,172,.25);font-size:0}
 .fab.light-fab::before{content:'✦';font-size:26px;color:white;text-shadow:0 0 9px rgba(255,255,255,.95),0 0 18px rgba(255,226,173,.8)}
 .fab.arc-fab{background:linear-gradient(145deg,#ffe2ec,#ffd7b5 48%,#b9d8ff);box-shadow:0 0 0 4px rgba(255,226,236,.28),0 8px 22px rgba(160,112,130,.24);font-size:0}
-.fab.arc-fab::before{content:'';width:34px;height:34px;display:block;background:var(--arc-girl-icon) center/contain no-repeat;filter:drop-shadow(0 0 7px rgba(255,255,255,.72))}
-.fab.arc-fab{--arc-girl-icon:url("data:image/svg+xml,%3Csvg viewBox='0 0 64 64' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%23744d82' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M42 11C31 10 22 18 22 30c0 7 3.5 13 9 16'/%3E%3Cpath d='M39 18c-7 2-10 7-10 13 0 4 1.8 7 5 9'/%3E%3Cpath d='M39 23c3 2 5 5 5 9 0 5-3 8-8 10'/%3E%3Cpath d='M34 30c2-1 5-1 7 1'/%3E%3Cpath d='M33 48c-5 2-9 6-11 11'/%3E%3Cpath d='M18 16c-7 6-9 15-6 25'/%3E%3Cpath d='M17 20c4-5 10-8 18-9'/%3E%3Cpath d='M48 7l1.7 4.1 4.3 1.4-4.3 1.5L48 18l-1.7-4-4.3-1.5 4.3-1.4L48 7z' stroke-width='2.4'/%3E%3C/g%3E%3C/svg%3E")}
-body.magic-theme .fab.arc-fab{--arc-girl-icon:url("data:image/svg+xml,%3Csvg viewBox='0 0 64 64' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%23fff1c4' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M42 11C31 10 22 18 22 30c0 7 3.5 13 9 16'/%3E%3Cpath d='M39 18c-7 2-10 7-10 13 0 4 1.8 7 5 9'/%3E%3Cpath d='M39 23c3 2 5 5 5 9 0 5-3 8-8 10'/%3E%3Cpath d='M34 30c2-1 5-1 7 1'/%3E%3Cpath d='M33 48c-5 2-9 6-11 11'/%3E%3Cpath d='M18 16c-7 6-9 15-6 25'/%3E%3Cpath d='M17 20c4-5 10-8 18-9'/%3E%3Cpath d='M48 7l1.7 4.1 4.3 1.4-4.3 1.5L48 18l-1.7-4-4.3-1.5 4.3-1.4L48 7z' stroke-width='2.4'/%3E%3C/g%3E%3C/svg%3E")}
+.fab.arc-fab::before{content:'';width:38px;height:38px;display:block;background:var(--arc-girl-icon) center/contain no-repeat;filter:drop-shadow(0 0 7px rgba(255,255,255,.72))}
+.fab.arc-fab{--arc-girl-icon:url("data:image/svg+xml,%3Csvg viewBox='0 0 64 64' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%23744d82' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M41 10c-11-2-22 5-25 16-2 8 1 16 7 21'/%3E%3Cpath d='M38 17c-7 1-12 7-12 15 0 6 3 11 8 14'/%3E%3Cpath d='M36 21c7 2 10 8 9 14l5 3-6 2c-1 5-4 8-10 10'/%3E%3Cpath d='M44 40c-2 1-4 1-6 0'/%3E%3Cpath d='M34 29c2-1 4-1 6 1'/%3E%3Cpath d='M30 50c-6 3-10 7-12 12'/%3E%3Cpath d='M24 12c-8 5-13 14-12 25' opacity='.72'/%3E%3C/g%3E%3C/svg%3E")}
+body.magic-theme .fab.arc-fab{--arc-girl-icon:url("data:image/svg+xml,%3Csvg viewBox='0 0 64 64' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%23fff1c4' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M41 10c-11-2-22 5-25 16-2 8 1 16 7 21'/%3E%3Cpath d='M38 17c-7 1-12 7-12 15 0 6 3 11 8 14'/%3E%3Cpath d='M36 21c7 2 10 8 9 14l5 3-6 2c-1 5-4 8-10 10'/%3E%3Cpath d='M44 40c-2 1-4 1-6 0'/%3E%3Cpath d='M34 29c2-1 4-1 6 1'/%3E%3Cpath d='M30 50c-6 3-10 7-12 12'/%3E%3Cpath d='M24 12c-8 5-13 14-12 25' opacity='.72'/%3E%3C/g%3E%3C/svg%3E")}
+body.magic-theme .fab.book-fab{--bookmark-add-icon:url("data:image/svg+xml,%3Csvg viewBox='0 0 64 64' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%23fff1c4' stroke-width='3.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M19 10h26a4 4 0 0 1 4 4v42l-16-8-16 8V14a4 4 0 0 1 4-4z'/%3E%3Cpath d='M24 17h20'/%3E%3Cpath d='M32 25v16'/%3E%3Cpath d='M24 33h16'/%3E%3Cpath d='M14 18c-4 2-6 6-6 12 0 7 3 12 8 15' opacity='.72'/%3E%3C/g%3E%3C/svg%3E");background:linear-gradient(145deg,#fff0ce,#d8ddff 48%,#687dcc);box-shadow:0 0 0 4px rgba(255,226,173,.16),0 8px 24px rgba(6,9,28,.35)}
 body.magic-theme .fab.light-fab{background:radial-gradient(circle at 34% 30%,#fff7d0 0 10%,#ffe4a2 11% 30%,#b9c5ff 56%,#6678c0 100%);box-shadow:0 0 0 4px rgba(255,226,173,.18),0 0 28px rgba(255,226,173,.46),0 8px 24px rgba(6,9,28,.35)}
 body.magic-theme .fab.arc-fab{background:linear-gradient(145deg,#fff0ce,#d8ddff 48%,#687dcc);box-shadow:0 0 0 4px rgba(255,226,173,.16),0 8px 24px rgba(6,9,28,.35)}
 
@@ -629,12 +633,17 @@ body.magic-theme .ai-task-panel,body.magic-theme .ai-task-card{background:linear
 .arc-detail-back{border:none;background:rgba(255,255,255,.64);border-radius:999px;color:var(--text2);font-size:12px;padding:6px 11px;margin-bottom:9px}
 .arc-detail-name{font-family:'Noto Serif SC',serif;font-size:22px;font-weight:800;color:var(--text)}
 .arc-detail-note{margin-top:8px;font-size:13px;line-height:1.75;color:var(--text2);white-space:pre-line}
+.arc-detail-top-actions{display:flex;gap:7px;justify-content:flex-end;margin:-2px 0 10px}
+.arc-detail-top-actions button{border:none;border-radius:999px;background:rgba(255,255,255,.68);color:var(--text2);font-size:11px;padding:5px 10px;border:1px solid rgba(232,201,184,.38)}
 .arc-detail-section-title{margin:2px 16px 8px;font-size:13px;color:var(--text2);font-weight:700}
 .arc-detail-record{margin:0 16px 12px;padding:14px;border-radius:18px 8px 18px 8px;background:rgba(255,255,255,.78);border:1px solid rgba(232,201,184,.48);box-shadow:0 8px 20px rgba(143,98,80,.07)}
 .arc-detail-record-title{font-family:'Noto Serif SC',serif;font-size:16px;font-weight:700;color:var(--text);line-height:1.45}
 .arc-detail-record-meta{font-size:11px;color:var(--text3);margin-top:3px}
 .arc-detail-record-text{margin-top:9px;font-size:13px;color:var(--text2);line-height:1.75;white-space:pre-line;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
 .arc-detail-record.open .arc-detail-record-text{display:block}
+#sheet-arc-detail .light-chip{background:rgba(255,232,239,.92);color:#8a4f65;border:1px solid rgba(232,130,159,.16)}
+#sheet-arc-detail .light-chip.big{background:linear-gradient(145deg,rgba(255,239,190,.94),rgba(255,214,226,.84));color:#8c5f1f;border-color:rgba(240,186,99,.24)}
+#sheet-arc-detail .light-chip.profile{background:rgba(232,244,238,.92);color:#3d8159;border-color:rgba(84,156,111,.16)}
 .light-detail-head{position:relative;padding:4px 0 8px}
 .light-detail-title{font-family:'Noto Serif SC',serif;font-size:22px;font-weight:800;color:var(--text);line-height:1.45}
 .light-detail-meta{font-size:11px;color:var(--text3);margin-top:4px}
@@ -706,6 +715,12 @@ body.magic-theme #sheet-light-detail .light-essence{color:#604d83;background:lin
 body.magic-theme #sheet-light-detail .light-actions button,body.magic-theme #sheet-arc-detail .light-actions button{background:rgba(255,246,218,.72);color:#54517b;border:1px solid rgba(185,197,255,.32)}
 body.magic-theme #sheet-arc-detail .arc-detail-name,body.magic-theme #sheet-arc-detail .arc-detail-record-title{color:#34395f}
 body.magic-theme #sheet-arc-detail .arc-detail-note,body.magic-theme #sheet-arc-detail .arc-detail-record-text{color:#4f567a}
+body.magic-theme #sheet-arc-detail .light-chip{background:rgba(117,134,196,.16);color:#3f4773;border:1px solid rgba(117,134,196,.2)}
+body.magic-theme #sheet-arc-detail .light-chip.big{background:linear-gradient(145deg,rgba(255,226,173,.7),rgba(232,224,255,.74));color:#6d4f27;border-color:rgba(198,176,118,.26)}
+body.magic-theme #sheet-arc-detail .light-chip.profile{background:rgba(214,225,255,.78);color:#405486}
+body.magic-theme #sheet-arc-detail .arc-detail-record-meta{color:#72789b}
+body.magic-theme #sheet-arc-detail .light-essence{background:linear-gradient(115deg,rgba(255,239,190,.78),rgba(232,224,255,.72));color:#604d83;border-left-color:#c9b3ff}
+body.magic-theme #sheet-arc-detail .arc-detail-top-actions button{background:rgba(255,246,218,.76);color:#54517b;border-color:rgba(185,197,255,.32)}
 body.magic-theme #sheet-light-record .sheet-header,body.magic-theme #sheet-arc-profile .sheet-header{background:radial-gradient(circle at 86% 20%,rgba(255,226,173,.12),transparent 34px),linear-gradient(145deg,rgba(255,246,218,.08),rgba(185,197,255,.07));border-bottom-color:rgba(255,226,173,.15)}
 .path-hero{position:relative;margin:0 16px 12px;padding:10px 13px 11px 14px;border-radius:8px 20px 8px 20px;background:radial-gradient(ellipse at 88% 22%,rgba(183,217,129,.3),transparent 24px),linear-gradient(100deg,rgba(237,247,233,.82),rgba(255,248,242,.18));border:none;border-left:3px solid #8fbf6e;box-shadow:0 8px 20px rgba(95,150,88,.08);overflow:hidden}
 .path-hero::after{content:'❦';position:absolute;right:12px;top:7px;color:rgba(143,191,110,.58);font-size:16px;text-shadow:-20px 18px 0 rgba(248,184,200,.22)}
@@ -1251,7 +1266,7 @@ body.magic-theme .author-wait-card{border-color:rgba(116,110,183,.18)}
           <div class="settings-item-left">
             <div class="settings-item-icon" style="background:#e8f0fe">ℹ️</div>
             <div>
-              <div class="settings-item-title">幻 maboroshi v2.39</div>
+              <div class="settings-item-title">幻 maboroshi v2.41</div>
               <div class="settings-item-sub">数据和密码均存储于本地</div>
             </div>
           </div>
@@ -2033,7 +2048,7 @@ function showPage(p, opts={}){
 function updateFabForPage(p=currentPageName()){
   const fab=document.getElementById('fab');
   if(!fab) return;
-  fab.classList.remove('light-fab','arc-fab');
+  fab.classList.remove('book-fab','light-fab','arc-fab');
   if(p==='light'){
     if(lightSubView==='profiles'){
       fab.classList.add('arc-fab');
@@ -2045,6 +2060,7 @@ function updateFabForPage(p=currentPageName()){
       fab.title='新增捕光记录';
     }
   }else{
+    fab.classList.add('book-fab');
     fab.onclick=openAddSheet;
     fab.title='添加书籍';
   }
@@ -3119,20 +3135,7 @@ function updateLogRating(){
 }
 
 function saveMiniLog(){
-  const r=parseInt(document.getElementById('log-rating').value)/10;
-  const parts={
-    overall:document.getElementById('log-overall').value.trim(),
-    character:document.getElementById('log-character').value.trim(),
-    plot:document.getElementById('log-plot').value.trim(),
-    author:document.getElementById('log-author').value.trim()
-  };
-  const log={
-    date:document.getElementById('log-date').value,
-    period:document.getElementById('log-period').value,
-    rating:r,
-    review:parts.overall,
-    parts
-  };
+  const log=readMiniLogDraftFromDom();
   if(editingLogIdx!==null){
     formLogs[editingLogIdx]=log;
   } else {
@@ -3152,6 +3155,65 @@ function saveMiniLog(){
   }
   refreshLogsUI();
   closeMiniLog();
+}
+
+function isMiniLogOpen(){
+  return document.getElementById('mini-log')?.classList.contains('show');
+}
+
+function readMiniLogDraftFromDom(){
+  const r=parseInt(document.getElementById('log-rating')?.value||'30')/10;
+  const parts={
+    overall:document.getElementById('log-overall')?.value.trim()||'',
+    character:document.getElementById('log-character')?.value.trim()||'',
+    plot:document.getElementById('log-plot')?.value.trim()||'',
+    author:document.getElementById('log-author')?.value.trim()||''
+  };
+  return {
+    date:document.getElementById('log-date')?.value||'',
+    period:document.getElementById('log-period')?.value||'',
+    rating:r,
+    review:parts.overall,
+    parts
+  };
+}
+
+function hasMeaningfulLogDraft(log){
+  if(editingLogIdx!==null) return true;
+  const text=[log?.review,log?.parts?.overall,log?.parts?.character,log?.parts?.plot,log?.parts?.author,log?.period].join('').trim();
+  return !!text || Number(log?.rating)!==3;
+}
+
+function preserveOpenMiniLogDraftToFormLogs(){
+  if(!isMiniLogOpen()) return false;
+  const log=readMiniLogDraftFromDom();
+  if(!hasMeaningfulLogDraft(log)){
+    closeMiniLog();
+    if(document.getElementById('sheet-book')?.classList.contains('show')) document.getElementById('overlay')?.classList.add('show');
+    return false;
+  }
+  if(editingLogIdx!==null && formLogs[editingLogIdx]){
+    formLogs[editingLogIdx]=log;
+  }else{
+    formLogs.push(log);
+    editingLogIdx=formLogs.length-1;
+  }
+  currentLogDraft=log;
+  refreshLogsUI();
+  if(editingBookId){
+    const book=db.books.find(b=>b.id===editingBookId);
+    if(book){
+      book.readLogs=[...formLogs];
+      book.updatedAt=Date.now();
+      save();
+      renderShelf();
+      refreshOpenDetail(editingBookId);
+    }
+  }
+  closeMiniLog();
+  if(document.getElementById('sheet-book')?.classList.contains('show')) document.getElementById('overlay')?.classList.add('show');
+  toast('正在写的阅读记录已先暂存');
+  return true;
 }
 
 function saveBook(){
@@ -3241,6 +3303,7 @@ function restoreBookFormDraft(draft){
 }
 
 function showFetchedBookSheet(){
+  preserveOpenMiniLogDraftToFormLogs();
   closeAllSheets();
   setTimeout(()=>openSheet('sheet-book'),80);
 }
@@ -3278,7 +3341,8 @@ async function searchBookCandidates(draft){
 {"candidates":[{"title":"候选书名","author":"作者名","platform":"晋江/长佩/长佩旧站/废文/其他/空字符串","summary":"便于用户辨认的官方简介或公开简介摘要，80到180字","sourceHint":"候选依据或空字符串"}]}`;
     const json=parseAIJson(await callAI(prompt));
     const items=(Array.isArray(json.candidates)?json.candidates:[]).filter(x=>x&&x.title&&x.author).slice(0,5);
-    aiCandidateState={draft,items};
+    preserveOpenMiniLogDraftToFormLogs();
+    aiCandidateState={draft:captureBookFormDraft(),items};
     renderBookCandidates(items);
     if(items.length){
       closeAllSheets();
@@ -3318,12 +3382,14 @@ async function prepareUnknownSource(draft){
     const items=await locateKnownBookSource(draft);
     if(items.length===1){
       const item=items[0];
+      preserveOpenMiniLogDraftToFormLogs();
+      const liveDraft=captureBookFormDraft();
       restoreBookFormDraft({
-        ...draft,
-        title:item.title||draft.title,
-        author:item.author||draft.author,
-        platform:item.platform||draft.platform,
-        summary:draft.summary||item.summary||''
+        ...liveDraft,
+        title:item.title||liveDraft.title,
+        author:item.author||liveDraft.author,
+        platform:item.platform||liveDraft.platform,
+        summary:liveDraft.summary||item.summary||''
       });
       toast(`已定位到${item.platform}，继续深度补全`);
       updateAITask(taskId,`已定位到 ${item.platform}，继续深度补全`,'done');
@@ -3333,7 +3399,8 @@ async function prepareUnknownSource(draft){
       return true;
     }
     if(items.length>1){
-      aiCandidateState={draft,items};
+      preserveOpenMiniLogDraftToFormLogs();
+      aiCandidateState={draft:captureBookFormDraft(),items};
       renderBookCandidates(items);
       closeAllSheets();
       setTimeout(()=>openSheet('sheet-ai-candidates'),80);
@@ -3352,7 +3419,8 @@ async function prepareUnknownSource(draft){
 
 function chooseBookCandidate(index){
   const item=aiCandidateState.items[index];
-  const draft=aiCandidateState.draft;
+  preserveOpenMiniLogDraftToFormLogs();
+  const draft={...(aiCandidateState.draft||{}),...captureBookFormDraft()};
   if(!item||!draft) return;
   restoreBookFormDraft({
     ...draft,
@@ -3400,7 +3468,8 @@ async function autoFetch(){
 当前用户选择的平台是：${platform}。如果它是“未知”或“其他”，不要把它当作匹配依据。`;
     const json=parseAIJson(await callAI(prompt));
     if(json.matched===false||String(json.matched||'').toLowerCase()==='false') throw new Error('NO_EXACT_MATCH');
-    restoreBookFormDraft(draft);
+    preserveOpenMiniLogDraftToFormLogs();
+    restoreBookFormDraft(captureBookFormDraft());
     if(json.author) document.getElementById('f-author').value=json.author;
     if(json.platform&&[...document.getElementById('f-platform').options].some(o=>o.value===json.platform)){
       document.getElementById('f-platform').value=json.platform;
@@ -3502,13 +3571,16 @@ async function autoFetchSynopsis(mode='short'){
     const raw=await callAI(prompt,{maxOutputTokens:isLong?3800:1500});
     const json=parseSynopsisAI(raw,{minLength:isLong?420:120,mode});
     if(json.matched===false||String(json.matched||'').toLowerCase()==='false') throw new Error('NO_EXACT_MATCH');
+    const keepEditorOpen=document.getElementById('sheet-book')?.classList.contains('show')||isMiniLogOpen();
+    preserveOpenMiniLogDraftToFormLogs();
     if(json.synopsis) document.getElementById('f-synopsis').value=json.synopsis;
     if(editingBookId&&json.synopsis){
       const book=db.books.find(b=>b.id===editingBookId);
       if(book){book.synopsis=json.synopsis;save();renderShelf();refreshOpenDetail(editingBookId);}
     }
     updateAITask(taskId,json.sourceHint?`已补全：${json.sourceHint}`:'剧情已补全，点这里查看','done');
-    if(editingBookId) setTimeout(()=>openEditSheet(editingBookId),250);
+    if(editingBookId&&!keepEditorOpen) setTimeout(()=>openEditSheet(editingBookId),250);
+    if(keepEditorOpen&&document.getElementById('sheet-book')?.classList.contains('show')) document.getElementById('overlay')?.classList.add('show');
     toast(json.sourceHint?`剧情已补：${json.sourceHint}`:'剧情已补全');
   }catch(e){
     updateAITask(taskId,formatAIError(e,'剧情补全失败'),'failed');
@@ -4632,6 +4704,7 @@ function renderArcDetailSheet(id){
   ];
   const records=getArcRecords(id).sort((a,b)=>(b.updatedAt||b.createdAt||0)-(a.updatedAt||a.createdAt||0));
   body.innerHTML=`<div class="arc-detail-hero" style="margin:0 0 12px">
+    <div class="arc-detail-top-actions"><button onclick="editArcFromDetail(decodeURIComponent('${encodeURIComponent(p.id)}'))">编辑档案</button><button onclick="deleteArcProfile(decodeURIComponent('${encodeURIComponent(p.id)}'));closeSheet('sheet-arc-detail')">删除档案</button></div>
     <div class="arc-detail-name">${escapeHtml(p.code||'未命名人物')}</div>
     ${groups.map(([label,tags])=>tags.length?`<div class="light-chip-row"><span class="light-chip big">${label}</span>${tags.map(t=>`<span class="light-chip">${escapeHtml(t)}</span>`).join('')}</div>`:'').join('')}
     ${p.note?`<div class="arc-detail-note">${escapeHtml(p.note)}</div>`:''}
@@ -4643,8 +4716,7 @@ function renderArcDetailSheet(id){
     ${r.essence?`<div class="light-essence">${escapeHtml(r.essence)}</div>`:''}
     ${r.text?`<div class="arc-detail-record-text">${escapeHtml(r.text)}</div>`:''}
     <div class="light-actions"><button onclick="this.closest('.arc-detail-record').classList.toggle('open')">展开/收起</button><button onclick="openLightDetail(decodeURIComponent('${encodeURIComponent(r.id)}'))">查看捕光</button></div>
-  </div>`).join(''):`<div class="path-empty">这个人物还没有关联捕光记录。</div>`}
-  <div class="light-actions" style="padding-bottom:12px"><button onclick="editArcFromDetail(decodeURIComponent('${encodeURIComponent(p.id)}'))">编辑档案</button><button onclick="deleteArcProfile(decodeURIComponent('${encodeURIComponent(p.id)}'));closeSheet('sheet-arc-detail')">删除档案</button></div>`;
+  </div>`).join(''):`<div class="path-empty">这个人物还没有关联捕光记录。</div>`}`;
 }
 
 function editArcFromDetail(id){
@@ -4857,6 +4929,8 @@ function openLightRecordSheet(id=null){
   const r=id?(db.lightRecords||[]).find(x=>String(x.id)===id):null;
   if(id&&!r){toast('没有找到这条捕光记录，先刷新列表试试');return;}
   editingLightId=id;
+  const sheet=document.getElementById('sheet-light-record');
+  if(sheet) sheet.dataset.editingId=id||'';
   lightDraft={
     bigTags:getLightBigTags(r),
     smallTags:[...(r?.smallTags||[])],
@@ -5035,7 +5109,9 @@ function saveLightRecord(){
   if(saveBtn){saveBtn.dataset.busy='1';saveBtn.disabled=true;saveBtn.textContent='保存中…';}
   const title=document.getElementById('light-title-input').value.trim();
   const now=Date.now();
-  const recordId=editingLightId||genId();
+  const sheetId=document.getElementById('sheet-light-record')?.dataset.editingId||'';
+  const recordId=sheetId||editingLightId||genId();
+  const oldRecord=(db.lightRecords||[]).find(r=>String(r.id)===String(recordId));
   const record={
     id:recordId,
     title:title||'未命名捕光',
@@ -5049,12 +5125,14 @@ function saveLightRecord(){
     essence:document.getElementById('light-essence-input').value.trim(),
     links:document.getElementById('light-links-input').value.split(/\n+/).map(s=>s.trim()).filter(Boolean),
     screenshots:[...(lightDraft.screenshots||[])],
-    createdAt:editingLightId?((db.lightRecords||[]).find(r=>r.id===editingLightId)?.createdAt||now):now,
+    createdAt:oldRecord?(oldRecord.createdAt||now):now,
     updatedAt:now
   };
-  const idx=(db.lightRecords||[]).findIndex(r=>r.id===record.id);
+  const idx=(db.lightRecords||[]).findIndex(r=>String(r.id)===String(record.id));
   if(idx>-1) db.lightRecords[idx]=record; else db.lightRecords.unshift(record);
   editingLightId=record.id;
+  const sheet=document.getElementById('sheet-light-record');
+  if(sheet) sheet.dataset.editingId=record.id;
   rememberLightTags();
   const ok=save();
   if(saveBtn){saveBtn.dataset.busy='0';saveBtn.disabled=false;saveBtn.textContent='保存捕光';}
@@ -5081,9 +5159,11 @@ function deleteLightRecord(id){
 }
 
 function openArcProfileSheet(id=null,returnToLight=false){
+  id=id==null?null:String(id);
   editingArcId=id;
   arcReturnToLight=returnToLight;
-  const p=id?(db.arcProfiles||[]).find(x=>x.id===id):null;
+  const p=id?(db.arcProfiles||[]).find(x=>String(x.id)===id):null;
+  if(id&&!p){toast('没有找到这个人物档案，先刷新列表试试');return;}
   arcDraft={
     personality:[...(p?.personalityTags||[])],
     identity:[...(p?.identityTags||[])],
@@ -5141,6 +5221,7 @@ function saveArcProfile(){
   const code=document.getElementById('arc-code-input').value.trim();
   if(!code){toast('先写人物代号');return;}
   const now=Date.now();
+  const oldProfile=editingArcId?(db.arcProfiles||[]).find(p=>String(p.id)===String(editingArcId)):null;
   const profile={
     id:editingArcId||genId(),
     code,
@@ -5148,10 +5229,10 @@ function saveArcProfile(){
     identityTags:[...arcDraft.identity],
     stageTags:[...arcDraft.stage],
     note:document.getElementById('arc-note-input').value.trim(),
-    createdAt:editingArcId?((db.arcProfiles||[]).find(p=>p.id===editingArcId)?.createdAt||now):now,
+    createdAt:oldProfile?(oldProfile.createdAt||now):now,
     updatedAt:now
   };
-  const idx=(db.arcProfiles||[]).findIndex(p=>p.id===profile.id);
+  const idx=(db.arcProfiles||[]).findIndex(p=>String(p.id)===String(profile.id));
   if(idx>-1) db.arcProfiles[idx]=profile; else db.arcProfiles.unshift(profile);
   rememberLightTags();
   save();
