@@ -1266,7 +1266,7 @@ body.magic-theme .author-wait-card{border-color:rgba(116,110,183,.18)}
           <div class="settings-item-left">
             <div class="settings-item-icon" style="background:#e8f0fe">ℹ️</div>
             <div>
-              <div class="settings-item-title">幻 maboroshi v2.43</div>
+              <div class="settings-item-title">幻 maboroshi v2.44</div>
               <div class="settings-item-sub">数据和密码均存储于本地</div>
             </div>
           </div>
@@ -1910,7 +1910,15 @@ function load(){
   if(!db.lightTagHistory) db.lightTagHistory={big:['素材','灵感','观察'],small:['人物','剧情','情感','性格形成'],personality:[],identity:[],stage:[]};
   ['big','small','lightIdentity','lightStage','personality','identity','stage'].forEach(k=>{if(!db.lightTagHistory[k]) db.lightTagHistory[k]=[];});
   TAG_CATS.forEach(c=>{if(!db.tagHistory[c.key])db.tagHistory[c.key]=[];});
+  clearImportedLogDates();
   applyAppTheme();
+}
+
+function clearImportedLogDates(){
+  const today=new Date().toISOString().slice(0,10);
+  (db.books||[]).forEach(b=>(b.readLogs||[]).forEach(l=>{
+    if(l?.imported&&l.date===today) l.date=null;
+  }));
 }
 function save(){
   try{
@@ -2846,15 +2854,22 @@ function importBatchBooks(){
   const rows=text.split(/\r?\n/).map(parseBatchLine).filter(x=>x&&x.title);
   if(!rows.length){toast('没有识别到书名');return;}
   const existing=new Set(db.books.map(b=>b.title.trim().toLowerCase()));
-  let added=0, skipped=0;
+  const existingBooks=new Map(db.books.map(b=>[b.title.trim().toLowerCase(),b]));
+  let added=0, skipped=0, fixed=0;
   rows.forEach(row=>{
     const key=row.title.trim().toLowerCase();
-    if(existing.has(key)){skipped++;return;}
-    existing.add(key);
     const hasReview=!!(row.review||'').trim();
     const hasRating=row.rating!==null&&row.rating!==undefined;
+    if(existing.has(key)){
+      const book=existingBooks.get(key);
+      if(book&&fixImportedExistingLogDate(book,row,hasReview,hasRating)) fixed++;
+      skipped++;
+      return;
+    }
+    existing.add(key);
     const readLogs=(hasReview||hasRating)?[{
-      date:'',
+      date:null,
+      imported:true,
       period:'',
       rating:hasRating?row.rating:null,
       review:row.review||'',
@@ -2886,7 +2901,26 @@ function importBatchBooks(){
   save();
   closeSheet('sheet-batch');
   renderShelf();
-  toast(`已导入 ${added} 本，跳过 ${skipped} 本重复`);
+  toast(`已导入 ${added} 本，跳过 ${skipped} 本重复${fixed?`，清理 ${fixed} 条导入日期`:''}`);
+}
+
+function fixImportedExistingLogDate(book,row,hasReview,hasRating){
+  if(!book||(!hasReview&&!hasRating)) return false;
+  const today=new Date().toISOString().slice(0,10);
+  const review=(row.review||'').trim();
+  const rating=hasRating?Number(row.rating):null;
+  let changed=false;
+  (book.readLogs||[]).forEach(l=>{
+    const sameReview=review&&String(l.review||l.parts?.overall||'').trim()===review;
+    const sameRating=hasRating&&Number(l.rating)===rating;
+    if(l.date===today&&(sameReview||sameRating)){
+      l.date=null;
+      l.imported=true;
+      changed=true;
+    }
+  });
+  if(changed){book.updatedAt=Date.now();save();}
+  return changed;
 }
 
 function openEditSheet(id){
@@ -3127,7 +3161,8 @@ function quickAddLog(bookId){
 let miniLogSaveToBook=false;
 function openMiniLog(saveToBook=false){
   miniLogSaveToBook=saveToBook;
-  document.getElementById('log-date').value=currentLogDraft.date||new Date().toISOString().slice(0,10);
+  const hasDateField=Object.prototype.hasOwnProperty.call(currentLogDraft,'date');
+  document.getElementById('log-date').value=hasDateField?(currentLogDraft.date||''):new Date().toISOString().slice(0,10);
   document.getElementById('log-period').value=currentLogDraft.period||'';
   const sliderVal=Math.round((currentLogDraft.rating||3)*10);
   document.getElementById('log-rating').value=sliderVal;
