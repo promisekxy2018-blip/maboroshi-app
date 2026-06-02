@@ -586,9 +586,15 @@ body.magic-theme .ai-task-panel,body.magic-theme .ai-task-card{background:linear
 .light-subnav button{flex:1;border:none;border-radius:11px;background:transparent;color:var(--text2);font-size:12px;padding:8px}
 .light-subnav button.active{background:linear-gradient(145deg,#f7d98b,#f2a8c4);color:white;box-shadow:0 5px 12px rgba(232,130,159,.16)}
 .light-controls{padding:0 16px 10px;display:flex;flex-direction:column;gap:8px}
-.light-filter-row{display:flex;gap:8px;overflow-x:auto}
+.light-filter-row{display:flex;align-items:center;gap:7px;overflow-x:auto}
 .light-filter-row .form-select{min-width:110px;padding-top:8px;padding-bottom:8px;font-size:12px}
 .light-filter-row .form-input{min-width:0}
+.light-search-inline{display:flex;align-items:center;gap:5px;min-width:148px;height:36px;padding:0 9px;border-radius:999px;background:rgba(255,255,255,.72);border:1px solid rgba(232,201,184,.55);box-shadow:0 4px 12px rgba(143,98,80,.05)}
+.light-search-inline svg{width:16px;height:16px;color:#b07820;flex-shrink:0}
+.light-search-input{width:100%;min-width:90px;border:none;background:transparent;outline:none;color:var(--text);font-size:12px;font-family:'Noto Sans SC',sans-serif}
+.light-tool-btn{height:36px;border:none;border-radius:999px;background:rgba(255,255,255,.68);border:1px solid rgba(232,201,184,.5);color:var(--text2);font-size:12px;padding:0 11px;white-space:nowrap}
+.light-tool-btn.icon-only{width:36px;padding:0;display:flex;align-items:center;justify-content:center}
+.light-tool-btn.icon-only svg{width:17px;height:17px}
 .light-list{padding:0 16px 92px;display:flex;flex-direction:column;gap:12px}
 .light-card{position:relative;border:1px solid rgba(232,201,184,.48);border-radius:22px 10px 22px 10px;background:radial-gradient(circle at 92% 10%,rgba(255,226,173,.4),transparent 24px),radial-gradient(circle at 12% 100%,rgba(246,232,255,.3),transparent 36px),linear-gradient(145deg,rgba(255,255,255,.86),rgba(255,248,236,.62));padding:15px;box-shadow:0 10px 24px rgba(143,98,80,.09),inset 0 0 0 1px rgba(255,255,255,.58);overflow:hidden}
 .light-card::before{content:'';position:absolute;left:0;right:0;top:0;height:2px;background:linear-gradient(90deg,rgba(240,186,99,.56),rgba(246,190,210,.24),transparent)}
@@ -654,6 +660,10 @@ body.magic-theme .light-sub{color:rgba(238,225,255,.74)}
 body.magic-theme .light-subnav{background:linear-gradient(145deg,rgba(255,246,218,.12),rgba(185,197,255,.08));border-color:rgba(255,226,173,.2);box-shadow:0 8px 18px rgba(5,8,28,.22),inset 0 0 0 1px rgba(255,255,255,.04)}
 body.magic-theme .light-subnav button{color:rgba(238,225,255,.76)}
 body.magic-theme .light-subnav button.active{background:linear-gradient(145deg,#ffe4a2,#b9c5ff);color:#29294d;box-shadow:0 0 14px rgba(255,226,173,.24)}
+body.magic-theme .light-search-inline,body.magic-theme .light-tool-btn{background:rgba(255,246,218,.12);border-color:rgba(255,226,173,.18);color:#fff1c4}
+body.magic-theme .light-search-input{color:#fff7df}
+body.magic-theme .light-search-input::placeholder{color:rgba(238,225,255,.56)}
+body.magic-theme .light-search-inline svg,body.magic-theme .light-tool-btn.icon-only svg{color:#ffe4a2}
 body.magic-theme .light-card,body.magic-theme .arc-card{background:radial-gradient(circle at 90% 12%,rgba(255,226,173,.14),transparent 24px),radial-gradient(circle at 6% 100%,rgba(185,197,255,.13),transparent 46px),linear-gradient(145deg,rgba(255,246,218,.12),rgba(190,205,255,.07));border-color:rgba(255,226,173,.2);box-shadow:0 12px 26px rgba(6,9,28,.28),inset 0 0 0 1px rgba(255,255,255,.035);color:#fff5dd}
 body.magic-theme .light-card::before{background:linear-gradient(90deg,rgba(255,226,173,.62),rgba(185,197,255,.22),transparent)}
 body.magic-theme .light-card::after{color:rgba(255,226,173,.08);text-shadow:0 0 18px rgba(255,226,173,.1)}
@@ -683,6 +693,11 @@ body.magic-theme .sheet.detail-sheet .sheet-title{color:#fff7df}
 body.magic-theme .sheet.detail-sheet .sheet-close{background:rgba(255,246,218,.16);color:#fff1c4}
 body.magic-theme #sheet-arc-detail .arc-detail-hero,body.magic-theme #sheet-arc-detail .arc-detail-record,body.magic-theme #sheet-light-detail .arc-detail-record{background:radial-gradient(circle at 90% 12%,rgba(255,226,173,.16),transparent 24px),linear-gradient(145deg,rgba(18,28,68,.88),rgba(61,76,135,.72));border-color:rgba(255,226,173,.2)}
 body.magic-theme #sheet-arc-detail .arc-detail-section-title{color:#fff1c4}
+body.magic-theme #sheet-light-detail .light-detail-title{color:#fff4d6;text-shadow:0 1px 4px rgba(0,0,0,.25)}
+body.magic-theme #sheet-light-detail .light-detail-meta{color:#ffe8b2}
+body.magic-theme #sheet-light-detail .light-detail-text{background:linear-gradient(145deg,rgba(18,28,68,.92),rgba(63,78,136,.76));color:#fff8e8;border:1px solid rgba(255,226,173,.22);box-shadow:0 10px 24px rgba(6,9,28,.22)}
+body.magic-theme #sheet-light-detail .light-essence{color:#fff1c4;background:linear-gradient(115deg,rgba(255,226,173,.22),rgba(185,197,255,.14));border-left-color:#ffe4a2}
+body.magic-theme #sheet-light-detail .light-actions button,body.magic-theme #sheet-arc-detail .light-actions button{background:rgba(255,246,218,.18);color:#fff3cf;border:1px solid rgba(255,226,173,.18)}
 body.magic-theme #sheet-light-record .sheet-header,body.magic-theme #sheet-arc-profile .sheet-header{background:radial-gradient(circle at 86% 20%,rgba(255,226,173,.12),transparent 34px),linear-gradient(145deg,rgba(255,246,218,.08),rgba(185,197,255,.07));border-bottom-color:rgba(255,226,173,.15)}
 .path-hero{position:relative;margin:0 16px 12px;padding:10px 13px 11px 14px;border-radius:8px 20px 8px 20px;background:radial-gradient(ellipse at 88% 22%,rgba(183,217,129,.3),transparent 24px),linear-gradient(100deg,rgba(237,247,233,.82),rgba(255,248,242,.18));border:none;border-left:3px solid #8fbf6e;box-shadow:0 8px 20px rgba(95,150,88,.08);overflow:hidden}
 .path-hero::after{content:'❦';position:absolute;right:12px;top:7px;color:rgba(143,191,110,.58);font-size:16px;text-shadow:-20px 18px 0 rgba(248,184,200,.22)}
@@ -1228,7 +1243,7 @@ body.magic-theme .author-wait-card{border-color:rgba(116,110,183,.18)}
           <div class="settings-item-left">
             <div class="settings-item-icon" style="background:#e8f0fe">ℹ️</div>
             <div>
-              <div class="settings-item-title">幻 maboroshi v2.35</div>
+              <div class="settings-item-title">幻 maboroshi v2.37</div>
               <div class="settings-item-sub">数据和密码均存储于本地</div>
             </div>
           </div>
@@ -1466,6 +1481,28 @@ body.magic-theme .author-wait-card{border-color:rgba(116,110,183,.18)}
       </div>
     </div>
     <div class="form-group">
+      <div class="tag-category">
+        <div class="tag-category-label"><span>身份</span><span id="light-identity-count">0 个已选</span></div>
+        <div class="tag-selected-row" id="light-identity-selected"></div>
+        <div class="tag-add-row">
+          <input class="tag-add-input" id="light-identity-input" placeholder="点这里选择历史标签 / 输入新标签" onfocus="showLightExtraHistory('identity')" oninput="showLightExtraHistory('identity')" onkeydown="if(event.key==='Enter'){event.preventDefault();addLightExtraTag('identity')}">
+          <button class="tag-add-btn" type="button" onclick="addLightExtraTag('identity')">添加</button>
+        </div>
+        <div class="tag-picker" id="light-identity-history"><div class="tag-picker-hint">点选标签；在输入框里写新标签后点添加</div><div class="tag-chips-wrap" id="light-identity-chips"></div></div>
+      </div>
+    </div>
+    <div class="form-group">
+      <div class="tag-category">
+        <div class="tag-category-label"><span>人生阶段</span><span id="light-stage-count">0 个已选</span></div>
+        <div class="tag-selected-row" id="light-stage-selected"></div>
+        <div class="tag-add-row">
+          <input class="tag-add-input" id="light-stage-input" placeholder="点这里选择历史标签 / 输入新标签" onfocus="showLightExtraHistory('stage')" oninput="showLightExtraHistory('stage')" onkeydown="if(event.key==='Enter'){event.preventDefault();addLightExtraTag('stage')}">
+          <button class="tag-add-btn" type="button" onclick="addLightExtraTag('stage')">添加</button>
+        </div>
+        <div class="tag-picker" id="light-stage-history"><div class="tag-picker-hint">点选标签；在输入框里写新标签后点添加</div><div class="tag-chips-wrap" id="light-stage-chips"></div></div>
+      </div>
+    </div>
+    <div class="form-group">
       <label class="form-label" style="justify-content:space-between"><span>关联弧光档案</span><button type="button" class="btn btn-ghost" style="font-size:11px;padding:5px 9px" onclick="openArcProfileSheet(null,true)">＋ 新人物</button></label>
       <div class="light-profile-tools">
         <div class="light-profile-tools-row">
@@ -1495,7 +1532,7 @@ body.magic-theme .author-wait-card{border-color:rgba(116,110,183,.18)}
   </div>
   <div class="sheet-footer">
     <button class="btn btn-ghost" style="flex:1" onclick="closeSheet('sheet-light-record')">取消</button>
-    <button class="btn btn-primary" style="flex:2" onclick="saveLightRecord()">保存捕光</button>
+    <button class="btn btn-primary" id="light-save-btn" style="flex:2" onclick="saveLightRecord()">保存捕光</button>
   </div>
 </div>
 
@@ -1791,9 +1828,9 @@ let editingLightId = null;
 let editingArcId = null;
 let currentArcDetailId = null;
 let arcReturnToLight = false;
-let lightDraft = {bigTags:[],smallTags:[],profileIds:[],screenshots:[]};
+let lightDraft = {bigTags:[],smallTags:[],identityTags:[],stageTags:[],profileIds:[],screenshots:[]};
 let arcDraft = {personality:[],identity:[],stage:[]};
-let lightFilters = {big:'all',small:'all',query:''};
+let lightFilters = {big:'all',small:'all',identity:'all',stage:'all',arcPersonality:'all',arcIdentity:'all',arcStage:'all',query:''};
 
 function load(){
   try{const s=localStorage.getItem(STORE_KEY);if(s)db=JSON.parse(s);}catch(e){}
@@ -1814,11 +1851,20 @@ function load(){
   if(!db.lightRecords) db.lightRecords=[];
   if(!db.arcProfiles) db.arcProfiles=[];
   if(!db.lightTagHistory) db.lightTagHistory={big:['素材','灵感','观察'],small:['人物','剧情','情感','性格形成'],personality:[],identity:[],stage:[]};
-  ['big','small','personality','identity','stage'].forEach(k=>{if(!db.lightTagHistory[k]) db.lightTagHistory[k]=[];});
+  ['big','small','lightIdentity','lightStage','personality','identity','stage'].forEach(k=>{if(!db.lightTagHistory[k]) db.lightTagHistory[k]=[];});
   TAG_CATS.forEach(c=>{if(!db.tagHistory[c.key])db.tagHistory[c.key]=[];});
   applyAppTheme();
 }
-function save(){localStorage.setItem(STORE_KEY,JSON.stringify(db));}
+function save(){
+  try{
+    localStorage.setItem(STORE_KEY,JSON.stringify(db));
+    return true;
+  }catch(e){
+    console.error(e);
+    toast('本地保存失败：可能是截图/缓存太大，建议先导出备份再清理一些图片');
+    return false;
+  }
+}
 function applyAppTheme(){
   const isMagic=(db.settings?.shelfView||'list')==='magic';
   document.getElementById('app')?.classList.toggle('magic-theme',isMagic);
@@ -4342,24 +4388,34 @@ function setLightFilter(key,value){
   renderLight();
 }
 
+function lightSearchBox(id,placeholder){
+  return `<div class="light-search-inline"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input class="light-search-input" id="${id}" placeholder="${placeholder}" value="${escapeAttr(lightFilters.query||'')}" oninput="setLightFilter('query',this.value)"></div>`;
+}
+
 function renderLightRecords(){
   const controls=document.getElementById('light-controls');
   const content=document.getElementById('light-content');
   const bigs=['all',...uniqueList([...(db.lightTagHistory.big||[]),...(db.lightRecords||[]).flatMap(getLightBigTags)])];
   const smalls=['all',...uniqueList([...(db.lightTagHistory.small||[]),...(db.lightRecords||[]).flatMap(r=>r.smallTags||[])])];
-  controls.innerHTML=`<input class="form-input" id="light-query" placeholder="搜索标题 / 正文 / 链接 / 人物" value="${escapeAttr(lightFilters.query||'')}" oninput="setLightFilter('query',this.value)">
-    <div class="light-filter-row">
+  const identities=['all',...uniqueList([...(db.lightTagHistory.lightIdentity||[]),...(db.lightRecords||[]).flatMap(r=>r.identityTags||[])])];
+  const stages=['all',...uniqueList([...(db.lightTagHistory.lightStage||[]),...(db.lightRecords||[]).flatMap(r=>r.stageTags||[])])];
+  controls.innerHTML=`<div class="light-filter-row">
+      ${lightSearchBox('light-query','搜索')}
       <select class="form-select" onchange="setLightFilter('big',this.value)">${bigs.map(v=>`<option value="${escapeAttr(v)}" ${lightFilters.big===v?'selected':''}>${v==='all'?'全部大标签':escapeHtml(v)}</option>`).join('')}</select>
       <select class="form-select" onchange="setLightFilter('small',this.value)">${smalls.map(v=>`<option value="${escapeAttr(v)}" ${lightFilters.small===v?'selected':''}>${v==='all'?'全部小标签':escapeHtml(v)}</option>`).join('')}</select>
-      <button class="btn btn-ghost" style="font-size:12px;padding:8px 12px;white-space:nowrap" onclick="openLightTagManager()">标签管理</button>
+      <select class="form-select" onchange="setLightFilter('identity',this.value)">${identities.map(v=>`<option value="${escapeAttr(v)}" ${lightFilters.identity===v?'selected':''}>${v==='all'?'全部身份':escapeHtml(v)}</option>`).join('')}</select>
+      <select class="form-select" onchange="setLightFilter('stage',this.value)">${stages.map(v=>`<option value="${escapeAttr(v)}" ${lightFilters.stage===v?'selected':''}>${v==='all'?'全部阶段':escapeHtml(v)}</option>`).join('')}</select>
+      <button class="light-tool-btn" onclick="openLightTagManager()">标签管理</button>
     </div>`;
   let records=[...(db.lightRecords||[])];
   const q=(lightFilters.query||'').trim().toLowerCase();
   if(lightFilters.big&&lightFilters.big!=='all') records=records.filter(r=>getLightBigTags(r).includes(lightFilters.big));
   if(lightFilters.small&&lightFilters.small!=='all') records=records.filter(r=>(r.smallTags||[]).includes(lightFilters.small));
+  if(lightFilters.identity&&lightFilters.identity!=='all') records=records.filter(r=>(r.identityTags||[]).includes(lightFilters.identity));
+  if(lightFilters.stage&&lightFilters.stage!=='all') records=records.filter(r=>(r.stageTags||[]).includes(lightFilters.stage));
   if(q) records=records.filter(r=>{
     const profiles=(r.profileIds||[]).map(getArcProfileName).join(' ');
-    return [r.title,r.text,r.essence,(r.links||[]).join(' '),profiles,(r.smallTags||[]).join(' '),getLightBigTags(r).join(' ')].join(' ').toLowerCase().includes(q);
+    return [r.title,r.text,r.essence,(r.links||[]).join(' '),profiles,(r.smallTags||[]).join(' '),(r.identityTags||[]).join(' '),(r.stageTags||[]).join(' '),getLightBigTags(r).join(' ')].join(' ').toLowerCase().includes(q);
   });
   records.sort((a,b)=>(b.updatedAt||b.createdAt||0)-(a.updatedAt||a.createdAt||0));
   content.innerHTML=records.length?records.map(renderLightCard).join(''):`<div class="path-empty">还没有捕光记录。<br>那些稍纵即逝的火花，可以从这里开始留下。</div>`;
@@ -4378,6 +4434,8 @@ function renderLightCard(r){
     <div class="light-chip-row">
       ${getLightBigTags(r).map(t=>`<span class="light-chip big">${escapeHtml(t)}</span>`).join('')}
       ${(r.smallTags||[]).map(t=>`<span class="light-chip">${escapeHtml(t)}</span>`).join('')}
+      ${(r.identityTags||[]).map(t=>`<span class="light-chip profile">${escapeHtml(t)}</span>`).join('')}
+      ${(r.stageTags||[]).map(t=>`<span class="light-chip">${escapeHtml(t)}</span>`).join('')}
       ${profiles}
     </div>
     ${r.text?`<div class="light-text">${escapeHtml(r.text)}</div>`:''}
@@ -4391,9 +4449,21 @@ function renderArcProfiles(){
   const controls=document.getElementById('light-controls');
   const content=document.getElementById('light-content');
   currentArcDetailId=null;
-  controls.innerHTML=`<div class="light-filter-row"><input class="form-input" id="arc-query" placeholder="搜索人物代号 / 标签 / 相关记录" value="${escapeAttr(lightFilters.query||'')}" oninput="setLightFilter('query',this.value)"><button class="btn btn-ghost" style="font-size:12px;padding:8px 12px;white-space:nowrap" onclick="openLightTagManager()">标签管理</button></div>`;
+  const personalities=['all',...uniqueList([...(db.lightTagHistory.personality||[]),...(db.arcProfiles||[]).flatMap(p=>p.personalityTags||[])])];
+  const identities=['all',...uniqueList([...(db.lightTagHistory.identity||[]),...(db.arcProfiles||[]).flatMap(p=>p.identityTags||[])])];
+  const stages=['all',...uniqueList([...(db.lightTagHistory.stage||[]),...(db.arcProfiles||[]).flatMap(p=>p.stageTags||[])])];
+  controls.innerHTML=`<div class="light-filter-row">
+    ${lightSearchBox('arc-query','搜索')}
+    <select class="form-select" onchange="setLightFilter('arcPersonality',this.value)">${personalities.map(v=>`<option value="${escapeAttr(v)}" ${lightFilters.arcPersonality===v?'selected':''}>${v==='all'?'全部性格':escapeHtml(v)}</option>`).join('')}</select>
+    <select class="form-select" onchange="setLightFilter('arcIdentity',this.value)">${identities.map(v=>`<option value="${escapeAttr(v)}" ${lightFilters.arcIdentity===v?'selected':''}>${v==='all'?'全部身份':escapeHtml(v)}</option>`).join('')}</select>
+    <select class="form-select" onchange="setLightFilter('arcStage',this.value)">${stages.map(v=>`<option value="${escapeAttr(v)}" ${lightFilters.arcStage===v?'selected':''}>${v==='all'?'全部阶段':escapeHtml(v)}</option>`).join('')}</select>
+    <button class="light-tool-btn" onclick="openLightTagManager()">标签管理</button>
+  </div>`;
   const q=(lightFilters.query||'').trim().toLowerCase();
   let profiles=[...(db.arcProfiles||[])];
+  if(lightFilters.arcPersonality&&lightFilters.arcPersonality!=='all') profiles=profiles.filter(p=>(p.personalityTags||[]).includes(lightFilters.arcPersonality));
+  if(lightFilters.arcIdentity&&lightFilters.arcIdentity!=='all') profiles=profiles.filter(p=>(p.identityTags||[]).includes(lightFilters.arcIdentity));
+  if(lightFilters.arcStage&&lightFilters.arcStage!=='all') profiles=profiles.filter(p=>(p.stageTags||[]).includes(lightFilters.arcStage));
   if(q) profiles=profiles.filter(p=>{
     const recs=getArcRecords(p.id).map(r=>`${r.title} ${getLightBigTags(r).join(' ')} ${(r.smallTags||[]).join(' ')}`).join(' ');
     return [p.code,(p.personalityTags||[]).join(' '),(p.identityTags||[]).join(' '),(p.stageTags||[]).join(' '),p.note,recs].join(' ').toLowerCase().includes(q);
@@ -4473,6 +4543,8 @@ function renderLightDetailSheet(id){
   <div class="light-chip-row">
     ${getLightBigTags(r).map(t=>`<span class="light-chip big">${escapeHtml(t)}</span>`).join('')}
     ${(r.smallTags||[]).map(t=>`<span class="light-chip">${escapeHtml(t)}</span>`).join('')}
+    ${(r.identityTags||[]).map(t=>`<span class="light-chip profile">${escapeHtml(t)}</span>`).join('')}
+    ${(r.stageTags||[]).map(t=>`<span class="light-chip">${escapeHtml(t)}</span>`).join('')}
     ${profiles}
   </div>
   ${r.essence?`<div class="light-essence">${escapeHtml(r.essence)}</div>`:''}
@@ -4491,6 +4563,8 @@ function getLightTagConfigs(){
   return [
     {key:'big',label:'大标签',hint:'素材 / 灵感 / 观察'},
     {key:'small',label:'小标签',hint:'人物 / 剧情 / 情感 / 性格形成'},
+    {key:'lightIdentity',label:'捕光身份',hint:'捕光记录里的身份标签'},
+    {key:'lightStage',label:'捕光人生阶段',hint:'捕光记录里的人生阶段标签'},
     {key:'personality',label:'人物性格',hint:'弧光档案里的性格标签'},
     {key:'identity',label:'人物身份',hint:'弧光档案里的身份标签'},
     {key:'stage',label:'人生阶段',hint:'弧光档案里的人生阶段'}
@@ -4500,6 +4574,8 @@ function getLightTagConfigs(){
 function getLightTagUsage(kind,tag){
   if(kind==='big') return (db.lightRecords||[]).filter(r=>getLightBigTags(r).includes(tag)).length;
   if(kind==='small') return (db.lightRecords||[]).filter(r=>(r.smallTags||[]).includes(tag)).length;
+  if(kind==='lightIdentity') return (db.lightRecords||[]).filter(r=>(r.identityTags||[]).includes(tag)).length;
+  if(kind==='lightStage') return (db.lightRecords||[]).filter(r=>(r.stageTags||[]).includes(tag)).length;
   const field={personality:'personalityTags',identity:'identityTags',stage:'stageTags'}[kind];
   return (db.arcProfiles||[]).filter(p=>(p[field]||[]).includes(tag)).length;
 }
@@ -4513,6 +4589,8 @@ function getAllLightTags(kind){
   let used=[];
   if(kind==='big') used=(db.lightRecords||[]).flatMap(getLightBigTags);
   else if(kind==='small') used=(db.lightRecords||[]).flatMap(r=>r.smallTags||[]);
+  else if(kind==='lightIdentity') used=(db.lightRecords||[]).flatMap(r=>r.identityTags||[]);
+  else if(kind==='lightStage') used=(db.lightRecords||[]).flatMap(r=>r.stageTags||[]);
   else{
     const field={personality:'personalityTags',identity:'identityTags',stage:'stageTags'}[kind];
     used=(db.arcProfiles||[]).flatMap(p=>p[field]||[]);
@@ -4579,6 +4657,14 @@ function updateLightTagEverywhere(kind,from,to){
     (db.lightRecords||[]).forEach(r=>{r.smallTags=replaceList(r.smallTags||[]);});
     lightDraft.smallTags=replaceList(lightDraft.smallTags||[]);
     if(lightFilters.small===from) lightFilters.small=to||'all';
+  }else if(kind==='lightIdentity'){
+    (db.lightRecords||[]).forEach(r=>{r.identityTags=replaceList(r.identityTags||[]);});
+    lightDraft.identityTags=replaceList(lightDraft.identityTags||[]);
+    if(lightFilters.identity===from) lightFilters.identity=to||'all';
+  }else if(kind==='lightStage'){
+    (db.lightRecords||[]).forEach(r=>{r.stageTags=replaceList(r.stageTags||[]);});
+    lightDraft.stageTags=replaceList(lightDraft.stageTags||[]);
+    if(lightFilters.stage===from) lightFilters.stage=to||'all';
   }else{
     const field={personality:'personalityTags',identity:'identityTags',stage:'stageTags'}[kind];
     (db.arcProfiles||[]).forEach(p=>{p[field]=replaceList(p[field]||[]);});
@@ -4628,26 +4714,37 @@ function rememberLightTags(){
   const h=db.lightTagHistory;
   h.big=uniqueList([...(h.big||[]),...(lightDraft.bigTags||[]),document.getElementById('light-big-input')?.value.trim()].filter(Boolean));
   h.small=uniqueList([...(h.small||[]),...(lightDraft.smallTags||[])]);
+  h.lightIdentity=uniqueList([...(h.lightIdentity||[]),...(lightDraft.identityTags||[])]);
+  h.lightStage=uniqueList([...(h.lightStage||[]),...(lightDraft.stageTags||[])]);
   h.personality=uniqueList([...(h.personality||[]),...(arcDraft.personality||[])]);
   h.identity=uniqueList([...(h.identity||[]),...(arcDraft.identity||[])]);
   h.stage=uniqueList([...(h.stage||[]),...(arcDraft.stage||[])]);
 }
 
 function openLightRecordSheet(id=null){
+  id=id==null?null:String(id);
+  const r=id?(db.lightRecords||[]).find(x=>String(x.id)===id):null;
+  if(id&&!r){toast('没有找到这条捕光记录，先刷新列表试试');return;}
   editingLightId=id;
-  const r=id?(db.lightRecords||[]).find(x=>x.id===id):null;
   lightDraft={
     bigTags:getLightBigTags(r),
     smallTags:[...(r?.smallTags||[])],
+    identityTags:[...(r?.identityTags||[])],
+    stageTags:[...(r?.stageTags||[])],
     profileIds:[...(r?.profileIds||[])],
     screenshots:[...(r?.screenshots||[])]
   };
   document.getElementById('sheet-light-title').textContent=id?'编辑捕光':'新增捕光';
   document.getElementById('light-title-input').value=r?.title||'';
   document.getElementById('light-big-input').value='';
+  document.getElementById('light-small-input').value='';
+  document.getElementById('light-identity-input').value='';
+  document.getElementById('light-stage-input').value='';
   document.getElementById('light-text-input').value=r?.text||'';
   document.getElementById('light-essence-input').value=r?.essence||'';
   document.getElementById('light-links-input').value=(r?.links||[]).join('\n');
+  const saveBtn=document.getElementById('light-save-btn');
+  if(saveBtn){saveBtn.dataset.busy='0';saveBtn.disabled=false;saveBtn.textContent='保存捕光';}
   renderLightForm();
   openSheet('sheet-light-record');
 }
@@ -4673,6 +4770,8 @@ function renderLightForm(){
   document.getElementById('light-small-count').textContent=`${(lightDraft.smallTags||[]).length} 个已选`;
   document.getElementById('light-small-chips').innerHTML=smallHist.map(t=>`<button type="button" class="tag-chip-sel light-cat-small ${lightDraft.smallTags.includes(t)?'selected':''}" onclick="toggleLightSmallTag(decodeURIComponent('${encodeURIComponent(t)}'))">${escapeHtml(t)}</button>`).join('')||'<span class="tag-selected-empty">暂无历史标签</span>';
   document.getElementById('light-small-selected').innerHTML=lightDraft.smallTags.map(t=>`<button type="button" class="tag-chip tag-0 tag-selected-remove" onclick="toggleLightSmallTag(decodeURIComponent('${encodeURIComponent(t)}'))"><span>${escapeHtml(t)}</span><b>×</b></button>`).join('')||'<span class="tag-selected-empty">点击输入框选择或新增</span>';
+  renderLightExtraTagBox('identity','lightIdentity','light-cat-identity','tag-2');
+  renderLightExtraTagBox('stage','lightStage','light-cat-stage','tag-4');
   const profileQ=(document.getElementById('light-profile-query')?.value||'').trim().toLowerCase();
   let profiles=db.arcProfiles||[];
   if(profileQ) profiles=profiles.filter(p=>[p.code,...(p.personalityTags||[]),...(p.identityTags||[]),...(p.stageTags||[]),p.note].join(' ').toLowerCase().includes(profileQ));
@@ -4704,6 +4803,46 @@ function toggleLightBigTag(tag){
 
 function showLightSmallHistory(){
   document.getElementById('light-small-history')?.classList.add('show');
+  renderLightForm();
+}
+
+function renderLightExtraTagBox(kind,histKey,chipClass,tagClass){
+  const input=document.getElementById(`light-${kind}-input`);
+  if(!input) return;
+  const q=(input.value||'').trim().toLowerCase();
+  const arrKey=kind==='identity'?'identityTags':'stageTags';
+  const hist=[...(db.lightTagHistory[histKey]||[])].sort((a,b)=>{
+    const aa=String(a).toLowerCase().includes(q)?0:1;
+    const bb=String(b).toLowerCase().includes(q)?0:1;
+    return aa-bb||a.localeCompare(b,'zh-CN');
+  });
+  const selected=lightDraft[arrKey]||[];
+  document.getElementById(`light-${kind}-count`).textContent=`${selected.length} 个已选`;
+  document.getElementById(`light-${kind}-chips`).innerHTML=hist.map(t=>`<button type="button" class="tag-chip-sel ${chipClass} ${selected.includes(t)?'selected':''}" onclick="toggleLightExtraTag('${kind}',decodeURIComponent('${encodeURIComponent(t)}'))">${escapeHtml(t)}</button>`).join('')||'<span class="tag-selected-empty">暂无历史标签</span>';
+  document.getElementById(`light-${kind}-selected`).innerHTML=selected.map(t=>`<button type="button" class="tag-chip ${tagClass} tag-selected-remove" onclick="toggleLightExtraTag('${kind}',decodeURIComponent('${encodeURIComponent(t)}'))"><span>${escapeHtml(t)}</span><b>×</b></button>`).join('')||'<span class="tag-selected-empty">点击输入框选择或新增</span>';
+}
+
+function showLightExtraHistory(kind){
+  document.getElementById(`light-${kind}-history`)?.classList.add('show');
+  renderLightForm();
+}
+
+function addLightExtraTag(kind){
+  const input=document.getElementById(`light-${kind}-input`);
+  const val=input.value.trim();
+  if(!val) return;
+  const arrKey=kind==='identity'?'identityTags':'stageTags';
+  const histKey=kind==='identity'?'lightIdentity':'lightStage';
+  if(!lightDraft[arrKey].includes(val)) lightDraft[arrKey].push(val);
+  if(!db.lightTagHistory[histKey]) db.lightTagHistory[histKey]=[];
+  if(!db.lightTagHistory[histKey].includes(val)) db.lightTagHistory[histKey].push(val);
+  input.value='';
+  renderLightForm();
+}
+
+function toggleLightExtraTag(kind,tag){
+  const arrKey=kind==='identity'?'identityTags':'stageTags';
+  lightDraft[arrKey]=lightDraft[arrKey].includes(tag)?lightDraft[arrKey].filter(t=>t!==tag):[...lightDraft[arrKey],tag];
   renderLightForm();
 }
 
@@ -4760,14 +4899,20 @@ function removeLightScreenshot(i){
 }
 
 function saveLightRecord(){
+  const saveBtn=document.getElementById('light-save-btn');
+  if(saveBtn?.dataset.busy==='1') return;
+  if(saveBtn){saveBtn.dataset.busy='1';saveBtn.disabled=true;saveBtn.textContent='保存中…';}
   const title=document.getElementById('light-title-input').value.trim();
   const now=Date.now();
+  const recordId=editingLightId||genId();
   const record={
-    id:editingLightId||genId(),
+    id:recordId,
     title:title||'未命名捕光',
     bigTag:lightDraft.bigTags[0]||document.getElementById('light-big-input').value.trim()||'灵感',
     bigTags:uniqueList([...(lightDraft.bigTags||[]),document.getElementById('light-big-input').value.trim()].filter(Boolean)),
     smallTags:[...lightDraft.smallTags],
+    identityTags:[...lightDraft.identityTags],
+    stageTags:[...lightDraft.stageTags],
     profileIds:[...lightDraft.profileIds],
     text:document.getElementById('light-text-input').value.trim(),
     essence:document.getElementById('light-essence-input').value.trim(),
@@ -4778,8 +4923,11 @@ function saveLightRecord(){
   };
   const idx=(db.lightRecords||[]).findIndex(r=>r.id===record.id);
   if(idx>-1) db.lightRecords[idx]=record; else db.lightRecords.unshift(record);
+  editingLightId=record.id;
   rememberLightTags();
-  save();
+  const ok=save();
+  if(saveBtn){saveBtn.dataset.busy='0';saveBtn.disabled=false;saveBtn.textContent='保存捕光';}
+  if(!ok) return;
   closeSheet('sheet-light-record');
   lightSubView='records';
   renderLight();
@@ -4792,9 +4940,11 @@ function saveLightRecord(){
 }
 
 function deleteLightRecord(id){
+  id=String(id||'');
   if(!confirm('删除这条捕光记录吗？')) return;
-  db.lightRecords=(db.lightRecords||[]).filter(r=>r.id!==id);
-  save();
+  db.lightRecords=(db.lightRecords||[]).filter(r=>String(r.id)!==id);
+  if(!save()) return;
+  closeSheet('sheet-light-detail');
   renderLight();
   toast('已删除');
 }
