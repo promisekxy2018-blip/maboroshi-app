@@ -1266,7 +1266,7 @@ body.magic-theme .author-wait-card{border-color:rgba(116,110,183,.18)}
           <div class="settings-item-left">
             <div class="settings-item-icon" style="background:#e8f0fe">ℹ️</div>
             <div>
-              <div class="settings-item-title">幻 maboroshi v2.41</div>
+              <div class="settings-item-title">幻 maboroshi v2.43</div>
               <div class="settings-item-sub">数据和密码均存储于本地</div>
             </div>
           </div>
@@ -1415,15 +1415,16 @@ body.magic-theme .author-wait-card{border-color:rgba(116,110,183,.18)}
 书名
 书名 作者
 书名｜作者
+书名｜作者｜评分｜评价
 书名, 作者"></textarea>
     </div>
     <div style="font-size:12px;color:var(--text3);line-height:1.7;background:var(--card);border:1px solid var(--border);border-radius:var(--r2);padding:12px">
-      导入后会进入「未整理」分类，只保存书名和作者。已经存在的同名书会自动跳过。
+      推荐用「｜」分隔：书名｜作者｜评分｜评价。评分可空，评价会自动生成一条阅读记录；已经存在的同名书会自动跳过。
     </div>
   </div>
   <div class="sheet-footer">
     <button class="btn btn-ghost" style="flex:1" onclick="closeSheet('sheet-batch')">取消</button>
-    <button class="btn btn-primary" style="flex:2" onclick="importBatchBooks()">导入到未整理</button>
+    <button class="btn btn-primary" style="flex:2" onclick="importBatchBooks()">一键导入</button>
   </div>
 </div>
 
@@ -2001,6 +2002,12 @@ function getBookLogText(log){
   if(sections.length) return sections.map(([k,v])=>`${k}：${v}`).join('\n');
   return log.review||'';
 }
+function formatReadLogRating(log){
+  if(log?.rating===null||log?.rating===undefined||log?.rating==='') return '未评分';
+  const n=Number(log.rating);
+  if(Number.isNaN(n)) return '未评分';
+  return `${n===5?hallIcon():'★'} ${n.toFixed(1)}`;
+}
 function progressOptions(selected=100){
   const opts=[];
   for(let i=100;i>=0;i-=10) opts.push(`<option value="${i}" ${Number(selected)===i?'selected':''}>${i}%</option>`);
@@ -2469,7 +2476,7 @@ function openDetail(id,opts={}){
       <div class="read-log-header">
         <span class="read-log-num">第 ${i+1} 刷</span>
         <span class="read-log-date">${[l.period,l.date].filter(Boolean).join(' · ')}</span>
-        <span class="read-log-rating">${Number(l.rating)===5?hallIcon():'★'} ${(l.rating||0).toFixed(1)}</span>
+        <span class="read-log-rating">${formatReadLogRating(l)}</span>
       </div>
       <div class="read-log-review" style="white-space:pre-line">${escapeHtml(getBookLogText(l)||'无感想记录')}</div>
       <button class="read-log-edit" onclick="event.stopPropagation();editLog('${id}',${i})">✏️</button>
@@ -2808,11 +2815,30 @@ function openBatchImport(){
 function parseBatchLine(line){
   const clean=line.trim().replace(/^[-*•\d.\s]+/,'').trim();
   if(!clean) return null;
-  let parts=clean.split(/\s*[|｜,，\t]\s*/).filter(Boolean);
-  if(parts.length>=2) return {title:parts[0].trim(), author:parts.slice(1).join(' ').trim()};
+  let parts=clean.split(/\s*[|｜]\s*/);
+  if(parts.length>=2){
+    const [titleRaw,authorRaw='',ratingRaw='',...reviewParts]=parts;
+    const rating=parseBatchRating(ratingRaw);
+    return {
+      title:titleRaw.replace(/[《》]/g,'').trim(),
+      author:authorRaw.trim(),
+      rating,
+      review:reviewParts.join('｜').trim()
+    };
+  }
+  parts=clean.split(/\s*[,，\t]\s*/).filter(Boolean);
+  if(parts.length>=2) return {title:parts[0].replace(/[《》]/g,'').trim(), author:parts.slice(1).join(' ').trim(), rating:null, review:''};
   const m=clean.match(/^《?(.+?)》?\s+(.{1,30})$/);
-  if(m) return {title:m[1].trim(), author:m[2].trim()};
-  return {title:clean.replace(/[《》]/g,'').trim(), author:''};
+  if(m) return {title:m[1].trim(), author:m[2].trim(), rating:null, review:''};
+  return {title:clean.replace(/[《》]/g,'').trim(), author:'', rating:null, review:''};
+}
+
+function parseBatchRating(raw){
+  const text=String(raw||'').trim();
+  if(!text) return null;
+  const n=parseFloat(text.replace(/[^\d.]/g,''));
+  if(Number.isNaN(n)) return null;
+  return Math.max(0,Math.min(5,Math.round(n*10)/10));
 }
 
 function importBatchBooks(){
@@ -2825,6 +2851,15 @@ function importBatchBooks(){
     const key=row.title.trim().toLowerCase();
     if(existing.has(key)){skipped++;return;}
     existing.add(key);
+    const hasReview=!!(row.review||'').trim();
+    const hasRating=row.rating!==null&&row.rating!==undefined;
+    const readLogs=(hasReview||hasRating)?[{
+      date:'',
+      period:'',
+      rating:hasRating?row.rating:null,
+      review:row.review||'',
+      parts:{overall:row.review||'',character:'',plot:'',author:''}
+    }]:[];
     db.books.unshift({
       id:genId(),
       title:row.title,
@@ -2833,8 +2868,8 @@ function importBatchBooks(){
       gongName:'',
       shouName:'',
       coverUrl:'',
-      status:'unfiled',
-      progress:0,
+      status:(hasReview||hasRating)?'done':'unfiled',
+      progress:(hasReview||hasRating)?100:0,
       summary:'',
       synopsis:'',
       bookQuote:{text:'',speaker:'',sourceHint:''},
@@ -2843,7 +2878,7 @@ function importBatchBooks(){
       screenshots:[],
       finishYear:'',
       tags:{shou:[],gong:[],era:[],plot:[],vibe:[],warn:[]},
-      readLogs:[],
+      readLogs,
       updatedAt:Date.now()
     });
     added++;
@@ -3051,7 +3086,7 @@ function refreshLogsUI(){
       <div class="read-log-header">
         <span class="read-log-num">第 ${i+1} 刷</span>
       <span class="read-log-date">${[l.period,l.date||'未填日期'].filter(Boolean).join(' · ')}</span>
-        <span class="read-log-rating">${Number(l.rating)===5?hallIcon():'★'} ${(l.rating||0).toFixed(1)}</span>
+        <span class="read-log-rating">${formatReadLogRating(l)}</span>
       </div>
       <div class="read-log-review" style="font-size:12px;white-space:pre-line">${escapeHtml(getBookLogText(l)||'无感想')}</div>
       <button class="read-log-edit" onclick="editFormLog(${i})">✏️</button>
