@@ -133,7 +133,9 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
 .fab.light-fab{background:radial-gradient(circle at 34% 30%,#fff9dc 0 10%,#ffd86b 11% 27%,#f2a8c4 52%,#9b8be0 100%);box-shadow:0 0 0 4px rgba(255,226,173,.22),0 0 24px rgba(255,216,107,.48),0 8px 22px rgba(139,109,172,.25);font-size:0}
 .fab.light-fab::before{content:'✦';font-size:26px;color:white;text-shadow:0 0 9px rgba(255,255,255,.95),0 0 18px rgba(255,226,173,.8)}
 .fab.arc-fab{background:linear-gradient(145deg,#ffe2ec,#ffd7b5 48%,#b9d8ff);box-shadow:0 0 0 4px rgba(255,226,236,.28),0 8px 22px rgba(160,112,130,.24);font-size:0}
-.fab.arc-fab::before{content:'';width:30px;height:34px;display:block;background:linear-gradient(145deg,#f08fb0,#8b77c8);-webkit-mask:url("data:image/svg+xml,%3Csvg viewBox='0 0 48 54' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M31 6c-9 0-16 7-16 17 0 5 2 10 6 13-3 3-5 7-6 12h25c-2-8-7-13-13-15 6-1 11-6 11-13C38 12 35 6 31 6Zm-1 9c2 0 4 2 4 4 0 3-2 5-5 5-2 0-4-2-4-4 0-3 2-5 5-5Z' fill='black'/%3E%3Cpath d='M20 13C10 18 6 27 9 37c3-6 7-10 13-13' fill='none' stroke='black' stroke-width='5' stroke-linecap='round'/%3E%3C/svg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg viewBox='0 0 48 54' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M31 6c-9 0-16 7-16 17 0 5 2 10 6 13-3 3-5 7-6 12h25c-2-8-7-13-13-15 6-1 11-6 11-13C38 12 35 6 31 6Zm-1 9c2 0 4 2 4 4 0 3-2 5-5 5-2 0-4-2-4-4 0-3 2-5 5-5Z' fill='black'/%3E%3Cpath d='M20 13C10 18 6 27 9 37c3-6 7-10 13-13' fill='none' stroke='black' stroke-width='5' stroke-linecap='round'/%3E%3C/svg%3E") center/contain no-repeat;filter:drop-shadow(0 0 8px rgba(255,255,255,.72))}
+.fab.arc-fab::before{content:'';width:34px;height:34px;display:block;background:var(--arc-girl-icon) center/contain no-repeat;filter:drop-shadow(0 0 7px rgba(255,255,255,.72))}
+.fab.arc-fab{--arc-girl-icon:url("data:image/svg+xml,%3Csvg viewBox='0 0 64 64' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%23744d82' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M42 11C31 10 22 18 22 30c0 7 3.5 13 9 16'/%3E%3Cpath d='M39 18c-7 2-10 7-10 13 0 4 1.8 7 5 9'/%3E%3Cpath d='M39 23c3 2 5 5 5 9 0 5-3 8-8 10'/%3E%3Cpath d='M34 30c2-1 5-1 7 1'/%3E%3Cpath d='M33 48c-5 2-9 6-11 11'/%3E%3Cpath d='M18 16c-7 6-9 15-6 25'/%3E%3Cpath d='M17 20c4-5 10-8 18-9'/%3E%3Cpath d='M48 7l1.7 4.1 4.3 1.4-4.3 1.5L48 18l-1.7-4-4.3-1.5 4.3-1.4L48 7z' stroke-width='2.4'/%3E%3C/g%3E%3C/svg%3E")}
+body.magic-theme .fab.arc-fab{--arc-girl-icon:url("data:image/svg+xml,%3Csvg viewBox='0 0 64 64' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%23fff1c4' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M42 11C31 10 22 18 22 30c0 7 3.5 13 9 16'/%3E%3Cpath d='M39 18c-7 2-10 7-10 13 0 4 1.8 7 5 9'/%3E%3Cpath d='M39 23c3 2 5 5 5 9 0 5-3 8-8 10'/%3E%3Cpath d='M34 30c2-1 5-1 7 1'/%3E%3Cpath d='M33 48c-5 2-9 6-11 11'/%3E%3Cpath d='M18 16c-7 6-9 15-6 25'/%3E%3Cpath d='M17 20c4-5 10-8 18-9'/%3E%3Cpath d='M48 7l1.7 4.1 4.3 1.4-4.3 1.5L48 18l-1.7-4-4.3-1.5 4.3-1.4L48 7z' stroke-width='2.4'/%3E%3C/g%3E%3C/svg%3E")}
 body.magic-theme .fab.light-fab{background:radial-gradient(circle at 34% 30%,#fff7d0 0 10%,#ffe4a2 11% 30%,#b9c5ff 56%,#6678c0 100%);box-shadow:0 0 0 4px rgba(255,226,173,.18),0 0 28px rgba(255,226,173,.46),0 8px 24px rgba(6,9,28,.35)}
 body.magic-theme .fab.arc-fab{background:linear-gradient(145deg,#fff0ce,#d8ddff 48%,#687dcc);box-shadow:0 0 0 4px rgba(255,226,173,.16),0 8px 24px rgba(6,9,28,.35)}
 
@@ -153,9 +155,9 @@ body.magic-theme .fab.arc-fab{background:linear-gradient(145deg,#fff0ce,#d8ddff 
 .filter-sort-row{padding:0 16px 8px;display:flex;justify-content:flex-end}
 .filter-sort-row .form-select{width:auto;min-width:132px;padding-top:7px;padding-bottom:7px;font-size:12px;background-color:rgba(255,255,255,.72)}
 .filter-sort-row.show{display:flex}
-#sheet-filter{inset:0;max-height:none;border-radius:0}
-#sheet-filter .sheet-handle{display:none}
-#sheet-filter .sheet-body{padding-top:14px}
+#sheet-filter,#sheet-light-filter{inset:0;max-height:none;border-radius:0}
+#sheet-filter .sheet-handle,#sheet-light-filter .sheet-handle{display:none}
+#sheet-filter .sheet-body,#sheet-light-filter .sheet-body{padding-top:14px}
 .filter-accordion{padding:0;overflow:hidden}
 .filter-accordion-head{width:100%;padding:14px 13px;border:none;background:transparent;color:var(--text);display:flex;align-items:center;justify-content:space-between;font-size:14px;font-weight:600;text-align:left}
 .filter-accordion-arrow{color:var(--text3);font-size:15px;transition:transform .2s}
@@ -586,15 +588,16 @@ body.magic-theme .ai-task-panel,body.magic-theme .ai-task-card{background:linear
 .light-subnav button{flex:1;border:none;border-radius:11px;background:transparent;color:var(--text2);font-size:12px;padding:8px}
 .light-subnav button.active{background:linear-gradient(145deg,#f7d98b,#f2a8c4);color:white;box-shadow:0 5px 12px rgba(232,130,159,.16)}
 .light-controls{padding:0 16px 10px;display:flex;flex-direction:column;gap:8px}
-.light-filter-row{display:flex;align-items:center;gap:7px;overflow-x:auto}
-.light-filter-row .form-select{min-width:110px;padding-top:8px;padding-bottom:8px;font-size:12px}
-.light-filter-row .form-input{min-width:0}
-.light-search-inline{display:flex;align-items:center;gap:5px;min-width:148px;height:36px;padding:0 9px;border-radius:999px;background:rgba(255,255,255,.72);border:1px solid rgba(232,201,184,.55);box-shadow:0 4px 12px rgba(143,98,80,.05)}
-.light-search-inline svg{width:16px;height:16px;color:#b07820;flex-shrink:0}
-.light-search-input{width:100%;min-width:90px;border:none;background:transparent;outline:none;color:var(--text);font-size:12px;font-family:'Noto Sans SC',sans-serif}
+.light-filter-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;overflow:visible}
 .light-tool-btn{height:36px;border:none;border-radius:999px;background:rgba(255,255,255,.68);border:1px solid rgba(232,201,184,.5);color:var(--text2);font-size:12px;padding:0 11px;white-space:nowrap}
-.light-tool-btn.icon-only{width:36px;padding:0;display:flex;align-items:center;justify-content:center}
+.light-tool-btn.icon-only{position:relative;width:100%;height:40px;padding:0;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 16px rgba(143,98,80,.06)}
 .light-tool-btn.icon-only svg{width:17px;height:17px}
+.light-tool-btn.active{color:#9a6220;border-color:rgba(240,186,99,.58);background:linear-gradient(145deg,rgba(255,239,190,.86),rgba(255,255,255,.62))}
+.light-tool-badge{position:absolute;right:14px;top:6px;min-width:16px;height:16px;border-radius:999px;background:#f0ba63;color:white;font-size:10px;line-height:16px;text-align:center;box-shadow:0 2px 6px rgba(176,120,32,.2)}
+.light-sheet-search{display:flex;align-items:center;gap:8px;border:1px solid rgba(232,201,184,.58);border-radius:18px;background:rgba(255,255,255,.76);padding:0 12px;height:48px;box-shadow:0 6px 18px rgba(143,98,80,.06)}
+.light-sheet-search svg{width:18px;height:18px;color:#b07820;flex-shrink:0}
+.light-sheet-search input{width:100%;border:none;background:transparent;outline:none;color:var(--text);font-size:15px;font-family:'Noto Sans SC',sans-serif}
+.light-filter-summary{font-size:12px;color:var(--text3);line-height:1.7;margin-top:8px}
 .light-list{padding:0 16px 92px;display:flex;flex-direction:column;gap:12px}
 .light-card{position:relative;border:1px solid rgba(232,201,184,.48);border-radius:22px 10px 22px 10px;background:radial-gradient(circle at 92% 10%,rgba(255,226,173,.4),transparent 24px),radial-gradient(circle at 12% 100%,rgba(246,232,255,.3),transparent 36px),linear-gradient(145deg,rgba(255,255,255,.86),rgba(255,248,236,.62));padding:15px;box-shadow:0 10px 24px rgba(143,98,80,.09),inset 0 0 0 1px rgba(255,255,255,.58);overflow:hidden}
 .light-card::before{content:'';position:absolute;left:0;right:0;top:0;height:2px;background:linear-gradient(90deg,rgba(240,186,99,.56),rgba(246,190,210,.24),transparent)}
@@ -660,10 +663,13 @@ body.magic-theme .light-sub{color:rgba(238,225,255,.74)}
 body.magic-theme .light-subnav{background:linear-gradient(145deg,rgba(255,246,218,.12),rgba(185,197,255,.08));border-color:rgba(255,226,173,.2);box-shadow:0 8px 18px rgba(5,8,28,.22),inset 0 0 0 1px rgba(255,255,255,.04)}
 body.magic-theme .light-subnav button{color:rgba(238,225,255,.76)}
 body.magic-theme .light-subnav button.active{background:linear-gradient(145deg,#ffe4a2,#b9c5ff);color:#29294d;box-shadow:0 0 14px rgba(255,226,173,.24)}
-body.magic-theme .light-search-inline,body.magic-theme .light-tool-btn{background:rgba(255,246,218,.12);border-color:rgba(255,226,173,.18);color:#fff1c4}
-body.magic-theme .light-search-input{color:#fff7df}
-body.magic-theme .light-search-input::placeholder{color:rgba(238,225,255,.56)}
-body.magic-theme .light-search-inline svg,body.magic-theme .light-tool-btn.icon-only svg{color:#ffe4a2}
+body.magic-theme .light-tool-btn{background:rgba(255,246,218,.12);border-color:rgba(255,226,173,.18);color:#fff1c4}
+body.magic-theme .light-tool-btn.active{background:linear-gradient(145deg,rgba(255,226,173,.24),rgba(185,197,255,.14));border-color:rgba(255,226,173,.34);color:#fff7df;box-shadow:0 0 16px rgba(255,226,173,.16)}
+body.magic-theme .light-tool-btn.icon-only svg{color:#ffe4a2}
+body.magic-theme .light-tool-badge{background:#ffe4a2;color:#30304f}
+body.magic-theme .light-sheet-search{background:rgba(248,245,255,.86);border-color:rgba(185,197,255,.42);box-shadow:0 10px 24px rgba(25,32,80,.12)}
+body.magic-theme .light-sheet-search input{color:#343b63}
+body.magic-theme .light-sheet-search svg{color:#7460b6}
 body.magic-theme .light-card,body.magic-theme .arc-card{background:radial-gradient(circle at 90% 12%,rgba(255,226,173,.14),transparent 24px),radial-gradient(circle at 6% 100%,rgba(185,197,255,.13),transparent 46px),linear-gradient(145deg,rgba(255,246,218,.12),rgba(190,205,255,.07));border-color:rgba(255,226,173,.2);box-shadow:0 12px 26px rgba(6,9,28,.28),inset 0 0 0 1px rgba(255,255,255,.035);color:#fff5dd}
 body.magic-theme .light-card::before{background:linear-gradient(90deg,rgba(255,226,173,.62),rgba(185,197,255,.22),transparent)}
 body.magic-theme .light-card::after{color:rgba(255,226,173,.08);text-shadow:0 0 18px rgba(255,226,173,.1)}
@@ -687,17 +693,19 @@ body.magic-theme .arc-detail-hero,body.magic-theme .arc-detail-record{background
 body.magic-theme .arc-detail-name,body.magic-theme .arc-detail-record-title{color:#fff7df}
 body.magic-theme .arc-detail-note,body.magic-theme .arc-detail-record-text{color:rgba(255,246,218,.78)}
 body.magic-theme .arc-detail-back{background:rgba(255,246,218,.12);color:#fff1c4;border:1px solid rgba(255,226,173,.14)}
-body.magic-theme .sheet.detail-sheet{background:linear-gradient(180deg,#1e2755,#2f3e78 58%,#eef3ff)}
-body.magic-theme .sheet.detail-sheet .sheet-header{background:radial-gradient(circle at 18% 28%,rgba(255,239,170,.24),transparent 20%),linear-gradient(145deg,#536bb2,#3a4f92);border-bottom-color:rgba(255,226,173,.2)}
-body.magic-theme .sheet.detail-sheet .sheet-title{color:#fff7df}
-body.magic-theme .sheet.detail-sheet .sheet-close{background:rgba(255,246,218,.16);color:#fff1c4}
-body.magic-theme #sheet-arc-detail .arc-detail-hero,body.magic-theme #sheet-arc-detail .arc-detail-record,body.magic-theme #sheet-light-detail .arc-detail-record{background:radial-gradient(circle at 90% 12%,rgba(255,226,173,.16),transparent 24px),linear-gradient(145deg,rgba(18,28,68,.88),rgba(61,76,135,.72));border-color:rgba(255,226,173,.2)}
-body.magic-theme #sheet-arc-detail .arc-detail-section-title{color:#fff1c4}
-body.magic-theme #sheet-light-detail .light-detail-title{color:#fff4d6;text-shadow:0 1px 4px rgba(0,0,0,.25)}
-body.magic-theme #sheet-light-detail .light-detail-meta{color:#ffe8b2}
-body.magic-theme #sheet-light-detail .light-detail-text{background:linear-gradient(145deg,rgba(18,28,68,.92),rgba(63,78,136,.76));color:#fff8e8;border:1px solid rgba(255,226,173,.22);box-shadow:0 10px 24px rgba(6,9,28,.22)}
-body.magic-theme #sheet-light-detail .light-essence{color:#fff1c4;background:linear-gradient(115deg,rgba(255,226,173,.22),rgba(185,197,255,.14));border-left-color:#ffe4a2}
-body.magic-theme #sheet-light-detail .light-actions button,body.magic-theme #sheet-arc-detail .light-actions button{background:rgba(255,246,218,.18);color:#fff3cf;border:1px solid rgba(255,226,173,.18)}
+body.magic-theme .sheet.detail-sheet{background:radial-gradient(circle at 18% 9%,rgba(255,239,190,.24),transparent 64px),linear-gradient(180deg,#596aaa 0%,#7887bf 32%,#edf1fc 100%)}
+body.magic-theme .sheet.detail-sheet .sheet-header{background:radial-gradient(circle at 18% 28%,rgba(255,239,170,.2),transparent 20px),linear-gradient(145deg,rgba(90,107,174,.9),rgba(125,139,198,.82));border-bottom-color:rgba(255,246,218,.18)}
+body.magic-theme .sheet.detail-sheet .sheet-title{color:#fff4d6}
+body.magic-theme .sheet.detail-sheet .sheet-close{background:rgba(255,246,218,.18);color:#fff1c4}
+body.magic-theme #sheet-arc-detail .arc-detail-hero,body.magic-theme #sheet-arc-detail .arc-detail-record,body.magic-theme #sheet-light-detail .arc-detail-record{background:radial-gradient(circle at 90% 12%,rgba(255,239,190,.38),transparent 26px),linear-gradient(145deg,rgba(249,247,255,.9),rgba(225,232,252,.74));border-color:rgba(185,197,255,.38);box-shadow:0 12px 24px rgba(39,48,103,.14);color:#3d456d}
+body.magic-theme #sheet-arc-detail .arc-detail-section-title{color:#fff4d6;text-shadow:0 1px 4px rgba(50,60,120,.22)}
+body.magic-theme #sheet-light-detail .light-detail-title{color:#fff4d6;text-shadow:0 1px 4px rgba(50,60,120,.2)}
+body.magic-theme #sheet-light-detail .light-detail-meta{color:rgba(255,246,218,.82)}
+body.magic-theme #sheet-light-detail .light-detail-text{background:linear-gradient(145deg,rgba(249,247,255,.9),rgba(226,232,252,.76));color:#3f4568;border:1px solid rgba(185,197,255,.36);box-shadow:0 10px 24px rgba(39,48,103,.12)}
+body.magic-theme #sheet-light-detail .light-essence{color:#604d83;background:linear-gradient(115deg,rgba(255,239,190,.72),rgba(232,224,255,.78));border-left-color:#c9b3ff;box-shadow:0 8px 18px rgba(72,58,122,.1)}
+body.magic-theme #sheet-light-detail .light-actions button,body.magic-theme #sheet-arc-detail .light-actions button{background:rgba(255,246,218,.72);color:#54517b;border:1px solid rgba(185,197,255,.32)}
+body.magic-theme #sheet-arc-detail .arc-detail-name,body.magic-theme #sheet-arc-detail .arc-detail-record-title{color:#34395f}
+body.magic-theme #sheet-arc-detail .arc-detail-note,body.magic-theme #sheet-arc-detail .arc-detail-record-text{color:#4f567a}
 body.magic-theme #sheet-light-record .sheet-header,body.magic-theme #sheet-arc-profile .sheet-header{background:radial-gradient(circle at 86% 20%,rgba(255,226,173,.12),transparent 34px),linear-gradient(145deg,rgba(255,246,218,.08),rgba(185,197,255,.07));border-bottom-color:rgba(255,226,173,.15)}
 .path-hero{position:relative;margin:0 16px 12px;padding:10px 13px 11px 14px;border-radius:8px 20px 8px 20px;background:radial-gradient(ellipse at 88% 22%,rgba(183,217,129,.3),transparent 24px),linear-gradient(100deg,rgba(237,247,233,.82),rgba(255,248,242,.18));border:none;border-left:3px solid #8fbf6e;box-shadow:0 8px 20px rgba(95,150,88,.08);overflow:hidden}
 .path-hero::after{content:'❦';position:absolute;right:12px;top:7px;color:rgba(143,191,110,.58);font-size:16px;text-shadow:-20px 18px 0 rgba(248,184,200,.22)}
@@ -840,10 +848,10 @@ body.magic-theme .detail-back{background:rgba(255,245,212,.22);color:#fff1be}
 body.magic-theme .sheet,body.magic-theme .mini-sheet{background:linear-gradient(180deg,#f8f1df,#eaf1ff);color:#3d3658}
 body.magic-theme .text-editor-sheet{background:linear-gradient(180deg,#eef3ff,#f8f0df);color:#3d3658}
 body.magic-theme .text-editor-title{color:#3d3658}
-body.magic-theme #sheet-filter .sheet-header{background:radial-gradient(circle at 16% 28%,rgba(255,239,170,.34),transparent 19%),linear-gradient(145deg,#6b84c6,#4a61aa);border-bottom-color:rgba(255,226,173,.24)}
-body.magic-theme #sheet-filter .sheet-title{color:#fff7df}
-body.magic-theme #sheet-filter .sheet-close{background:rgba(255,246,218,.18);color:#fff2c7}
-body.magic-theme #sheet-filter .filter-section,body.magic-theme #sheet-filter .filter-mode{background:rgba(255,252,239,.82);border-color:rgba(108,101,170,.18)}
+body.magic-theme #sheet-filter .sheet-header,body.magic-theme #sheet-light-filter .sheet-header,body.magic-theme #sheet-light-search .sheet-header{background:radial-gradient(circle at 16% 28%,rgba(255,239,170,.28),transparent 19%),linear-gradient(145deg,#7284c2,#6577b8);border-bottom-color:rgba(255,226,173,.22)}
+body.magic-theme #sheet-filter .sheet-title,body.magic-theme #sheet-light-filter .sheet-title,body.magic-theme #sheet-light-search .sheet-title{color:#fff7df}
+body.magic-theme #sheet-filter .sheet-close,body.magic-theme #sheet-light-filter .sheet-close,body.magic-theme #sheet-light-search .sheet-close{background:rgba(255,246,218,.18);color:#fff2c7}
+body.magic-theme #sheet-filter .filter-section,body.magic-theme #sheet-filter .filter-mode,body.magic-theme #sheet-light-filter .filter-section{background:rgba(255,252,239,.86);border-color:rgba(108,101,170,.18)}
 body.magic-theme .stats-modal{background:linear-gradient(180deg,#eef3ff,#f8f0df)}
 body.magic-theme .stats-modal-header{background:radial-gradient(circle at 18% 28%,rgba(255,239,170,.34),transparent 20%),linear-gradient(145deg,#647fc2,#485fa8);border-bottom-color:rgba(255,226,173,.22)}
 body.magic-theme .stats-modal-title{color:#fff7df}
@@ -1243,7 +1251,7 @@ body.magic-theme .author-wait-card{border-color:rgba(116,110,183,.18)}
           <div class="settings-item-left">
             <div class="settings-item-icon" style="background:#e8f0fe">ℹ️</div>
             <div>
-              <div class="settings-item-title">幻 maboroshi v2.37</div>
+              <div class="settings-item-title">幻 maboroshi v2.39</div>
               <div class="settings-item-sub">数据和密码均存储于本地</div>
             </div>
           </div>
@@ -1603,6 +1611,39 @@ body.magic-theme .author-wait-card{border-color:rgba(116,110,183,.18)}
     <button class="sheet-close" onclick="closeSheet('sheet-arc-detail')">×</button>
   </div>
   <div class="sheet-body" id="arc-detail-body"></div>
+</div>
+
+<!-- ═══ LIGHT SEARCH / FILTER SHEETS ═══ -->
+<div class="sheet" id="sheet-light-search">
+  <div class="sheet-handle"></div>
+  <div class="sheet-header">
+    <span class="sheet-title" id="light-search-sheet-title">搜索捕光</span>
+    <button class="sheet-close" onclick="closeSheet('sheet-light-search')">×</button>
+  </div>
+  <div class="sheet-body">
+    <div class="light-sheet-search">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+      <input id="light-search-sheet-input" placeholder="搜索标题、正文、标签、人物">
+    </div>
+    <div class="light-filter-summary" id="light-search-sheet-hint"></div>
+  </div>
+  <div class="sheet-footer">
+    <button class="btn btn-ghost" style="flex:1" onclick="clearLightSearch()">清空</button>
+    <button class="btn btn-primary" style="flex:2" onclick="applyLightSearch()">搜索</button>
+  </div>
+</div>
+
+<div class="sheet" id="sheet-light-filter">
+  <div class="sheet-handle"></div>
+  <div class="sheet-header">
+    <span class="sheet-title" id="light-filter-sheet-title">筛选捕光</span>
+    <button class="sheet-close" onclick="closeSheet('sheet-light-filter')">×</button>
+  </div>
+  <div class="sheet-body" id="light-filter-sheet-body"></div>
+  <div class="sheet-footer">
+    <button class="btn btn-ghost" style="flex:1" onclick="clearLightFilterSheet()">清空</button>
+    <button class="btn btn-primary" style="flex:2" onclick="closeSheet('sheet-light-filter')">完成</button>
+  </div>
 </div>
 
 <!-- ═══ LIGHT TAG MANAGER SHEET ═══ -->
@@ -4388,25 +4429,124 @@ function setLightFilter(key,value){
   renderLight();
 }
 
-function lightSearchBox(id,placeholder){
-  return `<div class="light-search-inline"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input class="light-search-input" id="${id}" placeholder="${placeholder}" value="${escapeAttr(lightFilters.query||'')}" oninput="setLightFilter('query',this.value)"></div>`;
+function lightIcon(name){
+  const icons={
+    search:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>`,
+    filter:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16"/><path d="M7 12h10"/><path d="M10 18h4"/></svg>`,
+    tag:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.6 13.4l-7.2 7.2a2 2 0 0 1-2.8 0L3 13V4h9l8.6 8.6a2 2 0 0 1 0 2.8Z"/><circle cx="8" cy="8" r="1.5"/></svg>`
+  };
+  return icons[name]||'';
+}
+
+function lightActiveFilterCount(){
+  const keys=lightSubView==='profiles'?['arcPersonality','arcIdentity','arcStage']:['big','small','identity','stage'];
+  return keys.filter(k=>lightFilters[k]&&lightFilters[k]!=='all').length;
+}
+
+function renderLightToolRow(){
+  const q=(lightFilters.query||'').trim();
+  const filterCount=lightActiveFilterCount();
+  return `<div class="light-filter-row">
+    <button class="light-tool-btn icon-only ${q?'active':''}" title="搜索" onclick="openLightSearchSheet()">${lightIcon('search')}${q?'<span class="light-tool-badge">1</span>':''}</button>
+    <button class="light-tool-btn icon-only ${filterCount?'active':''}" title="筛选" onclick="openLightFilterSheet()">${lightIcon('filter')}${filterCount?`<span class="light-tool-badge">${filterCount}</span>`:''}</button>
+    <button class="light-tool-btn icon-only" title="标签管理" onclick="openLightTagManager()">${lightIcon('tag')}</button>
+  </div>`;
+}
+
+function openLightSearchSheet(){
+  const title=document.getElementById('light-search-sheet-title');
+  const input=document.getElementById('light-search-sheet-input');
+  const hint=document.getElementById('light-search-sheet-hint');
+  if(title) title.textContent=lightSubView==='profiles'?'搜索弧光档案':'搜索捕光记录';
+  if(input){
+    input.value=lightFilters.query||'';
+    input.onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();applyLightSearch();}};
+    setTimeout(()=>input.focus(),80);
+  }
+  if(hint) hint.textContent=lightSubView==='profiles'?'可搜索人物代号、标签、备注、相关捕光标题。':'可搜索标题、正文、精华记录、标签、人物和链接。';
+  openSheet('sheet-light-search');
+}
+
+function applyLightSearch(){
+  const input=document.getElementById('light-search-sheet-input');
+  lightFilters.query=input?input.value.trim():'';
+  closeSheet('sheet-light-search');
+  renderLight();
+}
+
+function clearLightSearch(){
+  lightFilters.query='';
+  const input=document.getElementById('light-search-sheet-input');
+  if(input) input.value='';
+  renderLight();
+}
+
+function openLightFilterSheet(){
+  renderLightFilterSheet();
+  openSheet('sheet-light-filter');
+}
+
+function lightFilterOptions(kind){
+  if(kind==='big') return uniqueList([...(db.lightTagHistory.big||[]),...(db.lightRecords||[]).flatMap(getLightBigTags)]).sort((a,b)=>a.localeCompare(b,'zh-CN'));
+  if(kind==='small') return uniqueList([...(db.lightTagHistory.small||[]),...(db.lightRecords||[]).flatMap(r=>r.smallTags||[])]).sort((a,b)=>a.localeCompare(b,'zh-CN'));
+  if(kind==='identity') return uniqueList([...(db.lightTagHistory.lightIdentity||[]),...(db.lightRecords||[]).flatMap(r=>r.identityTags||[])]).sort((a,b)=>a.localeCompare(b,'zh-CN'));
+  if(kind==='stage') return uniqueList([...(db.lightTagHistory.lightStage||[]),...(db.lightRecords||[]).flatMap(r=>r.stageTags||[])]).sort((a,b)=>a.localeCompare(b,'zh-CN'));
+  if(kind==='arcPersonality') return uniqueList([...(db.lightTagHistory.personality||[]),...(db.arcProfiles||[]).flatMap(p=>p.personalityTags||[])]).sort((a,b)=>a.localeCompare(b,'zh-CN'));
+  if(kind==='arcIdentity') return uniqueList([...(db.lightTagHistory.identity||[]),...(db.arcProfiles||[]).flatMap(p=>p.identityTags||[])]).sort((a,b)=>a.localeCompare(b,'zh-CN'));
+  if(kind==='arcStage') return uniqueList([...(db.lightTagHistory.stage||[]),...(db.arcProfiles||[]).flatMap(p=>p.stageTags||[])]).sort((a,b)=>a.localeCompare(b,'zh-CN'));
+  return [];
+}
+
+function lightFilterSelect(label,key,allText){
+  const values=['all',...lightFilterOptions(key)];
+  return `<div class="filter-section">
+    <div class="filter-section-title">${label}</div>
+    <select class="form-select" onchange="setLightFilter('${key}',this.value);renderLightFilterSheet()">
+      ${values.map(v=>`<option value="${escapeAttr(v)}" ${lightFilters[key]===v?'selected':''}>${v==='all'?allText:escapeHtml(v)}</option>`).join('')}
+    </select>
+  </div>`;
+}
+
+function renderLightFilterSheet(){
+  const title=document.getElementById('light-filter-sheet-title');
+  const body=document.getElementById('light-filter-sheet-body');
+  if(title) title.textContent=lightSubView==='profiles'?'筛选弧光档案':'筛选捕光记录';
+  if(!body) return;
+  if(lightSubView==='profiles'){
+    body.innerHTML=[
+      lightFilterSelect('性格','arcPersonality','全部性格'),
+      lightFilterSelect('身份','arcIdentity','全部身份'),
+      lightFilterSelect('人生阶段','arcStage','全部阶段')
+    ].join('');
+  }else{
+    body.innerHTML=[
+      lightFilterSelect('大标签','big','全部大标签'),
+      lightFilterSelect('小标签','small','全部小标签'),
+      lightFilterSelect('身份','identity','全部身份'),
+      lightFilterSelect('人生阶段','stage','全部阶段')
+    ].join('');
+  }
+}
+
+function clearLightFilterSheet(){
+  if(lightSubView==='profiles'){
+    lightFilters.arcPersonality='all';
+    lightFilters.arcIdentity='all';
+    lightFilters.arcStage='all';
+  }else{
+    lightFilters.big='all';
+    lightFilters.small='all';
+    lightFilters.identity='all';
+    lightFilters.stage='all';
+  }
+  renderLightFilterSheet();
+  renderLight();
 }
 
 function renderLightRecords(){
   const controls=document.getElementById('light-controls');
   const content=document.getElementById('light-content');
-  const bigs=['all',...uniqueList([...(db.lightTagHistory.big||[]),...(db.lightRecords||[]).flatMap(getLightBigTags)])];
-  const smalls=['all',...uniqueList([...(db.lightTagHistory.small||[]),...(db.lightRecords||[]).flatMap(r=>r.smallTags||[])])];
-  const identities=['all',...uniqueList([...(db.lightTagHistory.lightIdentity||[]),...(db.lightRecords||[]).flatMap(r=>r.identityTags||[])])];
-  const stages=['all',...uniqueList([...(db.lightTagHistory.lightStage||[]),...(db.lightRecords||[]).flatMap(r=>r.stageTags||[])])];
-  controls.innerHTML=`<div class="light-filter-row">
-      ${lightSearchBox('light-query','搜索')}
-      <select class="form-select" onchange="setLightFilter('big',this.value)">${bigs.map(v=>`<option value="${escapeAttr(v)}" ${lightFilters.big===v?'selected':''}>${v==='all'?'全部大标签':escapeHtml(v)}</option>`).join('')}</select>
-      <select class="form-select" onchange="setLightFilter('small',this.value)">${smalls.map(v=>`<option value="${escapeAttr(v)}" ${lightFilters.small===v?'selected':''}>${v==='all'?'全部小标签':escapeHtml(v)}</option>`).join('')}</select>
-      <select class="form-select" onchange="setLightFilter('identity',this.value)">${identities.map(v=>`<option value="${escapeAttr(v)}" ${lightFilters.identity===v?'selected':''}>${v==='all'?'全部身份':escapeHtml(v)}</option>`).join('')}</select>
-      <select class="form-select" onchange="setLightFilter('stage',this.value)">${stages.map(v=>`<option value="${escapeAttr(v)}" ${lightFilters.stage===v?'selected':''}>${v==='all'?'全部阶段':escapeHtml(v)}</option>`).join('')}</select>
-      <button class="light-tool-btn" onclick="openLightTagManager()">标签管理</button>
-    </div>`;
+  controls.innerHTML=renderLightToolRow();
   let records=[...(db.lightRecords||[])];
   const q=(lightFilters.query||'').trim().toLowerCase();
   if(lightFilters.big&&lightFilters.big!=='all') records=records.filter(r=>getLightBigTags(r).includes(lightFilters.big));
@@ -4449,16 +4589,7 @@ function renderArcProfiles(){
   const controls=document.getElementById('light-controls');
   const content=document.getElementById('light-content');
   currentArcDetailId=null;
-  const personalities=['all',...uniqueList([...(db.lightTagHistory.personality||[]),...(db.arcProfiles||[]).flatMap(p=>p.personalityTags||[])])];
-  const identities=['all',...uniqueList([...(db.lightTagHistory.identity||[]),...(db.arcProfiles||[]).flatMap(p=>p.identityTags||[])])];
-  const stages=['all',...uniqueList([...(db.lightTagHistory.stage||[]),...(db.arcProfiles||[]).flatMap(p=>p.stageTags||[])])];
-  controls.innerHTML=`<div class="light-filter-row">
-    ${lightSearchBox('arc-query','搜索')}
-    <select class="form-select" onchange="setLightFilter('arcPersonality',this.value)">${personalities.map(v=>`<option value="${escapeAttr(v)}" ${lightFilters.arcPersonality===v?'selected':''}>${v==='all'?'全部性格':escapeHtml(v)}</option>`).join('')}</select>
-    <select class="form-select" onchange="setLightFilter('arcIdentity',this.value)">${identities.map(v=>`<option value="${escapeAttr(v)}" ${lightFilters.arcIdentity===v?'selected':''}>${v==='all'?'全部身份':escapeHtml(v)}</option>`).join('')}</select>
-    <select class="form-select" onchange="setLightFilter('arcStage',this.value)">${stages.map(v=>`<option value="${escapeAttr(v)}" ${lightFilters.arcStage===v?'selected':''}>${v==='all'?'全部阶段':escapeHtml(v)}</option>`).join('')}</select>
-    <button class="light-tool-btn" onclick="openLightTagManager()">标签管理</button>
-  </div>`;
+  controls.innerHTML=renderLightToolRow();
   const q=(lightFilters.query||'').trim().toLowerCase();
   let profiles=[...(db.arcProfiles||[])];
   if(lightFilters.arcPersonality&&lightFilters.arcPersonality!=='all') profiles=profiles.filter(p=>(p.personalityTags||[]).includes(lightFilters.arcPersonality));
