@@ -728,8 +728,7 @@ body.magic-theme #sheet-light-record .sheet-header,body.magic-theme #sheet-arc-p
 .path-sub{font-size:11px;color:var(--text3);line-height:1.6;margin-top:3px;padding-right:24px;cursor:pointer}
 .path-wrap{padding:0 14px 28px}
 .vine-timeline{position:relative;padding:8px 0 14px 46px}
-.vine-timeline::before{content:'';position:absolute;left:23px;top:20px;bottom:18px;width:2px;border-radius:999px;background:linear-gradient(180deg,rgba(143,191,110,.32),rgba(248,184,200,.24),rgba(143,191,110,.18))}
-.vine-svg{display:none}
+.vine-svg{position:absolute;left:-2px;top:18px;bottom:0;width:64px;height:100%;min-height:900px;pointer-events:none;overflow:visible;z-index:0}
 .vine-bud-svg{position:absolute;left:-12px;top:-22px;width:66px;height:66px;overflow:visible;pointer-events:none;z-index:2;filter:drop-shadow(0 4px 8px rgba(95,150,88,.22))}
 .vine-path-main{fill:none;stroke:#5f9f65;stroke-width:7;stroke-linecap:round;filter:drop-shadow(0 2px 2px rgba(90,130,72,.18))}
 .vine-path-hi{fill:none;stroke:rgba(255,255,255,.48);stroke-width:2;stroke-linecap:round}
@@ -1267,7 +1266,7 @@ body.magic-theme .author-wait-card{border-color:rgba(116,110,183,.18)}
           <div class="settings-item-left">
             <div class="settings-item-icon" style="background:#e8f0fe">ℹ️</div>
             <div>
-              <div class="settings-item-title">幻 maboroshi v2.45</div>
+              <div class="settings-item-title">幻 maboroshi v2.46</div>
               <div class="settings-item-sub">数据和密码均存储于本地</div>
             </div>
           </div>
