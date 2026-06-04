@@ -1266,7 +1266,7 @@ body.magic-theme .author-wait-card{border-color:rgba(116,110,183,.18)}
           <div class="settings-item-left">
             <div class="settings-item-icon" style="background:#e8f0fe">ℹ️</div>
             <div>
-              <div class="settings-item-title">幻 maboroshi v2.46</div>
+              <div class="settings-item-title">幻 maboroshi v2.49</div>
               <div class="settings-item-sub">数据和密码均存储于本地</div>
             </div>
           </div>
@@ -1831,6 +1831,9 @@ const APP_VERSION = '2.20.0';
 const STORE_KEY = 'shuji_v1';
 const LOCK_KEY = 'maboroshi_lock_v2';
 const AI_TASK_KEY = 'maboroshi_ai_tasks_v1';
+const MEDIA_DB_NAME = 'maboroshi_media_v1';
+const MEDIA_STORE = 'images';
+const EMPTY_IMG = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="12" height="16"%3E%3C/svg%3E';
 const TAG_CATS = [
   {key:'shou', label:'受性格', color:0},
   {key:'gong', label:'攻性格', color:1},
@@ -1920,14 +1923,89 @@ function clearImportedLogDates(){
     if(l?.imported&&l.date===today) l.date=null;
   }));
 }
-function save(){
+function saveDb(nextDb,{quiet=false}={}){
   try{
-    localStorage.setItem(STORE_KEY,JSON.stringify(db));
+    localStorage.setItem(STORE_KEY,JSON.stringify(nextDb));
     return true;
   }catch(e){
     console.error(e);
-    toast('本地保存失败：可能是截图/缓存太大，建议先导出备份再清理一些图片');
+    if(!quiet) toast('本地保存失败：浏览器本地空间可能已满，截图会占用较多容量');
     return false;
+  }
+}
+function save(){
+  return saveDb(db);
+}
+
+function openMediaDb(){
+  return new Promise((resolve,reject)=>{
+    if(!window.indexedDB){reject(new Error('INDEXEDDB_UNAVAILABLE'));return;}
+    const req=indexedDB.open(MEDIA_DB_NAME,1);
+    req.onupgradeneeded=()=>req.result.createObjectStore(MEDIA_STORE,{keyPath:'id'});
+    req.onsuccess=()=>resolve(req.result);
+    req.onerror=()=>reject(req.error||new Error('INDEXEDDB_OPEN_FAILED'));
+  });
+}
+
+async function putMediaImage(id,dataUrl){
+  if(!dataUrl) return null;
+  const mediaDb=await openMediaDb();
+  return new Promise((resolve,reject)=>{
+    const tx=mediaDb.transaction(MEDIA_STORE,'readwrite');
+    tx.objectStore(MEDIA_STORE).put({id,dataUrl,updatedAt:Date.now()});
+    tx.oncomplete=()=>{mediaDb.close();resolve(id);};
+    tx.onerror=()=>{mediaDb.close();reject(tx.error||new Error('INDEXEDDB_WRITE_FAILED'));};
+  });
+}
+
+async function getMediaImage(id){
+  if(!id) return '';
+  const mediaDb=await openMediaDb();
+  return new Promise((resolve,reject)=>{
+    const tx=mediaDb.transaction(MEDIA_STORE,'readonly');
+    const req=tx.objectStore(MEDIA_STORE).get(id);
+    req.onsuccess=()=>resolve(req.result?.dataUrl||'');
+    req.onerror=()=>reject(req.error||new Error('INDEXEDDB_READ_FAILED'));
+    tx.oncomplete=()=>mediaDb.close();
+    tx.onerror=()=>mediaDb.close();
+  });
+}
+
+async function deleteMediaImage(id){
+  if(!id||!window.indexedDB) return;
+  try{
+    const mediaDb=await openMediaDb();
+    await new Promise((resolve,reject)=>{
+      const tx=mediaDb.transaction(MEDIA_STORE,'readwrite');
+      tx.objectStore(MEDIA_STORE).delete(id);
+      tx.oncomplete=()=>{mediaDb.close();resolve();};
+      tx.onerror=()=>{mediaDb.close();reject(tx.error||new Error('INDEXEDDB_DELETE_FAILED'));};
+    });
+  }catch(e){console.error(e);}
+}
+
+function getShotKey(shot){
+  return shot?.imageKey||shot?.mediaId||shot?.id||'';
+}
+
+function getShotImgAttrs(shot){
+  if(shot?.dataUrl) return `src="${escapeAttr(shot.dataUrl)}"`;
+  const key=getShotKey(shot);
+  return `src="${EMPTY_IMG}" data-shot-key="${escapeAttr(key)}"`;
+}
+
+async function getShotDataUrl(shot){
+  if(shot?.dataUrl) return shot.dataUrl;
+  try{return await getMediaImage(getShotKey(shot));}catch(e){console.error(e);return '';}
+}
+
+async function hydrateShotImages(root=document){
+  const imgs=[...root.querySelectorAll('img[data-shot-key]')];
+  for(const img of imgs){
+    const key=img.dataset.shotKey;
+    if(!key||img.dataset.loaded==='1') continue;
+    const dataUrl=await getMediaImage(key).catch(e=>{console.error(e);return '';});
+    if(dataUrl){img.src=dataUrl;img.dataset.loaded='1';}
   }
 }
 function applyAppTheme(){
@@ -2692,7 +2770,7 @@ async function addBookScreenshots(bookId,files){
     toast(`已加入 ${imgs.length} 张待保存截图`);
   }catch(e){
     console.error(e);
-    toast('截图保存失败，可能是图片太大');
+    toast('截图保存失败：图片格式无法读取，或本地空间不足');
   }
 }
 
@@ -2706,7 +2784,7 @@ function compressImageFile(file){
         try{source=await createImageBitmap(file,{imageOrientation:'from-image'});}catch(e){source=null;}
       }
       if(!source) source=await loadImageFromUrl(url);
-      const max=1400;
+      const max=1100;
       const w=source.width||source.naturalWidth;
       const h=source.height||source.naturalHeight;
       if(!w||!h) throw new Error('IMAGE_DECODE_FAILED');
@@ -2718,10 +2796,19 @@ function compressImageFile(file){
       ctx.fillStyle='#fff';
       ctx.fillRect(0,0,canvas.width,canvas.height);
       ctx.drawImage(source,0,0,canvas.width,canvas.height);
-      const blob=await canvasToBlob(canvas,'image/jpeg',0.78);
+      const blob=await canvasToBlob(canvas,'image/jpeg',0.68);
       resolve(await blobToDataUrl(blob));
       if(source.close) source.close();
     }catch(e){
+      if(file.size<=2*1024*1024){
+        try{
+          resolve(await fileToDataUrl(file));
+          return;
+        }catch(fallbackError){
+          reject(fallbackError);
+          return;
+        }
+      }
       reject(e);
     }finally{
       if(url) URL.revokeObjectURL(url);
@@ -2755,6 +2842,74 @@ function blobToDataUrl(blob){
     reader.onerror=reject;
     reader.readAsDataURL(blob);
   });
+}
+
+function fileToDataUrl(file){
+  return new Promise((resolve,reject)=>{
+    const reader=new FileReader();
+    reader.onload=()=>resolve(reader.result);
+    reader.onerror=reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+async function compactDataUrlImage(dataUrl,max=900,quality=0.56){
+  if(!dataUrl||!String(dataUrl).startsWith('data:image/')) return dataUrl;
+  try{
+    const img=await loadImageFromUrl(dataUrl);
+    const w=img.naturalWidth||img.width;
+    const h=img.naturalHeight||img.height;
+    if(!w||!h) return dataUrl;
+    const scale=Math.min(1,max/Math.max(w,h));
+    const canvas=document.createElement('canvas');
+    canvas.width=Math.max(1,Math.round(w*scale));
+    canvas.height=Math.max(1,Math.round(h*scale));
+    const ctx=canvas.getContext('2d');
+    ctx.fillStyle='#fff';
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+    ctx.drawImage(img,0,0,canvas.width,canvas.height);
+    const blob=await canvasToBlob(canvas,'image/jpeg',quality);
+    const compacted=await blobToDataUrl(blob);
+    return compacted.length<dataUrl.length?compacted:dataUrl;
+  }catch(e){
+    console.error(e);
+    return dataUrl;
+  }
+}
+
+async function compactScreenshotList(list,max=900,quality=0.56){
+  const shots=Array.isArray(list)?list:[];
+  const compacted=[];
+  for(const shot of shots){
+    compacted.push({...shot,dataUrl:await compactDataUrlImage(shot.dataUrl,max,quality)});
+  }
+  return compacted;
+}
+
+async function moveShotToMediaStore(shot){
+  if(!shot?.dataUrl) return shot;
+  const imageKey=getShotKey(shot)||genId();
+  await putMediaImage(imageKey,shot.dataUrl);
+  const {dataUrl,...rest}=shot;
+  return {...rest,id:shot.id||imageKey,imageKey,storage:'idb'};
+}
+
+async function moveShotsToMediaStore(shots){
+  const list=Array.isArray(shots)?shots:[];
+  const moved=[];
+  for(const shot of list) moved.push(await moveShotToMediaStore(shot));
+  return moved;
+}
+
+async function migrateLightScreenshotsToMediaStore(){
+  let changed=false;
+  for(const record of (db.lightRecords||[])){
+    if((record.screenshots||[]).some(s=>s?.dataUrl)){
+      record.screenshots=await moveShotsToMediaStore(record.screenshots||[]);
+      changed=true;
+    }
+  }
+  return changed;
 }
 
 function dataUrlToBlob(dataUrl){
@@ -2828,11 +2983,11 @@ function openScreenshotViewer(bookId,index){
   document.getElementById('screenshot-viewer').classList.add('show');
 }
 
-function renderScreenshotViewer(){
+async function renderScreenshotViewer(){
   const {index,items}=screenshotViewerState;
   const item=items[index];
   if(!item) return;
-  document.getElementById('screenshot-viewer-img').src=item.dataUrl;
+  document.getElementById('screenshot-viewer-img').src=await getShotDataUrl(item)||EMPTY_IMG;
   document.getElementById('screenshot-viewer-meta').textContent=`${index+1} / ${items.length}${item._type==='pending'?' · 待保存':''}`;
 }
 
@@ -4757,6 +4912,7 @@ function renderLightRecords(){
   });
   records.sort((a,b)=>(b.updatedAt||b.createdAt||0)-(a.updatedAt||a.createdAt||0));
   content.innerHTML=records.length?records.map(renderLightCard).join(''):`<div class="path-empty">还没有捕光记录。<br>那些稍纵即逝的火花，可以从这里开始留下。</div>`;
+  hydrateShotImages(content);
 }
 
 function renderLightCard(r){
@@ -4779,7 +4935,7 @@ function renderLightCard(r){
     ${r.text?`<div class="light-text">${escapeHtml(r.text)}</div>`:''}
     ${r.essence?`<div class="light-essence">${escapeHtml(r.essence)}</div>`:''}
     ${links.length?`<div class="light-links">${links.map(l=>`<a href="${escapeAttr(l)}" target="_blank" rel="noreferrer">${escapeHtml(l)}</a>`).join('')}</div>`:''}
-    ${shots.length?`<div class="light-thumb-row">${shots.map((s,i)=>`<img class="light-thumb" src="${escapeAttr(s.dataUrl)}" alt="" onclick="openLightScreenshotViewer(decodeURIComponent('${rid}'),${i})">`).join('')}</div>`:''}
+    ${shots.length?`<div class="light-thumb-row">${shots.map((s,i)=>`<img class="light-thumb" ${getShotImgAttrs(s)} alt="" onclick="openLightScreenshotViewer(decodeURIComponent('${rid}'),${i})">`).join('')}</div>`:''}
   </div>`;
 }
 
@@ -4879,8 +5035,9 @@ function renderLightDetailSheet(id){
   ${r.essence?`<div class="light-essence">${escapeHtml(r.essence)}</div>`:''}
   ${r.text?`<div class="light-detail-text">${escapeHtml(r.text)}</div>`:''}
   ${links.length?`<div class="light-links">${links.map(l=>`<a href="${escapeAttr(l)}" target="_blank" rel="noreferrer">${escapeHtml(l)}</a>`).join('')}</div>`:''}
-  ${shots.length?`<div class="light-thumb-row">${shots.map((s,i)=>`<img class="light-thumb" src="${escapeAttr(s.dataUrl)}" alt="" onclick="openLightScreenshotViewer(decodeURIComponent('${encodeURIComponent(r.id)}'),${i})">`).join('')}</div>`:''}
+  ${shots.length?`<div class="light-thumb-row">${shots.map((s,i)=>`<img class="light-thumb" ${getShotImgAttrs(s)} alt="" onclick="openLightScreenshotViewer(decodeURIComponent('${encodeURIComponent(r.id)}'),${i})">`).join('')}</div>`:''}
   <div class="light-actions" style="padding-bottom:12px"><button onclick="editLightFromDetail(decodeURIComponent('${encodeURIComponent(r.id)}'))">编辑记录</button><button onclick="deleteLightRecord(decodeURIComponent('${encodeURIComponent(r.id)}'));closeSheet('sheet-light-detail')">删除记录</button></div>`;
+  hydrateShotImages(body);
 }
 
 function editLightFromDetail(id){
@@ -5109,7 +5266,9 @@ function renderLightForm(){
   document.getElementById('light-profile-picker').innerHTML=profiles.length
     ? profiles.map(p=>`<label class="profile-pick"><input type="checkbox" ${lightDraft.profileIds.includes(p.id)?'checked':''} onchange="toggleLightProfile('${p.id}')"><span>${escapeHtml(p.code||'未命名人物')}</span><span style="margin-left:auto;color:var(--text3);font-size:10px">${escapeHtml([...(p.personalityTags||[]),...(p.identityTags||[]),...(p.stageTags||[])].slice(0,2).join(' / '))}</span></label>`).join('')
     : '<div class="settings-item-sub">还没有弧光档案，可以点上方「新人物」。</div>';
-  document.getElementById('light-shot-grid').innerHTML=(lightDraft.screenshots||[]).map((s,i)=>`<div class="capture-shot" onclick="openLightDraftScreenshotViewer(${i})"><img src="${escapeAttr(s.dataUrl)}" alt=""><button onclick="event.stopPropagation();removeLightScreenshot(${i})">×</button></div>`).join('');
+  const shotGrid=document.getElementById('light-shot-grid');
+  shotGrid.innerHTML=(lightDraft.screenshots||[]).map((s,i)=>`<div class="capture-shot" onclick="openLightDraftScreenshotViewer(${i})"><img ${getShotImgAttrs(s)} alt=""><button onclick="event.stopPropagation();removeLightScreenshot(${i})">×</button></div>`).join('');
+  hydrateShotImages(shotGrid);
 }
 
 function showLightBigHistory(){
@@ -5221,15 +5380,17 @@ async function addLightScreenshots(files){
     }
     lightDraft.screenshots=[...(lightDraft.screenshots||[]),...imgs].slice(0,60);
     renderLightForm();
-  }catch(e){console.error(e);toast('截图处理失败，可能是图片太大');}
+  }catch(e){console.error(e);toast('截图处理失败：图片格式无法读取，或本地空间不足');}
 }
 
 function removeLightScreenshot(i){
+  const shot=(lightDraft.screenshots||[])[i];
+  if(shot?.storage==='idb'||shot?.imageKey) deleteMediaImage(getShotKey(shot));
   lightDraft.screenshots=(lightDraft.screenshots||[]).filter((_,idx)=>idx!==i);
   renderLightForm();
 }
 
-function saveLightRecord(){
+async function saveLightRecord(){
   const saveBtn=document.getElementById('light-save-btn');
   if(saveBtn?.dataset.busy==='1') return;
   if(saveBtn){saveBtn.dataset.busy='1';saveBtn.disabled=true;saveBtn.textContent='保存中…';}
@@ -5254,15 +5415,45 @@ function saveLightRecord(){
     createdAt:oldRecord?(oldRecord.createdAt||now):now,
     updatedAt:now
   };
+  let usedMediaStore=false;
+  try{
+    await migrateLightScreenshotsToMediaStore();
+    record.screenshots=await moveShotsToMediaStore(record.screenshots);
+    lightDraft.screenshots=[...record.screenshots];
+    usedMediaStore=true;
+  }catch(e){
+    console.error(e);
+    record.screenshots=await compactScreenshotList(record.screenshots,820,0.48);
+    lightDraft.screenshots=[...record.screenshots];
+  }
+  const prevRecords=[...(db.lightRecords||[])];
+  const prevHistory=JSON.parse(JSON.stringify(db.lightTagHistory||{}));
+  const prevEditingId=editingLightId;
   const idx=(db.lightRecords||[]).findIndex(r=>String(r.id)===String(record.id));
   if(idx>-1) db.lightRecords[idx]=record; else db.lightRecords.unshift(record);
   editingLightId=record.id;
   const sheet=document.getElementById('sheet-light-record');
   if(sheet) sheet.dataset.editingId=record.id;
   rememberLightTags();
-  const ok=save();
+  let ok=saveDb(db,{quiet:true});
+  let compacted=false;
+  if(!ok&&(record.screenshots||[]).length){
+    record.screenshots=await compactScreenshotList(record.screenshots,820,0.48);
+    lightDraft.screenshots=[...record.screenshots];
+    const retryIdx=(db.lightRecords||[]).findIndex(r=>String(r.id)===String(record.id));
+    if(retryIdx>-1) db.lightRecords[retryIdx]=record;
+    ok=saveDb(db,{quiet:true});
+    compacted=ok;
+  }
   if(saveBtn){saveBtn.dataset.busy='0';saveBtn.disabled=false;saveBtn.textContent='保存捕光';}
-  if(!ok) return;
+  if(!ok){
+    db.lightRecords=prevRecords;
+    db.lightTagHistory=prevHistory;
+    editingLightId=prevEditingId;
+    if(sheet) sheet.dataset.editingId=prevEditingId||'';
+    toast('本地保存失败：截图占用空间已接近浏览器上限。已保留当前编辑页，请先少放几张图或导出备份。');
+    return;
+  }
   closeSheet('sheet-light-record');
   lightSubView='records';
   renderLight();
@@ -5271,12 +5462,14 @@ function saveLightRecord(){
     const pid=record.profileIds?.[0];
     if(pid) renderArcDetailSheet(pid);
   }
-  toast('捕光已保存');
+  toast(usedMediaStore?'截图已转入本地图片库，捕光已保存':compacted?'截图已自动压缩，捕光已保存':'捕光已保存');
 }
 
 function deleteLightRecord(id){
   id=String(id||'');
   if(!confirm('删除这条捕光记录吗？')) return;
+  const record=(db.lightRecords||[]).find(r=>String(r.id)===id);
+  (record?.screenshots||[]).forEach(s=>{if(s?.storage==='idb'||s?.imageKey) deleteMediaImage(getShotKey(s));});
   db.lightRecords=(db.lightRecords||[]).filter(r=>String(r.id)!==id);
   if(!save()) return;
   closeSheet('sheet-light-detail');
