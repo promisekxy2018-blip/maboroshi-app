@@ -454,6 +454,15 @@ body.magic-theme .fab.arc-fab{background:linear-gradient(145deg,#fff0ce,#d8ddff 
 .settings-item-sub{font-size:11px;color:var(--text3);margin-top:1px}
 .settings-arrow{color:var(--text3);font-size:16px}
 .api-key-display{font-size:11px;color:var(--text3);font-family:monospace;margin-top:3px}
+.health-card{border:1px solid var(--border);border-radius:18px;padding:14px;background:linear-gradient(145deg,rgba(255,255,255,.9),rgba(255,248,242,.66));margin-bottom:12px}
+.health-title{font-family:'Noto Serif SC',serif;font-size:17px;font-weight:700;color:var(--text);margin-bottom:6px}
+.health-status{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:5px 10px;font-size:12px;font-weight:700;margin-bottom:10px}
+.health-status.ok{background:#e8f4ee;color:#3d8159}.health-status.warn{background:#fff4cf;color:#9b6e22}.health-status.danger{background:#fdecea;color:#b85c5c}
+.health-list{display:flex;flex-direction:column;gap:8px;margin-top:8px}
+.health-row{display:flex;justify-content:space-between;gap:12px;font-size:12px;color:var(--text2);border-bottom:1px dashed rgba(232,201,184,.5);padding-bottom:7px}
+.health-row b{font-weight:700;color:var(--text)}
+.health-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.health-actions .btn{font-size:12px;padding:8px 12px}
 
 /* ── TOAST ── */
 .toast{position:fixed;top:20px;left:50%;transform:translateX(-50%) translateY(-80px);background:var(--text);color:#fff;padding:10px 20px;border-radius:20px;font-size:13px;z-index:999;transition:transform 0.3s;white-space:nowrap}
@@ -1198,6 +1207,43 @@ body.magic-theme .author-wait-card{border-color:rgba(116,110,183,.18)}
           </div>
           <span class="settings-arrow">›</span>
         </div>
+        <div class="settings-item" onclick="openHealthCheck()">
+          <div class="settings-item-left">
+            <div class="settings-item-icon" style="background:#e8f4ee">🩺</div>
+            <div>
+              <div class="settings-item-title">数据健康检查</div>
+              <div class="settings-item-sub" id="health-display">检查存储安全、备份状态和截图容量</div>
+            </div>
+          </div>
+          <span class="settings-arrow">›</span>
+        </div>
+        <div class="settings-item" onclick="backupToGoogleDrive()">
+          <div class="settings-item-left">
+            <div class="settings-item-icon" style="background:#eef4ff">☁️</div>
+            <div>
+              <div class="settings-item-title">备份到 Google Drive</div>
+              <div class="settings-item-sub" id="drive-display">需要先设置 Google OAuth Client ID</div>
+            </div>
+          </div>
+          <span class="settings-arrow">›</span>
+        </div>
+        <div class="settings-item" onclick="editDriveClientId()">
+          <div class="settings-item-left">
+            <div class="settings-item-icon" style="background:#fef3e2">G</div>
+            <div>
+              <div class="settings-item-title">Google Drive 授权配置</div>
+              <div class="api-key-display" id="drive-client-display">未设置</div>
+            </div>
+          </div>
+          <span class="settings-arrow">›</span>
+        </div>
+        <div class="settings-item" style="cursor:default">
+          <div class="settings-item-left" style="width:100%;display:block">
+            <div class="settings-item-title" style="margin-bottom:8px">Google Drive 自动备份</div>
+            <div class="settings-item-sub" style="margin-bottom:8px">本次会话授权后，保存数据或健康检查发现风险时会尝试上传备份</div>
+            <div class="segmented" id="drive-auto-control"></div>
+          </div>
+        </div>
         <div class="settings-item" onclick="importData()">
           <div class="settings-item-left">
             <div class="settings-item-icon" style="background:#fce8f0">📥</div>
@@ -1266,7 +1312,7 @@ body.magic-theme .author-wait-card{border-color:rgba(116,110,183,.18)}
           <div class="settings-item-left">
             <div class="settings-item-icon" style="background:#e8f0fe">ℹ️</div>
             <div>
-              <div class="settings-item-title">幻 maboroshi v2.49</div>
+              <div class="settings-item-title">幻 maboroshi v2.51</div>
               <div class="settings-item-sub">数据和密码均存储于本地</div>
             </div>
           </div>
@@ -1399,6 +1445,15 @@ body.magic-theme .author-wait-card{border-color:rgba(116,110,183,.18)}
     <button class="sheet-close" onclick="closeSheet('sheet-ai-history')">×</button>
   </div>
   <div class="sheet-body" id="ai-history-body"></div>
+</div>
+
+<div class="sheet" id="sheet-health">
+  <div class="sheet-handle"></div>
+  <div class="sheet-header">
+    <span class="sheet-title">数据健康检查</span>
+    <button class="sheet-close" onclick="closeSheet('sheet-health')">×</button>
+  </div>
+  <div class="sheet-body" id="health-body"></div>
 </div>
 
 <!-- ═══ BATCH IMPORT SHEET ═══ -->
@@ -1827,7 +1882,7 @@ body.magic-theme .author-wait-card{border-color:rgba(116,110,183,.18)}
 // ═══════════════════════════════════════
 //  DATA LAYER
 // ═══════════════════════════════════════
-const APP_VERSION = '2.20.0';
+const APP_VERSION = '2.51.0';
 const STORE_KEY = 'shuji_v1';
 const LOCK_KEY = 'maboroshi_lock_v2';
 const AI_TASK_KEY = 'maboroshi_ai_tasks_v1';
@@ -1850,7 +1905,7 @@ const PLATFORMS = ['未知','晋江','长佩','长佩旧站','废文','其他'];
 const OPENAI_MODEL = 'gpt-4.1-mini';
 const GEMINI_MODELS = ['gemini-2.5-flash','gemini-2.0-flash','gemini-flash-latest','gemini-1.5-flash'];
 
-let db = {books:[], tagHistory:{...DEFAULT_TAG_HISTORY}, apiKey:'', aiKeys:{openai:'',gemini:''}, lastBackupAt:'', settings:{shelfView:'list',aiProvider:'gemini',pathNoteFont:'kai'}, authorNotes:{}, authorQuotes:{}, authorProfiles:{}, flowerNotes:{}, awards:[], lightRecords:[], arcProfiles:[], lightTagHistory:{big:['素材','灵感','观察'],small:['人物','剧情','情感','性格形成'],personality:[],identity:[],stage:[]}};
+let db = {books:[], tagHistory:{...DEFAULT_TAG_HISTORY}, apiKey:'', aiKeys:{openai:'',gemini:''}, lastBackupAt:'', lastDriveBackupAt:'', settings:{shelfView:'list',aiProvider:'gemini',pathNoteFont:'kai',driveClientId:'',driveAutoBackup:false}, authorNotes:{}, authorQuotes:{}, authorProfiles:{}, flowerNotes:{}, awards:[], lightRecords:[], arcProfiles:[], lightTagHistory:{big:['素材','灵感','观察'],small:['人物','剧情','情感','性格形成'],personality:[],identity:[],stage:[]}};
 let currentFilter = 'all';
 let editingBookId = null;
 let editingLogIdx = null;
@@ -1891,6 +1946,10 @@ let arcReturnToLight = false;
 let lightDraft = {bigTags:[],smallTags:[],identityTags:[],stageTags:[],profileIds:[],screenshots:[]};
 let arcDraft = {personality:[],identity:[],stage:[]};
 let lightFilters = {big:'all',small:'all',identity:'all',stage:'all',arcPersonality:'all',arcIdentity:'all',arcStage:'all',query:''};
+let lastHealthPopupAt = 0;
+let driveTokenClient = null;
+let driveAccessToken = '';
+let driveAutoBackupTimer = null;
 
 function load(){
   try{const s=localStorage.getItem(STORE_KEY);if(s)db=JSON.parse(s);}catch(e){}
@@ -1900,6 +1959,9 @@ function load(){
   if(!db.settings) db.settings={shelfView:'list'};
   if(!db.settings.shelfView) db.settings.shelfView='list';
   if(!db.settings.pathNoteFont) db.settings.pathNoteFont='kai';
+  if(!db.settings.driveClientId) db.settings.driveClientId='';
+  if(typeof db.settings.driveAutoBackup!=='boolean') db.settings.driveAutoBackup=false;
+  if(!db.lastDriveBackupAt) db.lastDriveBackupAt='';
   if(!db.aiKeys) db.aiKeys={openai:'',gemini:''};
   if(db.apiKey&&!db.aiKeys.gemini) db.aiKeys.gemini=db.apiKey;
   if(!db.settings.aiProvider) db.settings.aiProvider=db.aiKeys.gemini?'gemini':'openai';
@@ -1934,7 +1996,33 @@ function saveDb(nextDb,{quiet=false}={}){
   }
 }
 function save(){
-  return saveDb(db);
+  const ok=saveDb(db);
+  if(ok) scheduleDriveAutoBackup();
+  return ok;
+}
+
+function scheduleDriveAutoBackup(force=false){
+  if(!db.settings?.driveAutoBackup||!db.settings?.driveClientId) return;
+  if(!driveAccessToken) return;
+  if(!force&&db.lastDriveBackupAt&&Date.now()-new Date(db.lastDriveBackupAt).getTime()<60*60*1000) return;
+  clearTimeout(driveAutoBackupTimer);
+  driveAutoBackupTimer=setTimeout(()=>backupToGoogleDrive({silent:true,auto:true}),2500);
+}
+
+function cloneData(value){
+  return JSON.parse(JSON.stringify(value));
+}
+
+async function requestPersistentStorage(){
+  if(!navigator.storage?.persist) return false;
+  try{
+    const already=await navigator.storage.persisted?.();
+    if(already) return true;
+    return await navigator.storage.persist();
+  }catch(e){
+    console.error(e);
+    return false;
+  }
 }
 
 function openMediaDb(){
@@ -2007,6 +2095,107 @@ async function hydrateShotImages(root=document){
     const dataUrl=await getMediaImage(key).catch(e=>{console.error(e);return '';});
     if(dataUrl){img.src=dataUrl;img.dataset.loaded='1';}
   }
+}
+
+function formatBytes(n){
+  if(!Number.isFinite(n)) return '未知';
+  if(n<1024) return `${n} B`;
+  if(n<1024*1024) return `${(n/1024).toFixed(1)} KB`;
+  return `${(n/1024/1024).toFixed(1)} MB`;
+}
+function daysSince(iso){
+  if(!iso) return Infinity;
+  return (Date.now()-new Date(iso).getTime())/(24*60*60*1000);
+}
+function countScreenshots(){
+  const bookShots=(db.books||[]).reduce((sum,b)=>sum+(b.screenshots||[]).length,0);
+  const lightShots=(db.lightRecords||[]).reduce((sum,r)=>sum+(r.screenshots||[]).length,0);
+  return {bookShots,lightShots,total:bookShots+lightShots};
+}
+async function getHealthReport(){
+  const mainSize=new Blob([JSON.stringify(db)]).size;
+  const storageInfo=await navigator.storage?.estimate?.().catch(()=>null);
+  const persisted=await navigator.storage?.persisted?.().catch(()=>false);
+  const shots=countScreenshots();
+  const usage=storageInfo?.usage||0;
+  const quota=storageInfo?.quota||0;
+  const ratio=quota?usage/quota:0;
+  const backupDays=daysSince(db.lastBackupAt);
+  const driveDays=daysSince(db.lastDriveBackupAt);
+  const issues=[];
+  const actions=[];
+  let level='ok';
+  if(!persisted){
+    issues.push('浏览器还没有确认持久化存储，系统清理缓存时风险更高。');
+    actions.push('点击“重新申请持久化”，并保持外部备份。');
+    level='warn';
+  }
+  if(ratio>=0.8){
+    issues.push(`本地存储使用率已到 ${Math.round(ratio*100)}%，继续大量上传截图有风险。`);
+    actions.push('立刻导出完整备份；暂缓上传截图；上传 Google Drive 备份。');
+    level='danger';
+  }else if(ratio>=0.65){
+    issues.push(`本地存储使用率约 ${Math.round(ratio*100)}%，建议备份后再继续大量录入。`);
+    actions.push('先做一次完整备份，再继续写长书评或上传截图。');
+    if(level!=='danger') level='warn';
+  }
+  if(mainSize>3.5*1024*1024){
+    issues.push(`主数据大小为 ${formatBytes(mainSize)}，接近 localStorage 风险区。`);
+    actions.push('等待截图迁移完成，再导出一次备份；暂时少保存长文本和截图。');
+    if(level!=='danger') level='warn';
+  }
+  if(backupDays>14){
+    issues.push(db.lastBackupAt?'外部 JSON 备份已经超过 14 天。':'还没有外部 JSON 备份记录。');
+    actions.push('点击“导出完整备份”，把文件放到 Google Drive/电脑/云盘。');
+    if(level!=='danger') level='warn';
+  }
+  if(db.settings?.driveAutoBackup&&db.settings?.driveClientId&&driveDays>7){
+    issues.push('Google Drive 自动备份超过 7 天没有成功上传。');
+    actions.push('点“备份到 Google Drive”重新授权并上传一次。');
+    if(level!=='danger') level='warn';
+  }
+  return {level,issues,actions,mainSize,storageInfo,persisted,shots,backupDays,driveDays,ratio};
+}
+function healthLabel(level){return level==='danger'?'危险':level==='warn'?'注意':'安全';}
+async function renderHealthSheet(report=null){
+  report=report||await getHealthReport();
+  const body=document.getElementById('health-body');
+  const rows=[
+    ['持久化存储',report.persisted?'已获得':'未确认'],
+    ['浏览器存储使用',report.storageInfo?`${formatBytes(report.storageInfo.usage)} / ${formatBytes(report.storageInfo.quota)}（${Math.round((report.ratio||0)*100)}%）`:'无法读取'],
+    ['主数据大小',formatBytes(report.mainSize)],
+    ['截图数量',`${report.shots.total} 张（书籍 ${report.shots.bookShots} / 捕光 ${report.shots.lightShots}）`],
+    ['JSON 备份',db.lastBackupAt?`${Math.round(report.backupDays)} 天前`:'尚未备份'],
+    ['Drive 备份',db.lastDriveBackupAt?`${Math.round(report.driveDays)} 天前`:'尚未上传']
+  ];
+  body.innerHTML=`<div class="health-card">
+    <div class="health-title">当前状态</div>
+    <div class="health-status ${report.level}">${healthLabel(report.level)}</div>
+    <div class="health-list">${rows.map(([k,v])=>`<div class="health-row"><span>${escapeHtml(k)}</span><b>${escapeHtml(v)}</b></div>`).join('')}</div>
+    ${report.issues.length?`<div class="health-list" style="margin-top:14px">${report.issues.map((x,i)=>`<div class="author-note-box" style="margin-bottom:0"><div class="author-note-title">需要处理 ${i+1}</div><div class="author-note-text">${escapeHtml(x)}<br><br>处理：${escapeHtml(report.actions[i]||'请先导出备份。')}</div></div>`).join('')}</div>`:'<div class="settings-item-sub" style="margin-top:12px">目前没有发现需要立刻处理的风险。</div>'}
+    <div class="health-actions">
+      <button class="btn btn-primary" onclick="exportData()">导出完整备份</button>
+      <button class="btn btn-ghost" onclick="backupToGoogleDrive()">备份到 Drive</button>
+      <button class="btn btn-ghost" onclick="requestPersistentStorage().then(()=>openHealthCheck())">重新申请持久化</button>
+    </div>
+  </div>`;
+}
+async function openHealthCheck(){
+  const report=await getHealthReport();
+  await renderHealthSheet(report);
+  openSheet('sheet-health');
+}
+async function checkHealthAndWarn({force=false}={}){
+  const report=await getHealthReport();
+  const display=document.getElementById('health-display');
+  if(display) display.textContent=`${healthLabel(report.level)} · ${report.issues[0]||'存储状态正常'}`;
+  if(report.level!=='ok'&&(force||Date.now()-lastHealthPopupAt>6*60*60*1000)){
+    lastHealthPopupAt=Date.now();
+    await renderHealthSheet(report);
+    openSheet('sheet-health');
+    if(db.settings?.driveAutoBackup&&driveAccessToken) scheduleDriveAutoBackup(true);
+  }
+  return report;
 }
 function applyAppTheme(){
   const isMagic=(db.settings?.shelfView||'list')==='magic';
@@ -2621,6 +2810,7 @@ function openDetail(id,opts={}){
       </div>
     </div>`;
   showPage('detail',opts.pushState===false?{pushState:false}:{});
+  hydrateShotImages(document.getElementById('page-detail'));
 }
 
 function isDetailOpen(bookId=currentDetailBookId){
@@ -2636,8 +2826,12 @@ function refreshOpenDetail(bookId,afterRender){
 
 function deleteBook(id){
   if(!confirm('确定删除这本书吗？')) return;
+  const prevBooks=[...(db.books||[])];
   db.books=db.books.filter(b=>b.id!==id);
-  save();
+  if(!save()){
+    db.books=prevBooks;
+    return;
+  }
   showPage('shelf');
   toast('已删除');
 }
@@ -2744,7 +2938,7 @@ function renderBookScreenshots(book){
       </div>
       ${all.length?`<div class="screenshot-grid">${all.map((s,i)=>`
         <div class="screenshot-card ${s._type==='pending'?'pending':''}" onclick="openScreenshotViewer('${book.id}',${i})">
-          <img src="${escapeAttr(s.dataUrl)}" alt="截图摘录">
+          <img ${getShotImgAttrs(s)} alt="截图摘录">
           ${s._type==='pending'?'<span class="screenshot-badge">待保存</span>':''}
           ${editing?`<div class="screenshot-tools" onclick="event.stopPropagation()">
             <button class="screenshot-tool" onclick="moveBookScreenshot('${book.id}',${i},-1)">↑</button>
@@ -2912,6 +3106,53 @@ async function migrateLightScreenshotsToMediaStore(){
   return changed;
 }
 
+async function migrateBookScreenshotsToMediaStore(){
+  let changed=false;
+  for(const book of (db.books||[])){
+    if((book.screenshots||[]).some(s=>s?.dataUrl)){
+      book.screenshots=await moveShotsToMediaStore(book.screenshots||[]);
+      changed=true;
+    }
+  }
+  return changed;
+}
+
+async function migrateAllScreenshotsToMediaStore(){
+  const bookChanged=await migrateBookScreenshotsToMediaStore();
+  const lightChanged=await migrateLightScreenshotsToMediaStore();
+  return bookChanged||lightChanged;
+}
+
+async function hydrateShotsForBackup(shots){
+  const list=Array.isArray(shots)?shots:[];
+  const hydrated=[];
+  for(const shot of list){
+    if(shot?.dataUrl){hydrated.push(shot);continue;}
+    const dataUrl=await getShotDataUrl(shot);
+    hydrated.push(dataUrl?{...shot,dataUrl}:shot);
+  }
+  return hydrated;
+}
+
+async function buildBackupDataWithMedia(){
+  const data=cloneData({
+    books:db.books||[],
+    tagHistory:db.tagHistory||{shou:[],gong:[],era:[],plot:[],vibe:[],warn:[]},
+    authorNotes:db.authorNotes||{},
+    authorQuotes:db.authorQuotes||{},
+    authorProfiles:db.authorProfiles||{},
+    flowerNotes:db.flowerNotes||{},
+    awards:db.awards||[],
+    lightRecords:db.lightRecords||[],
+    lightTagHistory:db.lightTagHistory||{},
+    arcProfiles:db.arcProfiles||[],
+    settings:db.settings||{}
+  });
+  for(const book of (data.books||[])) book.screenshots=await hydrateShotsForBackup(book.screenshots||[]);
+  for(const record of (data.lightRecords||[])) record.screenshots=await hydrateShotsForBackup(record.screenshots||[]);
+  return data;
+}
+
 function dataUrlToBlob(dataUrl){
   const [meta,b64]=dataUrl.split(',');
   const bin=atob(b64||'');
@@ -2920,15 +3161,30 @@ function dataUrlToBlob(dataUrl){
   return new Blob([arr],{type:(meta.match(/data:(.*?);/)||[])[1]||'image/jpeg'});
 }
 
-function saveBookScreenshots(bookId){
+async function saveBookScreenshots(bookId){
   const book=db.books.find(b=>b.id===bookId);
   if(!book) return;
   const pending=screenshotDrafts[bookId]||[];
   if(!pending.length){toast('没有待保存截图');return;}
-  book.screenshots=[...(book.screenshots||[]),...pending].slice(0,80);
+  const prevShots=[...(book.screenshots||[])];
+  const prevUpdated=book.updatedAt;
+  try{
+    await migrateBookScreenshotsToMediaStore();
+    const stored=await moveShotsToMediaStore(pending);
+    book.screenshots=[...(book.screenshots||[]),...stored].slice(0,80);
+    book.updatedAt=Date.now();
+  }catch(e){
+    console.error(e);
+    book.screenshots=[...(book.screenshots||[]),...await compactScreenshotList(pending,820,0.48)].slice(0,80);
+    book.updatedAt=Date.now();
+  }
+  if(!save()){
+    book.screenshots=prevShots;
+    book.updatedAt=prevUpdated;
+    toast('截图保存失败：本地持久化失败，已保留待保存截图，不会假装成功。');
+    return;
+  }
   screenshotDrafts[bookId]=[];
-  book.updatedAt=Date.now();
-  save();
   openDetail(bookId,{pushState:false,preserveReturn:true});
   toast(`已保存 ${pending.length} 张截图`);
 }
@@ -2950,9 +3206,17 @@ function removeBookScreenshot(bookId,index){
   const savedLen=(book.screenshots||[]).length;
   if(index<savedLen){
     if(!confirm('删除这张截图吗？')) return;
+    const removed=book.screenshots[index];
+    const prevShots=[...(book.screenshots||[])];
+    const prevUpdated=book.updatedAt;
     book.screenshots.splice(index,1);
     book.updatedAt=Date.now();
-    save();
+    if(!save()){
+      book.screenshots=prevShots;
+      book.updatedAt=prevUpdated;
+      return;
+    }
+    if(removed?.storage==='idb'||removed?.imageKey) deleteMediaImage(getShotKey(removed));
   }else{
     screenshotDrafts[bookId]=(screenshotDrafts[bookId]||[]).filter((_,i)=>i!==index-savedLen);
   }
@@ -2964,6 +3228,9 @@ function moveBookScreenshot(bookId,index,delta){
   if(!book) return;
   const saved=book.screenshots||[];
   const pending=screenshotDrafts[bookId]||[];
+  const prevSaved=[...saved];
+  const prevPending=[...pending];
+  const prevUpdated=book.updatedAt;
   const all=[...saved,...pending];
   const ni=index+delta;
   if(ni<0||ni>=all.length) return;
@@ -2971,7 +3238,12 @@ function moveBookScreenshot(bookId,index,delta){
   book.screenshots=all.filter(x=>!pending.includes(x));
   screenshotDrafts[bookId]=all.filter(x=>pending.includes(x));
   book.updatedAt=Date.now();
-  save();
+  if(!save()){
+    book.screenshots=prevSaved;
+    screenshotDrafts[bookId]=prevPending;
+    book.updatedAt=prevUpdated;
+    return;
+  }
   openDetail(bookId,{pushState:false,preserveReturn:true});
 }
 
@@ -3425,10 +3697,17 @@ function saveMiniLog(){
   if(miniLogSaveToBook && editingBookId){
     const b=db.books.find(x=>x.id===editingBookId);
     if(b){
+      const prevLogs=cloneData(b.readLogs||[]);
+      const prevUpdated=b.updatedAt;
       b.readLogs=formLogs;
       b.readLogs=sortReadLogs(b.readLogs);
       b.updatedAt=Date.now();
-      save();
+      if(!save()){
+        b.readLogs=prevLogs;
+        b.updatedAt=prevUpdated;
+        toast('阅读记录保存失败：本地持久化没有成功，编辑页已保留。');
+        return;
+      }
       toast('记录已保存');
       closeMiniLog();
       openDetail(editingBookId,{pushState:false,preserveReturn:true});
@@ -3485,9 +3764,16 @@ function preserveOpenMiniLogDraftToFormLogs(){
   if(editingBookId){
     const book=db.books.find(b=>b.id===editingBookId);
     if(book){
+      const prevLogs=cloneData(book.readLogs||[]);
+      const prevUpdated=book.updatedAt;
       book.readLogs=sortReadLogs(formLogs);
       book.updatedAt=Date.now();
-      save();
+      if(!save()){
+        book.readLogs=prevLogs;
+        book.updatedAt=prevUpdated;
+        toast('阅读记录保存失败：本地持久化没有成功，编辑页已保留，请先导出备份或清理空间。');
+        return false;
+      }
       renderShelf();
       refreshOpenDetail(editingBookId);
     }
@@ -3498,9 +3784,10 @@ function preserveOpenMiniLogDraftToFormLogs(){
   return true;
 }
 
-function saveBook(){
+async function saveBook(){
   const title=document.getElementById('f-title').value.trim();
   if(!title){toast('请填写书名');return;}
+  try{await migrateAllScreenshotsToMediaStore();}catch(e){console.error(e);}
   const existingBook=editingBookId?db.books.find(b=>b.id===editingBookId):null;
   const savedBookId=editingBookId||null;
   const shouldRefreshDetail=!!savedBookId&&isDetailOpen(savedBookId);
@@ -3526,6 +3813,7 @@ function saveBook(){
     readLogs:sortReadLogs(formLogs),
     updatedAt:Date.now()
   };
+  const prevDb=cloneData(db);
   if(editingBookId){
     const idx=db.books.findIndex(b=>b.id===editingBookId);
     if(idx>-1) db.books[idx]=book;
@@ -3534,7 +3822,11 @@ function saveBook(){
   }
   rememberTags(book.tags);
   pruneAuthorWaitingWorks(book.author,book.title);
-  save();
+  if(!save()){
+    db=prevDb;
+    toast('保存失败：本地持久化没有成功，编辑页已保留，请先导出备份或减少截图占用。');
+    return;
+  }
   closeSheet('sheet-book');
   renderShelf();
   if(shouldRefreshDetail) openDetail(book.id,{pushState:false,preserveReturn:true});
@@ -5384,8 +5676,6 @@ async function addLightScreenshots(files){
 }
 
 function removeLightScreenshot(i){
-  const shot=(lightDraft.screenshots||[])[i];
-  if(shot?.storage==='idb'||shot?.imageKey) deleteMediaImage(getShotKey(shot));
   lightDraft.screenshots=(lightDraft.screenshots||[]).filter((_,idx)=>idx!==i);
   renderLightForm();
 }
@@ -5469,9 +5759,13 @@ function deleteLightRecord(id){
   id=String(id||'');
   if(!confirm('删除这条捕光记录吗？')) return;
   const record=(db.lightRecords||[]).find(r=>String(r.id)===id);
-  (record?.screenshots||[]).forEach(s=>{if(s?.storage==='idb'||s?.imageKey) deleteMediaImage(getShotKey(s));});
+  const prevRecords=[...(db.lightRecords||[])];
   db.lightRecords=(db.lightRecords||[]).filter(r=>String(r.id)!==id);
-  if(!save()) return;
+  if(!save()){
+    db.lightRecords=prevRecords;
+    return;
+  }
+  (record?.screenshots||[]).forEach(s=>{if(s?.storage==='idb'||s?.imageKey) deleteMediaImage(getShotKey(s));});
   closeSheet('sheet-light-detail');
   renderLight();
   toast('已删除');
@@ -5914,6 +6208,12 @@ function renderSettings(){
   if(geminiEl) geminiEl.textContent=db.aiKeys?.gemini?db.aiKeys.gemini.slice(0,8)+'…（已设置）':'未设置';
   const backupEl=document.getElementById('backup-display');
   if(backupEl) backupEl.textContent=db.lastBackupAt?`上次备份：${db.lastBackupAt.slice(0,10)}`:'尚未备份';
+  const healthEl=document.getElementById('health-display');
+  if(healthEl) getHealthReport().then(r=>{healthEl.textContent=`${healthLabel(r.level)} · ${r.issues[0]||'存储状态正常'}`;}).catch(()=>{});
+  const driveEl=document.getElementById('drive-display');
+  if(driveEl) driveEl.textContent=db.lastDriveBackupAt?`上次 Drive 备份：${db.lastDriveBackupAt.slice(0,10)}`:(db.settings?.driveClientId?'已配置，尚未上传':'需要先设置 Google OAuth Client ID');
+  const driveClientEl=document.getElementById('drive-client-display');
+  if(driveClientEl) driveClientEl.textContent=db.settings?.driveClientId?db.settings.driveClientId.slice(0,18)+'…（已设置）':'未设置';
   const providerEl=document.getElementById('ai-provider-control');
   if(providerEl){
     const p=activeAIProvider();
@@ -5930,6 +6230,14 @@ function renderSettings(){
       ['diary','手账'],
       ['magic','书页']
     ].map(([key,label])=>`<button class="${v===key?'active':''}" onclick="setShelfView('${key}')">${label}</button>`).join('');
+  }
+  const driveAutoEl=document.getElementById('drive-auto-control');
+  if(driveAutoEl){
+    const enabled=!!db.settings?.driveAutoBackup;
+    driveAutoEl.innerHTML=[
+      [false,'关闭'],
+      [true,'开启']
+    ].map(([key,label])=>`<button class="${enabled===key?'active':''}" onclick="setDriveAutoBackup(${key})">${label}</button>`).join('');
   }
   const fontEl=document.getElementById('path-note-font-control');
   if(fontEl){
@@ -5968,6 +6276,119 @@ function setPathNoteFont(font){
   applyAppTheme();
   renderSettings();
   toast('花开备注字体已更新');
+}
+
+function setDriveAutoBackup(enabled){
+  db.settings=db.settings||{};
+  db.settings.driveAutoBackup=enabled;
+  save();
+  renderSettings();
+  toast(enabled?'已开启 Drive 自动备份':'已关闭 Drive 自动备份');
+}
+
+function editDriveClientId(){
+  const current=db.settings?.driveClientId||'';
+  const val=prompt('请输入 Google OAuth Client ID\n格式通常以 .apps.googleusercontent.com 结尾\n需要在 Google Cloud Console 创建 Web OAuth 客户端，并把当前 Vercel 域名加入 Authorized JavaScript origins。',current);
+  if(val===null) return;
+  db.settings=db.settings||{};
+  db.settings.driveClientId=val.trim();
+  save();
+  renderSettings();
+  toast(db.settings.driveClientId?'Drive 授权配置已保存':'已清空 Drive 授权配置');
+}
+
+function loadGoogleIdentityScript(){
+  return new Promise((resolve,reject)=>{
+    if(window.google?.accounts?.oauth2){resolve();return;}
+    const existing=document.querySelector('script[data-google-identity]');
+    if(existing){
+      existing.addEventListener('load',()=>resolve(),{once:true});
+      existing.addEventListener('error',()=>reject(new Error('GOOGLE_IDENTITY_LOAD_FAILED')),{once:true});
+      return;
+    }
+    const s=document.createElement('script');
+    s.src='https://accounts.google.com/gsi/client';
+    s.async=true;
+    s.defer=true;
+    s.dataset.googleIdentity='1';
+    s.onload=()=>resolve();
+    s.onerror=()=>reject(new Error('GOOGLE_IDENTITY_LOAD_FAILED'));
+    document.head.appendChild(s);
+  });
+}
+
+async function getDriveAccessToken({promptMode='consent'}={}){
+  const clientId=db.settings?.driveClientId||'';
+  if(!clientId){toast('请先在设置里填写 Google OAuth Client ID');throw new Error('NO_GOOGLE_CLIENT_ID');}
+  await loadGoogleIdentityScript();
+  return new Promise((resolve,reject)=>{
+    driveTokenClient=google.accounts.oauth2.initTokenClient({
+      client_id:clientId,
+      scope:'https://www.googleapis.com/auth/drive.file',
+      prompt:promptMode,
+      callback:(res)=>{
+        if(res?.error){reject(new Error(res.error));return;}
+        driveAccessToken=res.access_token||'';
+        if(!driveAccessToken){reject(new Error('NO_ACCESS_TOKEN'));return;}
+        resolve(driveAccessToken);
+      }
+    });
+    driveTokenClient.requestAccessToken({prompt:promptMode});
+  });
+}
+
+async function makeBackupBlob(){
+  const backupData=await buildBackupDataWithMedia();
+  const backup={app:'maboroshi',version:APP_VERSION,exportedAt:new Date().toISOString(),data:backupData};
+  const data=JSON.stringify(backup,null,2);
+  return {data,blob:new Blob([data],{type:'application/json'}),fileName:`maboroshi_backup_${new Date().toISOString().slice(0,10)}_${Date.now()}.json`};
+}
+
+async function uploadBlobToDrive(blob,fileName,token){
+  const metadata={name:fileName,mimeType:'application/json'};
+  const boundary='maboroshi_boundary_'+Date.now();
+  const delimiter=`\r\n--${boundary}\r\n`;
+  const closeDelim=`\r\n--${boundary}--`;
+  const body=new Blob([
+    delimiter,
+    'Content-Type: application/json; charset=UTF-8\r\n\r\n',
+    JSON.stringify(metadata),
+    delimiter,
+    'Content-Type: application/json\r\n\r\n',
+    blob,
+    closeDelim
+  ],{type:`multipart/related; boundary=${boundary}`});
+  const res=await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id,name,webViewLink',{
+    method:'POST',
+    headers:{Authorization:`Bearer ${token}`},
+    body
+  });
+  if(!res.ok){
+    let msg='';
+    try{msg=(await res.json())?.error?.message||'';}catch(e){}
+    throw new Error(`DRIVE_UPLOAD_${res.status}${msg?`: ${msg}`:''}`);
+  }
+  return await res.json();
+}
+
+async function backupToGoogleDrive(options={}){
+  const silent=!!options.silent;
+  try{
+    if(!silent) toast('正在打包完整备份…');
+    const {blob,fileName}=await makeBackupBlob();
+    const token=driveAccessToken||await getDriveAccessToken({promptMode:silent?'':'consent'});
+    const result=await uploadBlobToDrive(blob,fileName,token);
+    db.lastDriveBackupAt=new Date().toISOString();
+    db.lastBackupAt=db.lastDriveBackupAt;
+    saveDb(db,{quiet:true});
+    renderSettings();
+    if(!silent) toast('已上传到 Google Drive');
+    return result;
+  }catch(e){
+    console.error(e);
+    if(!silent) toast('Drive 备份失败：请检查 OAuth Client ID、授权域名和网络');
+    throw e;
+  }
 }
 
 function openTagManager(){
@@ -6054,24 +6475,7 @@ function editApiKey(provider){
 }
 
 async function exportData(){
-  const backup={
-    app:'maboroshi',
-    version:APP_VERSION,
-    exportedAt:new Date().toISOString(),
-    data:{
-      books:db.books||[],
-      tagHistory:db.tagHistory||{shou:[],gong:[],era:[],plot:[],vibe:[],warn:[]},
-      authorNotes:db.authorNotes||{},
-      authorQuotes:db.authorQuotes||{},
-      authorProfiles:db.authorProfiles||{},
-      flowerNotes:db.flowerNotes||{},
-      awards:db.awards||[],
-      settings:db.settings||{}
-    }
-  };
-  const data=JSON.stringify(backup,null,2);
-  const fileName=`maboroshi_backup_${new Date().toISOString().slice(0,10)}.json`;
-  const blob=new Blob([data],{type:'application/json'});
+  const {blob,fileName}=await makeBackupBlob();
   try{
     if(window.showSaveFilePicker){
       const handle=await showSaveFilePicker({
@@ -6103,7 +6507,7 @@ function handleImport(e){
   const file=e.target.files[0];
   if(!file) return;
   const reader=new FileReader();
-  reader.onload=ev=>{
+  reader.onload=async ev=>{
     try{
       const raw=JSON.parse(ev.target.result);
       const data=raw.data||raw;
@@ -6121,10 +6525,17 @@ function handleImport(e){
         authorQuotes:data.authorQuotes||{},
         authorProfiles:data.authorProfiles||{},
         flowerNotes:data.flowerNotes||{},
-        awards:data.awards||[]
+        awards:data.awards||[],
+        lightRecords:data.lightRecords||[],
+        lightTagHistory:data.lightTagHistory||{big:[],small:[],lightIdentity:[],lightStage:[],personality:[],identity:[],stage:[]},
+        arcProfiles:data.arcProfiles||[]
       };
       TAG_CATS.forEach(c=>{if(!db.tagHistory[c.key])db.tagHistory[c.key]=[];});
-      save();
+      try{await migrateAllScreenshotsToMediaStore();}catch(e){console.error(e);}
+      if(!save()){
+        toast('导入后保存失败：本地空间不足，请不要关闭页面，先导出当前备份。');
+        return;
+      }
       renderShelf();
       toast(`导入成功，共 ${db.books.length} 本书`);
     }catch(err){toast('文件格式错误');}
@@ -6324,9 +6735,22 @@ function unlockApp(){
   document.getElementById('lockscreen').style.display='none';
   document.getElementById('app').style.display='flex';
   load();
+  requestPersistentStorage();
+  migrateAllScreenshotsToMediaStore().then(changed=>{
+    if(changed){
+      if(saveDb(db,{quiet:true})) {
+        renderShelf();
+        if(isDetailOpen()) refreshOpenDetail(currentDetailBookId);
+      }else{
+        toast('历史截图迁移完成，但主数据保存失败。请立刻导出备份并减少截图。');
+      }
+    }
+  }).catch(e=>console.error(e));
   setupAppNavigation();
   renderShelf();
+  renderSettings();
   renderAITasks();
+  setTimeout(()=>checkHealthAndWarn(),1200);
 }
 function prepareLockScreen(){
   const setup=!hasPassword();
